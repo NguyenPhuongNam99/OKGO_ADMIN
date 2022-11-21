@@ -5,6 +5,7 @@ import Home from "./features/home";
 import Login from "./features/login";
 import ErrorPage from "./components/error-page/ErrorPage";
 import  './App.css'
+import Profile from "./features/Profile";
 
 const router = createBrowserRouter([
   {
@@ -13,8 +14,12 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: "contacts/:contactId",
+    path: "/Home",
     element: <Home />,
+  },
+  {
+    path: "/Profile",
+    element: <Profile />,
   },
 ]);
 

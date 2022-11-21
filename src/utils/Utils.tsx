@@ -1,5 +1,7 @@
 import {AxiosError} from 'axios';
 import {appConstants} from  '../constants/const'
+ import * as Yup from 'yup';
+
 
 export const createAppError = (type: any, error: any, appErrorCode: any) => {
   if (type === 'APP_ERROR') {
@@ -96,3 +98,8 @@ export const createAppError = (type: any, error: any, appErrorCode: any) => {
 export const handleException = (error: unknown): void => {
   console.log(error);
 };
+
+export const LoginSchema = Yup.object().shape({
+  acount: Yup.string().required('Tên đăng nhập đang rỗng *'),
+  password: Yup.string().required("Mật khẩu đang rỗng *")
+})

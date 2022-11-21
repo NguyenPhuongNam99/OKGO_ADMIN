@@ -1,18 +1,48 @@
+import userEvent from '@testing-library/user-event';
 import axios from 'axios';
+import jwtDecode from 'jwt-decode';
 
 
 const axiosClient = axios.create({
     baseURL: process.env.REACT_APP_BASE_URL,
     headers: {
         'content-type': 'application/json',
-        'Authorization': 'Bearer ' + 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJhZG1pbiI6ZmFsc2UsImlhdCI6MTY2ODc1Nzg3NiwiZXhwIjoxNjY4NzU3OTA2fQ.mFL4A1F4qik5OVx88wdkZJhoXKY5a7b-U4CvpR-CQv4'
+        'Authorization': 'Bearer ' + localStorage.getItem('Name')
+
     },
 
 });
 
-axiosClient.interceptors.request.use(async (config) => {
+const refreshToken = async () => {
+    try {
+        const res = await axios.post('/v1/auth/refesh', {
+            withCredentials: true,
+        })
+        return res.data
+    } catch (error) {
+        console.log('refresh error', error)
+    }
+}
+
+axiosClient.interceptors.request.use(async (config: any) => {
     // Handle token here ...
+    let date = new Date();
+    const dataAccessToken = localStorage.getItem('Name')
+    const decodedToken: any = jwtDecode(String(dataAccessToken));
+    console.log('decoded', decodedToken)
+    console.log('time', date.getTime() / 1000)
+    if(decodedToken.exp < date.getTime() / 1000){
+        const data = await refreshToken();
+        console.log('data new', data)
+        const refreshUser = {
+           accessToken: data.accessToken
+        }
+        config.headers['authorization'] = 'Bearer' + data.accessToken;
+    }
     return config;
+
+}, (error) => {
+  return Promise.reject(error)
 })
 axiosClient.interceptors.response.use((response) => {
     if (response && response.data) {
