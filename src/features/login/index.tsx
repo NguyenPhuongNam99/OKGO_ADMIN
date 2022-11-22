@@ -17,11 +17,12 @@ const Login = () => {
         password: "",
       }}
       validationSchema={LoginSchema}
-      onSubmit={(values, { setSubmitting }) => {
+      onSubmit={(values, { setSubmitting, resetForm }) => {
         setSubmitting(false);
         console.log("values", values);
-        loginApi()
-          .then(() => {
+        loginApi(values.acount, values.password)
+          .then((response: any) => {
+            localStorage.setItem("Name", response?.data?.accesToken);
             toast.success("🦄 Chúc mừng bạn đã đăng nhập thành công!", {
               position: "top-right",
               autoClose: 5000,
@@ -36,7 +37,18 @@ const Login = () => {
               navigate("/Home");
             }, 1500);
           })
-          .catch(() => {});
+          .catch((error) => {
+            toast.error(String(error.response.data), {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          });
       }}
     >
       {({

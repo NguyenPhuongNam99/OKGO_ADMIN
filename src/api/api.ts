@@ -7,17 +7,20 @@ const axiosClient = axios.create({
     baseURL: process.env.REACT_APP_BASE_URL,
     headers: {
         'content-type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem('Name')
+        'Authorization': 'Bearer ' + localStorage.getItem('Name')?.trim()
 
     },
+    withCredentials: true,
+
 
 });
 
 const refreshToken = async () => {
     try {
-        const res = await axios.post('/v1/auth/refesh', {
+        const res = await axios.post('http://localhost:8000/v1/auth/refesh', {
             withCredentials: true,
         })
+        console.log('res new', res)
         return res.data
     } catch (error) {
         console.log('refresh error', error)
@@ -31,9 +34,10 @@ axiosClient.interceptors.request.use(async (config: any) => {
     const decodedToken: any = jwtDecode(String(dataAccessToken));
     console.log('decoded', decodedToken)
     console.log('time', date.getTime() / 1000)
+    console.log('check', decodedToken.exp < date.getTime() / 1000)
     if(decodedToken.exp < date.getTime() / 1000){
         const data = await refreshToken();
-        console.log('data new', data)
+        console.log('data new refresh', data)
         const refreshUser = {
            accessToken: data.accessToken
         }

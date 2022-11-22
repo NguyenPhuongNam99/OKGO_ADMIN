@@ -5,7 +5,12 @@ import Home from "./features/home";
 import Login from "./features/login";
 import ErrorPage from "./components/error-page/ErrorPage";
 import  './App.css'
-import Profile from "./features/Profile";
+import Profile from "./features/Profile/Profile";
+import Hotel from "./features/hotel/hotel";
+import OrderTour from "./features/order-tour/OrderTour";
+import Restaurant from "./features/restaurant/Restaurant";
+import Tour from "./features/tour/Tour";
+import Voucher from "./features/voucher/Voucher";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +25,26 @@ const router = createBrowserRouter([
   {
     path: "/Profile",
     element: <Profile />,
+  },
+  {
+    path: "/Hotel",
+    element: <Hotel />,
+  },
+   {
+    path: "/OrderTour",
+    element: <OrderTour />,
+  },
+    {
+    path: "/Restaurant",
+    element: <Restaurant />,
+  },
+  {
+    path: "/Tour",
+    element: <Tour />,
+  },
+   {
+    path: "/Voucher",
+    element: <Voucher />,
   },
 ]);
 

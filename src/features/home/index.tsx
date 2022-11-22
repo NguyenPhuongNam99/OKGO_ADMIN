@@ -1,91 +1,95 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import axiosClient from '../../api/api'
+import React, { useState } from 'react';
 import './index.css';
-import { LaptopOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
-import type { MenuProps } from 'antd';
-import { Breadcrumb, Layout, Menu } from 'antd';
+import {
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  UploadOutlined,
+  UserOutlined,
+  VideoCameraOutlined,
+} from '@ant-design/icons';
+import { Layout, Menu } from 'antd';
+import Profile from '../Profile/Profile';
+import { BiRestaurant } from "react-icons/bi";
+import { BsFillPencilFill, BsCalendar2PlusFill } from "react-icons/bs";
+import { FcFactory } from "react-icons/fc";
 
-const Home = () => {
-    const { Header, Content, Sider } = Layout;
-  const navigate = useNavigate();
+const { Header, Sider, Content } = Layout;
 
+const App: React.FC = () => {
+  const [collapsed, setCollapsed] = useState(false);
+  const [route, setRoute] = useState<number>(1)
+  
 
-    const items1: MenuProps['items'] = ['1', '2', '3'].map(key => ({
-        key,
-        label: `nav ${key}`,
-    }));
+  return (
+    <Layout style={{height: '100vh', width: '100%', backgroundColor: 'green', overflow:'hidden'}}>
+      <Sider trigger={null} collapsible collapsed={collapsed}>
+        <div className="logo" />
+        <Menu
+          theme="dark"
+          mode="inline"
+          defaultSelectedKeys={['1']}
+          onSelect={(selectedKeys) => {
+            console.log('selectedKeys',selectedKeys.key)
+            setRoute(Number(selectedKeys.key))
+          }}
+          items={[
+            {
+              key: '1',
+              icon: <UserOutlined />,
+              label: 'Thông tin cá nhân',
+            },
+            {
+              key: '2',
+              icon: <VideoCameraOutlined />,
+              label: 'Khách sạn',
+            },
+            {
+              key: '3',
+              icon: <BsCalendar2PlusFill />,
+              label: 'Tour đã đặt',
+            },
+             {
+              key: '4',
+              icon: <FcFactory />,
+              label: 'Nhà hàng',
+            },
+            {
+              key: '5',
+              icon: <VideoCameraOutlined />,
+              label: 'Tạo Tour',
+            },
+            {
+              key: '6',
+              icon: <BsFillPencilFill />,
+              label: 'Tạo Voucher',
+            },
+          ]}
+        />
+      </Sider>
+      <Layout className="site-layout">
+        <Header className="site-layout-background" style={{ padding: 0, marginLeft: 26 }}>
+          {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
+            className: 'trigger',
+            onClick: () => setCollapsed(!collapsed),
+          })}
+        </Header>
+        <Content
+          className="site-layout-background"
+          style={{
+           marginTop: 26,
+            marginLeft: 24,
+            height: '100%'
+           
+          }}
+        >
+          {
+            route === 1 ? <Profile /> :''
 
-    const items2: MenuProps['items'] = [UserOutlined, LaptopOutlined, NotificationOutlined].map(
-        (icon, index) => {
-            const key = String(index + 1);
-
-            return {
-                key: `sub${key}`,
-                icon: React.createElement(icon),
-                label: `subnav ${key}`,
-
-                children: new Array(4).fill(null).map((_, j) => {
-                    const subKey = index * 4 + j + 1;
-                    return {
-                        key: subKey,
-                        label: `option${subKey}`,
-                    };
-                }),
-            };
-        },
-    );
-
-    useEffect(() => {
-        axiosClient.get('/v1/user')
-            .then((response) => {
-                console.log('response home new', response)
-
-            })
-            .catch(function (error) {
-               
-                console.log('error home new', error);
-            });
-    }, [])
-
-    return (
-        <>
-            <Layout>
-                <Header className="header">
-                    <div className="logo" />
-                    <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']} items={items1} />
-                </Header>
-                <Layout>
-                    <Sider width={200} className="site-layout-background">
-                        <Menu
-                            mode="inline"
-                            defaultSelectedKeys={['1']}
-                            defaultOpenKeys={['sub1']}
-                            style={{ height: '100%', borderRight: 0 }}
-                            items={items2}
-                        />
-                    </Sider>
-                    <Layout style={{ padding: '0 24px 24px' }}>
-                        <Breadcrumb style={{ margin: '16px 0' }}>
-                            <Breadcrumb.Item onClick={() => navigate('/Profile')}>{localStorage.getItem('Name')}</Breadcrumb.Item>
-                            <Breadcrumb.Item>List</Breadcrumb.Item>
-                            <Breadcrumb.Item>App</Breadcrumb.Item>
-                        </Breadcrumb>
-                        <Content
-                            className="site-layout-background"
-                            style={{
-                                padding: 24,
-                                margin: 0,
-                                minHeight: 280,
-                            }}
-                        >
-                            Content
-                        </Content>
-                    </Layout>
-                </Layout>
-            </Layout>
-        </>
-    );
+          }
+        </Content>
+      </Layout>
+    </Layout>
+  );
 };
 
-export default Home;
+export default App;
