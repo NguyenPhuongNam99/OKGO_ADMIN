@@ -12,6 +12,7 @@ import Profile from '../Profile/Profile';
 import { BiRestaurant } from "react-icons/bi";
 import { BsFillPencilFill, BsCalendar2PlusFill } from "react-icons/bs";
 import { FcFactory } from "react-icons/fc";
+import { FaCity , FaHotel, FaPaintBrush} from "react-icons/fa";
 
 const { Header, Sider, Content } = Layout;
 
@@ -38,30 +39,32 @@ const App: React.FC = () => {
               icon: <UserOutlined />,
               label: 'Thông tin cá nhân',
             },
-            {
-              key: '2',
-              icon: <VideoCameraOutlined />,
-              label: 'Khách sạn',
-            },
-            {
+              {
               key: '3',
               icon: <BsCalendar2PlusFill />,
               label: 'Tour đã đặt',
             },
-             {
-              key: '4',
-              icon: <FcFactory />,
-              label: 'Nhà hàng',
-            },
+            
             {
-              key: '5',
-              icon: <VideoCameraOutlined />,
+              key: '4',
+              icon: <FaPaintBrush />,
               label: 'Tạo Tour',
             },
             {
-              key: '6',
+              key: '5',
               icon: <BsFillPencilFill />,
               label: 'Tạo Voucher',
+            },
+            {
+              key: '6',
+              icon: <FaHotel />,
+              label: 'Khách sạn',
+            },
+          
+             {
+              key: '7',
+              icon: <FaCity />,
+              label: 'Nhà hàng',
             },
           ]}
         />
