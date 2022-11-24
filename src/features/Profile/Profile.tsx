@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./profile.scss";
 
 const Profile = () => {
+  
+
   return (
     <div className="containerProfile">
       <div className="headerText">
