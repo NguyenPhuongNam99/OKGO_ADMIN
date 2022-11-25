@@ -24,7 +24,8 @@ const Login = () => {
         console.log("values", values);
         loginApi(values.acount, values.password)
           .then((response: any) => {
-            localStorage.setItem("Name", response?.data?.accesToken);
+            console.log('dtaaaa', response)
+            localStorage.setItem("Name", response.data.accesToken);
             toast.success("🦄 Chúc mừng bạn đã đăng nhập thành công!", {
               position: "top-right",
               autoClose: 5000,
@@ -40,7 +41,8 @@ const Login = () => {
             }, 1500);
           })
           .catch((error) => {
-            toast.error(String(error.response.data), {
+            console.log('error new', error)
+            toast.error(String('loi roi '), {
               position: "top-right",
               autoClose: 5000,
               hideProgressBar: false,
@@ -63,9 +65,8 @@ const Login = () => {
         isSubmitting,
         /* and other goodies */
       }) => (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className='containerForm'>
           <ToastContainer />
-          <div className="container">
             <div className="blockContent">
               <div className="itemContent">
                 <img
@@ -126,7 +127,7 @@ const Login = () => {
                 </div>
               </div>
             </div>
-          </div>
+        
         </form>
       )}
     </Formik>

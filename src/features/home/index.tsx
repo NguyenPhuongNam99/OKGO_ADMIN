@@ -1,94 +1,120 @@
-import React, { useState } from 'react';
-import './index.css';
+import React, { useState } from "react";
+import "./index.scss";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  UploadOutlined,
   UserOutlined,
-  VideoCameraOutlined,
-} from '@ant-design/icons';
-import { Layout, Menu } from 'antd';
-import Profile from '../Profile/Profile';
-import { BiRestaurant } from "react-icons/bi";
+} from "@ant-design/icons";
+import { Dropdown, Layout, Menu } from "antd";
 import { BsFillPencilFill, BsCalendar2PlusFill } from "react-icons/bs";
-import { FcFactory } from "react-icons/fc";
-import { FaCity , FaHotel, FaPaintBrush} from "react-icons/fa";
+import { FaCity, FaHotel, FaPaintBrush } from "react-icons/fa";
+import Restaurant from "../restaurant/Restaurant";
+import { BsChevronDown } from "react-icons/bs";
+import Voucher from "../voucher/Voucher";
 
 const { Header, Sider, Content } = Layout;
 
 const App: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const [route, setRoute] = useState<number>(1)
-  
+  const [route, setRoute] = useState<number>(1);
+  console.log('route new', route)
+
+  const items = [
+    {
+      key: "1",
+      label: <p>Đăng xuất</p>,
+    },
+  ];
 
   return (
-    <Layout style={{height: '100vh', width: '100%', backgroundColor: 'green', overflow:'hidden'}}>
+    <Layout
+      style={{
+        height: "100vh",
+        width: "100%",
+        backgroundColor: "green",
+        overflow: "hidden",
+      }}
+    >
       <Sider trigger={null} collapsible collapsed={collapsed}>
-        <div className="logo" />
+        <div className="logo">
+          {!collapsed && (
+            <img
+              src={require("../../assets/images/travel.jpg")}
+              className="imageLogo"
+            />
+          )}
+        </div>
         <Menu
           theme="dark"
           mode="inline"
-          defaultSelectedKeys={['1']}
+          defaultSelectedKeys={["1"]}
           onSelect={(selectedKeys) => {
-            console.log('selectedKeys',selectedKeys.key)
-            setRoute(Number(selectedKeys.key))
+            console.log("selectedKeys", selectedKeys.key);
+            setRoute(Number(selectedKeys.key));
           }}
           items={[
             {
-              key: '1',
+              key: "1",
               icon: <UserOutlined />,
-              label: 'Thông tin cá nhân',
+              label: "Thông tin cá nhân",
             },
-              {
-              key: '3',
+            {
+              key: "3",
               icon: <BsCalendar2PlusFill />,
-              label: 'Tour đã đặt',
+              label: "Tour đã đặt",
             },
-            
+
             {
-              key: '4',
+              key: "4",
               icon: <FaPaintBrush />,
-              label: 'Tạo Tour',
+              label: "Tạo Tour",
             },
             {
-              key: '5',
+              key: "5",
               icon: <BsFillPencilFill />,
-              label: 'Tạo Voucher',
+              label: "Tạo Voucher",
             },
             {
-              key: '6',
+              key: "6",
               icon: <FaHotel />,
-              label: 'Khách sạn',
+              label: "Khách sạn",
             },
-          
-             {
-              key: '7',
+
+            {
+              key: "7",
               icon: <FaCity />,
-              label: 'Nhà hàng',
+              label: "Nhà hàng",
             },
           ]}
         />
       </Sider>
       <Layout className="site-layout">
-        <Header className="site-layout-background" style={{ padding: 0, marginLeft: 26 }}>
-          {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-            className: 'trigger',
-            onClick: () => setCollapsed(!collapsed),
-          })}
+        <Header
+          className="site-layout-background"
+          style={{ padding: 0, marginLeft: 26 }}
+        >
+          <div></div>
+          <div className="avatarContainer">
+            <div className="avatar">
+              <img
+                src={require("../../assets/images/avatar.jpeg")}
+                style={{ width: "100%", height: "100%", borderRadius: 50 }}
+              />
+            </div>
+            <p>Nguyen Phuong Nam</p>
+            <Dropdown menu={{ items }} placement="bottomLeft" overlayStyle={{width: 200, justifyContent: 'center', alignItems: 'center'}} >
+              <BsChevronDown className="iconDrop" />
+            </Dropdown>
+          </div>
         </Header>
         <Content
-          className="site-layout-background"
           style={{
-           marginTop: 26,
+            marginTop: 26,
             marginLeft: 24,
-            height: '100%'
-           
+            backgroundColor: "white",
           }}
         >
-          {
-            route === 1 ? <Profile /> :''
-
-          }
+          {route === 1 ? <Restaurant /> : route === 5 ? <Voucher /> : ''}
         </Content>
       </Layout>
     </Layout>

@@ -11,6 +11,7 @@ import OrderTour from "./features/order-tour/OrderTour";
 import Restaurant from "./features/restaurant/Restaurant";
 import Tour from "./features/tour/Tour";
 import Voucher from "./features/voucher/Voucher";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { QueryClient, QueryClientProvider, useQuery } from "react-query";
 
 const router = createBrowserRouter([
