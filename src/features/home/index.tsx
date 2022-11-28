@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import "./index.scss";
 import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import { Dropdown, Layout, Menu } from "antd";
@@ -59,29 +57,29 @@ const App: React.FC = () => {
               label: "Thông tin cá nhân",
             },
             {
-              key: "3",
+              key: "2",
               icon: <BsCalendar2PlusFill />,
               label: "Tour đã đặt",
             },
 
             {
-              key: "4",
+              key: "3",
               icon: <FaPaintBrush />,
               label: "Tạo Tour",
             },
             {
-              key: "5",
+              key: "4",
               icon: <BsFillPencilFill />,
               label: "Tạo Voucher",
             },
             {
-              key: "6",
+              key: "5",
               icon: <FaHotel />,
               label: "Khách sạn",
             },
 
             {
-              key: "7",
+              key: "6",
               icon: <FaCity />,
               label: "Nhà hàng",
             },
@@ -114,7 +112,7 @@ const App: React.FC = () => {
             backgroundColor: "white",
           }}
         >
-          {route === 1 ? <Restaurant /> : route === 5 ? <Voucher /> : ''}
+          {route === 1 ? <Restaurant /> : route === 4 ? <Voucher /> : ''}
         </Content>
       </Layout>
     </Layout>
