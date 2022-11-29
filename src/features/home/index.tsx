@@ -114,7 +114,7 @@ const App: React.FC = () => {
             backgroundColor: "white",
           }}
         >
-          {route === 1 ? <Restaurant /> : route === 5 ? <Voucher /> : ''}
+          {route === 6 ? <Restaurant /> : route === 5 ? <Voucher /> : ''}
         </Content>
       </Layout>
     </Layout>

@@ -45,7 +45,8 @@ const Restaurant = () => {
     },
     {
       id: "7",
-      first: "Lorem ipsum dolor sit amet",
+      first:
+        "Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet",
       three: "Lorem ipsum dolor sit amet",
       four: "Lorem ipsum dolor sit amet",
     },
@@ -96,14 +97,28 @@ const Restaurant = () => {
           Thêm mới
         </div>
       </div>
-      <Table bordered hover responsive size="sm" striped>
+      <Table
+        rowClassName={(index: any) =>
+          index % 2 === 0 ? "table-row-light" : "table-row-dark"
+        }
+        bordered
+        hover
+        responsive
+        size="sm"
+        stripes
+        className="table-striped-rows"
+      >
         <thead>
           <tr>
             <th>#</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Username</th>
-            <th>Username</th>
+            <th>Tên khách sạn</th>
+            <th>Thành Phố/ Huyện</th>
+            <th>Địa chỉ chi tiết</th>
+            <th>Thời gian mở cửa</th>
+            <th>Thời gian đóng cửa</th>
+            <th>Ảnh</th>
+            <th>Gía</th>
+            <th>Đánh giá</th>
           </tr>
         </thead>
         <tbody>
@@ -114,14 +129,44 @@ const Restaurant = () => {
                 <td>{item.first}</td>
                 <td>{item.three}</td>
                 <td>{item.four}</td>
-                <td className="buttonClick">
-                  <Button color="primary" href="#" tag="a" className="button">
-                    <AiOutlineEdit />
-                  </Button>
+                <td>{item.four}</td>
+                <td>{item.four}</td>
+                <td>{item.four}</td>
+                <td>{item.four}</td>
+                <td
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    height: "100%",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      height: "auto",
+                    }}
+                  >
+                    <Button
+                      color="primary"
+                      href="#"
+                      tag="a"
+                      style={{ height: "auto" }}
+                    >
+                      <AiOutlineEdit />
+                    </Button>
 
-                  <Button color="primary" href="#" tag="a" className="button">
-                    <AiOutlineDelete />
-                  </Button>
+                    <Button
+                      color="primary"
+                      href="#"
+                      tag="a"
+                      style={{ height: "auto" }}
+                    >
+                      <AiOutlineDelete />
+                    </Button>
+                  </div>
                 </td>
               </tr>
             );
