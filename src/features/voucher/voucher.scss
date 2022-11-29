@@ -2,28 +2,20 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    
+
 }
 
 .tableContainer {
-        width: 100%;
-        height: 100vh;
-        overflow: scroll;
+    width: 100%;
+    height: 100vh;
+    overflow: scroll;
 
-    
+
 }
 
 
 .centerHeader {
-        text-align: center !important;
-    }
-.centerColumn {
-    // justify-content: center;
-    // align-items: center;
-    // background-color: green;
-
-
-
+    text-align: center !important;
 }
 
 
@@ -35,14 +27,14 @@
     justify-content: space-between;
     align-items: center;
 
-    & > .buttonCreate {
+    &>.buttonCreate {
         width: 110px;
         height: 45px;
         background-color: #1677ff;
-        margin-right: 4rem;
+        margin-right: 1rem;
         border-radius: 8px;
         color: white;
-        justify-content:space-evenly;
+        justify-content: space-evenly;
         align-items: center;
         display: flex;
         cursor: pointer;
@@ -52,10 +44,7 @@
 .sizeHeader {
     height: 50px;
 
-    & > .centerText {
-        // width: 100%;
-        // height: 100%;
-        // display: flex;
+    &>.centerText {
         justify-content: center;
         align-items: center;
     }
@@ -66,7 +55,7 @@
     justify-content: center;
     align-items: center;
 
-    & > .containerButton {
+    &>.containerButton {
         width: 60px;
         height: 100%;
         display: flex;
@@ -80,9 +69,10 @@
     /* color: var(--bs-table-striped-color); */
     // height: 100px;
 }
+
 .button {
     align-self: center;
-      height: 40px;
+    height: 40px;
     width: 40px;
     border-radius: 9px;
 }

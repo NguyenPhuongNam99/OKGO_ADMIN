@@ -32,9 +32,7 @@ axiosClient.interceptors.request.use(async (config: any) => {
     let date = new Date();
     const dataAccessToken = localStorage.getItem('Name')
     const decodedToken: any = jwtDecode(String(dataAccessToken));
-    console.log('decoded', decodedToken)
-    console.log('time', date.getTime() / 1000)
-    console.log('check', decodedToken.exp < date.getTime() / 1000)
+
     if(decodedToken.exp < date.getTime() / 1000){
         const data = await refreshToken();
         console.log('data new refresh', data)

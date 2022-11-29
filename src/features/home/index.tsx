@@ -9,6 +9,7 @@ import { FaCity, FaHotel, FaPaintBrush } from "react-icons/fa";
 import Restaurant from "../restaurant/Restaurant";
 import { BsChevronDown } from "react-icons/bs";
 import Voucher from "../voucher/Voucher";
+import Tour from "../tour/Tour";
 
 const { Header, Sider, Content } = Layout;
 
@@ -112,7 +113,7 @@ const App: React.FC = () => {
             backgroundColor: "white",
           }}
         >
-          {route === 1 ? <Restaurant /> : route === 4 ? <Voucher /> : ''}
+          {route === 5 ? <Restaurant />: route === 2 ? <Tour />  : route === 4 ? <Voucher /> : ''}
         </Content>
       </Layout>
     </Layout>

@@ -1,0 +1,34 @@
+.tourContainer {
+    width: 100%;
+    height: 100vh;
+
+    & > .TourContain {
+        width: 100%;
+        height: 100%;
+
+        .centerView {
+            // width: 100%;
+            // height: 100%;
+            justify-content: center;
+            align-items: center;
+            // background-color: green;
+            display: flex;
+        }
+
+        .imageTour {
+            width: auto;
+            height: auto;
+            // max-width: 180px;
+            max-height: 115px;
+            border-radius: 9px;
+            max-width: 200px;
+        }
+    }
+}
+
+
+.centerAll {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

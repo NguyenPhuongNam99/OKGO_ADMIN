@@ -7,88 +7,9 @@ import { BsPlusLg } from "react-icons/bs";
 import axios from "axios";
 import "./voucher.scss";
 import { useNavigate } from "react-router-dom";
+import HeaderForm from '../../components/header-form/HeaderForm';
 
 const Voucher = () => {
-  const data = [
-    {
-      id: "1",
-      first: "Lorem ipsum dolor sit amet",
-      three: "Lorem ipsum dolor sit amet",
-      four: "Lorem ipsum dolor sit amet",
-    },
-    {
-      id: "2",
-      first: "Lorem ipsum dolor sit amet",
-      three: "Lorem ipsum dolor sit amet",
-      four: "Lorem ipsum dolor sit amet",
-    },
-    {
-      id: "3",
-      first: "Lorem ipsum dolor sit amet",
-      three: "Lorem ipsum dolor sit amet",
-      four: "Lorem ipsum dolor sit amet",
-    },
-    {
-      id: "4",
-      first: "Lorem ipsum dolor sit amet",
-      three: "Lorem ipsum dolor sit amet",
-      four: "Lorem ipsum dolor sit amet",
-    },
-    {
-      id: "5",
-      first: "Lorem ipsum dolor sit amet",
-      three: "Lorem ipsum dolor sit amet",
-      four: "Lorem ipsum dolor sit amet",
-    },
-    {
-      id: "6",
-      first: "Lorem ipsum dolor sit amet",
-      three: "Lorem ipsum dolor sit amet",
-      four: "Lorem ipsum dolor sit amet",
-    },
-    {
-      id: "7",
-      first: "Lorem ipsum dolor sit amet",
-      three: "Lorem ipsum dolor sit amet",
-      four: "Lorem ipsum dolor sit amet",
-    },
-    {
-      id: "8",
-      first: "Lorem ipsum dolor sit amet",
-      three: "Lorem ipsum dolor sit amet",
-      four: "Lorem ipsum dolor sit amet",
-    },
-    {
-      id: "9",
-      first: "Lorem ipsum dolor sit amet",
-      three: "Lorem ipsum dolor sit amet",
-      four: "Lorem ipsum dolor sit amet",
-    },
-    {
-      id: "10",
-      first: "Lorem ipsum dolor sit amet",
-      three: "Lorem ipsum dolor sit amet",
-      four: "Lorem ipsum dolor sit amet",
-    },
-    {
-      id: "11",
-      first: "Lorem ipsum dolor sit amet",
-      three: "Lorem ipsum dolor sit amet",
-      four: "Lorem ipsum dolor sit amet",
-    },
-    {
-      id: "12",
-      first: "Lorem ipsum dolor sit amet",
-      three: "Lorem ipsum dolor sit amet",
-      four: "Lorem ipsum dolor sit amet",
-    },
-    {
-      id: "13",
-      first: "Lorem ipsum dolor sit amet",
-      three: "Lorem ipsum dolor sit amet",
-      four: "Lorem ipsum dolor sit amet",
-    },
-  ];
 
   const [dataResponse, setDataResponse] = useState<any>([]);
   const navigate = useNavigate();
@@ -100,7 +21,6 @@ const Voucher = () => {
         headers: { Authorization: `Bearer ${localStorage.getItem("Name")}` },
       })
       .then((response) => {
-        console.log("response new", response.data);
         setDataResponse(response.data);
       })
       .catch((error) => {
@@ -110,13 +30,7 @@ const Voucher = () => {
 
   return (
     <div className="tableContainer">
-      <div className="headerForm">
-        <div />
-        <div className="buttonCreate">
-          <BsPlusLg color="white" />
-          Thêm mới
-        </div>
-      </div>
+      <HeaderForm />
       <Table bordered hover responsive size="sm" striped>
         <thead>
           <tr>

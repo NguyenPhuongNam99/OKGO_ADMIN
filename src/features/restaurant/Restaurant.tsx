@@ -1,93 +1,37 @@
-import React from "react";
 import { Button, Table } from "reactstrap";
 import "./restaurantStyles.scss";
 import { AiOutlineDelete, AiOutlineEdit, AiOutlinePlus } from "react-icons/ai";
-import { Pagination } from "antd";
+import { Pagination, Spin } from "antd";
 import { BsPlusLg } from "react-icons/bs";
+import axiosClient from "../../api/api";
+import { useEffect, useState } from "react";
 
 const Restaurant = () => {
-  const data = [
-    {
-      id: "1",
-      first: "Lorem ipsum dolor sit amet",
-      three: "Lorem ipsum dolor sit amet",
-      four: "Lorem ipsum dolor sit amet",
-    },
-    {
-      id: "2",
-      first: "Lorem ipsum dolor sit amet",
-      three: "Lorem ipsum dolor sit amet",
-      four: "Lorem ipsum dolor sit amet",
-    },
-    {
-      id: "3",
-      first: "Lorem ipsum dolor sit amet",
-      three: "Lorem ipsum dolor sit amet",
-      four: "Lorem ipsum dolor sit amet",
-    },
-    {
-      id: "4",
-      first: "Lorem ipsum dolor sit amet",
-      three: "Lorem ipsum dolor sit amet",
-      four: "Lorem ipsum dolor sit amet",
-    },
-    {
-      id: "5",
-      first: "Lorem ipsum dolor sit amet",
-      three: "Lorem ipsum dolor sit amet",
-      four: "Lorem ipsum dolor sit amet",
-    },
-    {
-      id: "6",
-      first: "Lorem ipsum dolor sit amet",
-      three: "Lorem ipsum dolor sit amet",
-      four: "Lorem ipsum dolor sit amet",
-    },
-    {
-      id: "7",
-      first: "Lorem ipsum dolor sit amet",
-      three: "Lorem ipsum dolor sit amet",
-      four: "Lorem ipsum dolor sit amet",
-    },
-    {
-      id: "8",
-      first: "Lorem ipsum dolor sit amet",
-      three: "Lorem ipsum dolor sit amet",
-      four: "Lorem ipsum dolor sit amet",
-    },
-    {
-      id: "9",
-      first: "Lorem ipsum dolor sit amet",
-      three: "Lorem ipsum dolor sit amet",
-      four: "Lorem ipsum dolor sit amet",
-    },
-    {
-      id: "10",
-      first: "Lorem ipsum dolor sit amet",
-      three: "Lorem ipsum dolor sit amet",
-      four: "Lorem ipsum dolor sit amet",
-    },
-    {
-      id: "11",
-      first: "Lorem ipsum dolor sit amet",
-      three: "Lorem ipsum dolor sit amet",
-      four: "Lorem ipsum dolor sit amet",
-    },
-    {
-      id: "12",
-      first: "Lorem ipsum dolor sit amet",
-      three: "Lorem ipsum dolor sit amet",
-      four: "Lorem ipsum dolor sit amet",
-    },
-    {
-      id: "13",
-      first: "Lorem ipsum dolor sit amet",
-      three: "Lorem ipsum dolor sit amet",
-      four: "Lorem ipsum dolor sit amet",
-    },
-  ];
+
+  const [dataRestaurant, setDataRestaurant] = useState<any>();
+  const [loading, setLoading] = useState<boolean>(true);
+  
+  const getListRestaurant = async () => {
+    try {
+      setLoading(true)
+      const response = await axiosClient.get('/v1/restaurant/getAllRestaurant');
+      console.log('response new', response)
+      setDataRestaurant(response);
+      setLoading(false)
+      
+    } catch (error) {
+      console.log('error new', error)
+      setLoading(false)
+
+    }
+  }
+
+  useEffect(() => {
+    getListRestaurant();
+  }, [])
 
   return (
+    <Spin spinning={loading} tip="Loading" size="large" >
     <div className="tableContainer">
       <div className="headerForm">
         <div />
@@ -99,29 +43,53 @@ const Restaurant = () => {
       <Table bordered hover responsive size="sm" striped>
         <thead>
           <tr>
-            <th>#</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Username</th>
-            <th>Username</th>
+            <th style={{ textAlign: "center" }} >#</th>
+            <th style={{ textAlign: "center" }} >Tên khách sạn</th>
+            <th style={{ textAlign: "center" }} >Địa chỉ</th>
+            <th style={{ textAlign: "center" }} >Ảnh</th>
+            <th style={{ textAlign: "center" }} >Thời gian mở cửa</th>
+            <th style={{ textAlign: "center" }} >Thời gian đóng cửa</th>
+            <th style={{ textAlign: "center" }} >Giá</th>
+            <th style={{ textAlign: "center" }} >Đánh giá</th>
           </tr>
         </thead>
-        <tbody>
-          {data.map((item) => {
+        <tbody  style={{ verticalAlign: "middle", textAlign: "center" }}>
+          {dataRestaurant?.map((item: any, index: number) => {
             return (
-              <tr className="sizeHeader">
-                <th scope="row">{item.id}</th>
-                <td>{item.first}</td>
-                <td>{item.three}</td>
-                <td>{item.four}</td>
-                <td className="buttonClick">
-                  <Button color="primary" href="#" tag="a" className="button">
-                    <AiOutlineEdit />
-                  </Button>
+              <tr>
+                <th scope="row">{index}</th>
+                <td>{item.name}</td>
+                <td>{item.address}</td>
+                <td className="centerView"><img src={item?.images[0]?.image} className="imageTour" /></td>
+                <th>{item.open_time}</th>
+                <td>{item.close_time}</td>
+                <td>{item.price}</td>
+                <td>{item.rate}</td>
+                <td >
+                 <span className="buttonClickVoucher">
+                        <div className="containerButton">
+                          <Button
+                            color="primary"
+                            href="#"
+                            tag="a"
+                            className="button"
+                            
+                          >
+                            <AiOutlineEdit />
+                          </Button>
+                        </div>
 
-                  <Button color="primary" href="#" tag="a" className="button">
-                    <AiOutlineDelete />
-                  </Button>
+                        <div className="containerButton">
+                          <Button
+                            color="primary"
+                            href="#"
+                            tag="a"
+                            className="button"
+                          >
+                            <AiOutlineDelete />
+                          </Button>
+                        </div>
+                      </span>
                 </td>
               </tr>
             );
@@ -133,6 +101,7 @@ const Restaurant = () => {
         <Pagination defaultCurrent={1} total={50} />
       </div>
     </div>
+    </Spin>
   );
 };
 
