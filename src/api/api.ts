@@ -7,7 +7,7 @@ const axiosClient = axios.create({
     baseURL: process.env.REACT_APP_BASE_URL,
     headers: {
         'content-type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem('Name')?.trim()
+        'Authorization': 'Bearer ' + localStorage.getItem('Name')
 
     },
     withCredentials: true,

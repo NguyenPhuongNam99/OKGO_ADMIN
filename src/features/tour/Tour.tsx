@@ -8,6 +8,8 @@ import axiosClient from "../../api/api";
 import { AxiosResponse } from "axios";
 import { Spin } from "antd";
 import { DataResponse } from "../../types/type";
+import { Checkbox } from "antd";
+
 
 const Tour = () => {
   const navigate = useNavigate();
@@ -41,18 +43,18 @@ const Tour = () => {
           <Table bordered hover responsive size="sm" striped>
             <thead>
               <tr>
-                <th style={{ textAlign: "center" }}>#</th>
-                <th style={{ textAlign: "center" }}>Tên</th>
-                <th style={{ textAlign: "center" }}>Miêu tả</th>
-                <th style={{ textAlign: "center" }}>Ảnh</th>
-                <th style={{ textAlign: "center" }}>Giá</th>
-                <th style={{ textAlign: "center" }}>Địa chỉ</th>
-                <th style={{ textAlign: "center" }}>Khách sạn</th>
-                <th style={{ textAlign: "center" }}>Nhà hàng</th>
-                <th style={{ textAlign: "center" }}>Tổng số ngày</th>
-                <th style={{ textAlign: "center" }}>Người tạo</th>
-                <th style={{ textAlign: "center" }}>Trạng thái</th>
-                <th style={{ textAlign: "center" }}>Ẩn/Hiện Tour</th>
+                <th className="textCenter">#</th>
+                <th className="textCenter">Tên</th>
+                <th className="textCenter">Miêu tả</th>
+                <th className="textCenter">Ảnh</th>
+                <th className="textCenter">Giá</th>
+                <th className="textCenter">Địa chỉ</th>
+                <th className="textCenter">Khách sạn</th>
+                <th className="textCenter">Nhà hàng</th>
+                <th className="textCenter">Tổng số ngày</th>
+                <th className="textCenter">Người tạo</th>
+                <th className="textCenter">Trạng thái</th>
+                <th className="textCenter">Ẩn/Hiện Tour</th>
               </tr>
             </thead>
             <tbody style={{ verticalAlign: "middle", textAlign: "center" }}>
@@ -73,10 +75,12 @@ const Tour = () => {
                     <td className="centerText">{item.restaurant_id}</td>
                     <td style={{ textAlign: "center" }}>{item.total_day}</td>
                     <td style={{ textAlign: "center" }}>{item.created_by}</td>
-                    <td style={{ textAlign: "center" }}>{item.status}</td>
+                    <td>{item.status}</td>
 
                     <td>
-                      <span>{item.is_show === false ? 1 : 0}</span>
+                      <span>
+                        <Checkbox defaultChecked={item.is_show} />
+                      </span>
                     </td>
                     <td>
                       <span className="buttonClickVoucher">

@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import "./index.scss";
-import {
-  UserOutlined,
-} from "@ant-design/icons";
+import { UserOutlined } from "@ant-design/icons";
 import { Dropdown, Layout, Menu } from "antd";
 import { BsFillPencilFill, BsCalendar2PlusFill } from "react-icons/bs";
 import { FaCity, FaHotel, FaPaintBrush } from "react-icons/fa";
@@ -10,13 +8,14 @@ import Restaurant from "../restaurant/Restaurant";
 import { BsChevronDown } from "react-icons/bs";
 import Voucher from "../voucher/Voucher";
 import Tour from "../tour/Tour";
+import Hotel from "../hotel/hotel";
 
 const { Header, Sider, Content } = Layout;
 
 const App: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [route, setRoute] = useState<number>(1);
-  console.log('route new', route)
+  console.log("route new", route);
 
   const items = [
     {
@@ -101,7 +100,15 @@ const App: React.FC = () => {
               />
             </div>
             <p>Nguyen Phuong Nam</p>
-            <Dropdown menu={{ items }} placement="bottomLeft" overlayStyle={{width: 200, justifyContent: 'center', alignItems: 'center'}} >
+            <Dropdown
+              menu={{ items }}
+              placement="bottomLeft"
+              overlayStyle={{
+                width: 200,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <BsChevronDown className="iconDrop" />
             </Dropdown>
           </div>
@@ -113,7 +120,17 @@ const App: React.FC = () => {
             backgroundColor: "white",
           }}
         >
-          {route === 5 ? <Restaurant />: route === 2 ? <Tour />  : route === 4 ? <Voucher /> : ''}
+          {route === 6 ? (
+            <Restaurant />
+          ) : route === 2 ? (
+            <Tour />
+          ) : route === 4 ? (
+            <Voucher />
+          ) : route === 5 ? (
+            <Hotel />
+          ) : (
+            ""
+          )}
         </Content>
       </Layout>
     </Layout>
