@@ -9,6 +9,7 @@ import { BsChevronDown } from "react-icons/bs";
 import Voucher from "../voucher/Voucher";
 import Tour from "../tour/Tour";
 import Hotel from "../hotel/hotel";
+import { Outlet, useNavigate } from "react-router-dom";
 
 const { Header, Sider, Content } = Layout;
 
@@ -16,6 +17,7 @@ const App: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [route, setRoute] = useState<number>(1);
   console.log("route new", route);
+  const navigate = useNavigate();
 
   const items = [
     {
@@ -46,9 +48,23 @@ const App: React.FC = () => {
           theme="dark"
           mode="inline"
           defaultSelectedKeys={["1"]}
+          className='menuLeft'
           onSelect={(selectedKeys) => {
             console.log("selectedKeys", selectedKeys.key);
             setRoute(Number(selectedKeys.key));
+            if(Number(selectedKeys.key) === Number(1)){
+              navigate('/Home/Tour')
+            }
+            if(Number(selectedKeys.key) === Number(3)){
+              navigate('/Home/Voucher')
+            }
+            if(Number(selectedKeys.key) === Number(4)){
+              navigate('/Home/Hotel')
+            }
+            if(Number(selectedKeys.key) === Number(6)){
+              navigate('/Home/Restaurant')
+            }
+
           }}
           items={[
             {
@@ -118,19 +134,11 @@ const App: React.FC = () => {
             marginTop: 26,
             marginLeft: 24,
             backgroundColor: "white",
+            height: '100%'
           }}
         >
-          {route === 6 ? (
-            <Restaurant />
-          ) : route === 2 ? (
-            <Tour />
-          ) : route === 4 ? (
-            <Voucher />
-          ) : route === 5 ? (
-            <Hotel />
-          ) : (
-            ""
-          )}
+          <Outlet />
+
         </Content>
       </Layout>
     </Layout>

@@ -71,7 +71,7 @@ const Hotel = () => {
                     <span>{item.description}</span>
                   </td>
                   <td className="centerView">
-                    <img src={item.image[0].image} className="imageTour" />
+                    <img src={item.image[0].image} className="imageHotel" />
                   </td>
                   <td className="centerText">{item.price}</td>
                   <td>{item.address}</td>

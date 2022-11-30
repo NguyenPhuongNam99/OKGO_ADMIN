@@ -5,10 +5,12 @@ import { Pagination, Spin } from "antd";
 import { BsPlusLg } from "react-icons/bs";
 import axiosClient from "../../api/api";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Restaurant = () => {
   const [dataRestaurant, setDataRestaurant] = useState<any>();
   const [loading, setLoading] = useState<boolean>(true);
+  const navigate = useNavigate();
 
   const getListRestaurant = async () => {
     try {
@@ -58,7 +60,7 @@ const Restaurant = () => {
                   <td>{item.name}</td>
                   <td>{item.address}</td>
                   <td className="centerView">
-                    <img src={item?.images[0]?.image} className="imageTour" />
+                    <img src={item?.images[0]?.image} className="imageRestaurant" />
                   </td>
                   <th>{item.open_time}</th>
                   <td>{item.close_time}</td>
@@ -72,6 +74,7 @@ const Restaurant = () => {
                           href="#"
                           tag="a"
                           className="button"
+                          onClick={() => navigate('/Home/RestaurantUpdate')}
                         >
                           <AiOutlineEdit />
                         </Button>

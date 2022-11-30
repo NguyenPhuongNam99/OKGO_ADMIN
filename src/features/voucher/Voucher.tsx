@@ -9,7 +9,7 @@ import "./voucher.scss";
 
 const Voucher = () => {
   const [dataResponse, setDataResponse] = useState<any>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     console.log("token ", localStorage.getItem("Name"));
@@ -54,7 +54,7 @@ const Voucher = () => {
               </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody style={{ verticalAlign: "middle", textAlign: "center" }}>
             {dataResponse.map((item: any, index: number) => {
               return (
                 <tr className="sizeHeader">

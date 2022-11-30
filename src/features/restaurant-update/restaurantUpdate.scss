@@ -1,0 +1,108 @@
+.containerRestaurantUpdate {
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+
+    & > .blockRestaurant {
+        width: 80%;
+        height: 80%;
+        background-color: transparent;
+        border-radius: 10px;
+        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+
+        & > .headerRestaurant {
+            width: 100%;
+            height: 10%;
+            // background-color: green;
+            display: flex;
+            justify-content: center;
+            align-items:flex-end;
+
+            & > .sizeHeaderText {
+                font-size: 18px;
+            }
+        }
+
+        & > .contentRestaurant {
+            width: 100%;
+            height: 70%;
+            background-color: blue;
+            display: flex;
+            flex-direction: row;
+
+            & > .leftContent {
+                width: 50%;
+                height: 100%;
+                background-color: white;
+
+                & > .itemContent {
+                    width: 100%;
+                    height: 23%;
+                    border-radius: 0;
+                    display: flex;
+                    flex-direction: row;
+
+                    & > .itemLeft{
+                        width: 25%;
+                        height: 100%;
+                        justify-content: flex-start;
+                        align-items: center;
+                        display: flex;
+                        padding-left: 2rem;
+                        padding-top: 8px;
+                    }
+
+                    & > .itemRight {
+                        width: 75%;
+                        height: 100%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+
+                        & > .inputUpdtae {
+                            border: 1px solid black;
+                            width: 90%;
+                            height: 40%;
+                            border-radius: 6px;
+                            padding-left: 1rem;
+                        }
+                    
+                    }
+                }
+            }
+            & > .rightContent {
+                width: 50%;
+                height: 100%;
+                background-color: blue;
+            }
+        }
+
+        & > .footerContent {
+            width: 100%;
+            height: 20%;
+
+            & > .imageContainer {
+                width: 100%;
+                height: 80%;
+                display: flex;
+                flex-direction: row;
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+
+                & > .imageContainerLeft {
+                    width: 13%;
+                    height: 100%;
+                    display: flex;
+                    justify-content: flex-start;
+                    align-items: center;
+                }
+                & > .imageContainerRight {
+                    width: 87%;
+                    height: 100%;
+                }
+            }
+        }
+    }
+}
