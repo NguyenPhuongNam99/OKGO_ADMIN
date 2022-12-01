@@ -31,7 +31,6 @@ const App: React.FC = () => {
       style={{
         height: "100vh",
         width: "100%",
-        backgroundColor: "green",
         overflow: "hidden",
       }}
     >
@@ -142,7 +141,7 @@ const App: React.FC = () => {
         </Content>
       </Layout>
     </Layout>
-  );
+  )
 };
 
 export default App;

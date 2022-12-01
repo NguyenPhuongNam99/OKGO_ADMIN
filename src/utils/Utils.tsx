@@ -103,3 +103,11 @@ export const LoginSchema = Yup.object().shape({
   acount: Yup.string().required('Tên đăng nhập đang rỗng *'),
   password: Yup.string().required("Mật khẩu đang rỗng *")
 })
+
+export const updateInputSchema = Yup.object().shape({
+  name: Yup.string().required('Tên nhà hàng đang rỗng *'),
+  address: Yup.string().required('Địa chỉ đang rỗng *'),
+  address_detail: Yup.string().required('Địa chỉ chi tiết đang rỗng *'),
+  discription: Yup.string().required('Miêu tả đang rỗng *'),
+  price: Yup.string().required('Giá đang rỗng *'),
+})
