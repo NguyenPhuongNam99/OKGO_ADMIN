@@ -34,7 +34,7 @@ const Restaurant = () => {
       <div className="tableContainer">
         <div className="headerForm">
           <div />
-          <div className="buttonCreate">
+          <div className="buttonCreate" onClick={() => navigate('/Home/RestaurantCreate') } >
             <BsPlusLg color="white" />
             Thêm mới
           </div>

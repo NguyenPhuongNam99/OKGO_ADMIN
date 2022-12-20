@@ -1,0 +1,131 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+.containerLogin {
+  background-color: #4e73df;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  & > .blockLogin {
+    width: 48%;
+    height: 58%;
+    display: flex;
+    flex-direction: row;
+
+    & > .blockLeft {
+      width: 50%;
+      height: auto;
+      background-color: white;
+
+      & > .imgLogo {
+        width: 95%;
+        height: 100%;
+      }
+    }
+
+    & > .blockRight {
+      width: 50%;
+      height: 100%;
+      background-color: white;
+      // display: flex;
+      // justify-content: center;
+      // align-items: center;
+      // flex-direction: column;
+
+      .fullBlockRight {
+        width: 100%;
+        height: 100%;
+        background-color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+
+        & > .headerTitle {
+          color: #3a3b45;
+        }
+
+        & > .inputLogin {
+          width: 80%;
+          margin-top: 1rem;
+          border-radius: 10rem;
+          padding: 1rem 1rem;
+          color: #6e707e;
+        }
+
+        & > .inputSubmit {
+          width: 80%;
+          margin-top: 1rem;
+
+          & > .fullWidth {
+            width: 100%;
+            height: 100%;
+            height: 2.5rem;
+            color: white;
+            //   background-color: #4e73df;
+          }
+
+          & > .backgroundSubmit {
+            background-color: #4e73df;
+            border: 0;
+            border-radius: 10rem;
+            font-size: 0.8rem;
+          }
+
+          & > .colorSubmit {
+            color: #4e73df;
+          }
+        }
+
+        & > .containerSubmit {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          margin-top: 1.2rem;
+          justify-content: center;
+          align-items: center;
+
+          & > .inputSubmitForgot {
+            width: 80%;
+            // margin-top: 0.1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+        }
+
+        & > .checkbox {
+          width: 80%;
+          margin-top: 1rem;
+          border-radius: 10rem;
+          color: #6e707e;
+
+          & > .checkboxLabel {
+            color: #858796;
+            font-size: 13px;
+          }
+        }
+
+        & > .border {
+          width: 80%;
+          height: 0.1px;
+          background-color: rgba(0, 0, 0, 0.1);
+          margin-top: 1rem;
+        }
+
+        & > .errorInput {
+          width: 80%;
+          height: 20px;
+          margin-top: 0.5rem;
+          color: red;
+          font-size: 12px;
+          margin-bottom: 0px;
+        }
+      }
+    }
+  }
+}

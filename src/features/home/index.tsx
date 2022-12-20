@@ -31,10 +31,10 @@ const App: React.FC = () => {
       style={{
         height: "100vh",
         width: "100%",
-        overflow: "hidden",
+        overflowY: 'scroll'
       }}
     >
-      <Sider trigger={null} collapsible collapsed={collapsed}>
+      <Sider trigger={null} collapsible collapsed={collapsed} style={{height: 'auto'}}>
         <div className="logo">
           {!collapsed && (
             <img
@@ -104,7 +104,7 @@ const App: React.FC = () => {
       <Layout className="site-layout">
         <Header
           className="site-layout-background"
-          style={{ padding: 0, marginLeft: 26 }}
+          style={{ padding: 0, backgroundColor: '#fff' }}
         >
           <div></div>
           <div className="avatarContainer">
@@ -130,9 +130,6 @@ const App: React.FC = () => {
         </Header>
         <Content
           style={{
-            marginTop: 26,
-            marginLeft: 24,
-            backgroundColor: "white",
             height: '100%'
           }}
         >
