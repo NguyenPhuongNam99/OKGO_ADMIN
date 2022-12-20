@@ -13,6 +13,8 @@
     "@types/react": "^18.0.0",
     "@types/react-calendar": "^3.9.0",
     "@types/react-dom": "^18.0.0",
+    "@ckeditor/ckeditor5-react": "^3.0.2",
+    "ckeditor5-custom-build": "file:ckeditor5",
     "antd": "^5.0.0",
     "apisauce": "^2.1.6",
     "axios": "^1.1.3",
