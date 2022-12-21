@@ -54,11 +54,11 @@ const App: React.FC = () => {
             if(Number(selectedKeys.key) === Number(1)){
               navigate('/Home/Tour')
             }
-            if(Number(selectedKeys.key) === Number(3)){
-              navigate('/Home/Voucher')
-            }
+            // if(Number(selectedKeys.key) === Number(4)){
+            //   navigate('/Home/Voucher')
+            // }
             if(Number(selectedKeys.key) === Number(4)){
-              navigate('/Home/Hotel')
+              navigate('/Home/Voucher')
             }
             if(Number(selectedKeys.key) === Number(6)){
               navigate('/Home/Restaurant')
@@ -85,7 +85,7 @@ const App: React.FC = () => {
             {
               key: "4",
               icon: <BsFillPencilFill />,
-              label: "Tạo Voucher",
+              label: "Voucher",
             },
             {
               key: "5",
@@ -128,14 +128,9 @@ const App: React.FC = () => {
             </Dropdown>
           </div>
         </Header>
-        <Content
-          style={{
-            height: '100%'
-          }}
-        >
+       
           <Outlet />
 
-        </Content>
       </Layout>
     </Layout>
   )

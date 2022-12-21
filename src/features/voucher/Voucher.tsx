@@ -6,10 +6,13 @@ import { Pagination, Spin } from "antd";
 import { BsPlusLg } from "react-icons/bs";
 import axios from "axios";
 import "./voucher.scss";
+import { useNavigate } from "react-router-dom";
 
 const Voucher = () => {
   const [dataResponse, setDataResponse] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const navigate = useNavigate();
+  
 
   useEffect(() => {
     console.log("token ", localStorage.getItem("Name"));
@@ -34,8 +37,8 @@ const Voucher = () => {
       <div className="tableContainer">
         <div className="headerForm">
           <div />
-          <div className="buttonCreate">
-            <BsPlusLg color="white" />
+          <div className="buttonCreate" onClick={() => navigate('/Home/VoucherCreate') }>
+            <BsPlusLg color="white"  />
             Thêm mới
           </div>
         </div>
@@ -79,9 +82,9 @@ const Voucher = () => {
                       <div className="containerButton">
                         <Button
                           color="primary"
-                          href="#"
                           tag="a"
                           className="button"
+                          onClick={() => navigate(`/Home/VoucherUpdate/${item._id}`)}
                         >
                           <AiOutlineEdit />
                         </Button>
@@ -90,7 +93,6 @@ const Voucher = () => {
                       <div className="containerButton">
                         <Button
                           color="primary"
-                          href="#"
                           tag="a"
                           className="button"
                         >

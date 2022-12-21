@@ -1,11 +1,13 @@
 import { Button } from "antd";
-import "./restaurantCreateStyles.scss";
-import DatePickerComponent from "../../components/date/DatePickerComponent";
-import { Formik } from "formik";
-import { createVoucher } from "../../utils/Utils";
-import axiosClient from "../../api/api";
 import axios from "axios";
-import { useState } from "react";
+import { Formik } from "formik";
+import React, { useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import DatePickerComponent from "../../components/date/DatePickerComponent";
+import { createVoucher } from "../../utils/Utils";
+import "./voucherUpdate.scss";
+import { useParams } from "react-router-dom";
+import useFetchApi from "../../hook/useFetchApi";
 
 interface TypeSetValue {
   name: string;
@@ -16,19 +18,22 @@ interface TypeSetValue {
   maxPrice: number;
   totalVoucher: number;
 }
-const RestaurantCreate = () => {
-  const [value, setValue] = useState<TypeSetValue>();
+const VoucherUpdate = () => {
+  const [valueFile, setValueFile] = useState<any>();
+  const [timeStart, setTimeStart] = useState<string>();
+  const [timeFinish, setTimeFinish] = useState<string>();
+  const uri = '/v1/voucher/getUserId/63a2caa0d8854308444c89e4'
+  const data = useFetchApi(uri);
+  console.log('data new', data)
+
   const handleDatePickerChange = (date: any, dateString: any, id: any) => {
-    console.log(dateString);
+    setTimeStart(dateString);
   };
   const handleDatePickerChange2 = (date: any, dateString: any, id: any) => {
-    console.log(dateString);
+    setTimeFinish(dateString);
   };
 
-  console.log("value new", value);
-
-  const submitForm = async (values: TypeSetValue) => {
-    console.log("values form", values);
+  const submitForm = async (values: TypeSetValue, resetForm: any) => {
     try {
       let config = {
         headers: {
@@ -39,32 +44,72 @@ const RestaurantCreate = () => {
         name: values.name,
         decription: values.discription,
         code: values.code,
-        image_url: "http://localhost:name",
+        image_url: valueFile,
         percent_discount: values.percentDiscount,
         price_min_condition: values.minPrice,
         price_max_condition: values.maxPrice,
         quantity: values.totalVoucher,
-        time_start: "20/11/2020",
-        time_end: "20/12/2022",
+        time_start: timeStart,
+        time_end: timeFinish,
       };
-      console.log('obj new', obj)
       const response = await axios.post(
         "http://localhost:8000/v1/voucher/createVoucher",
         obj,
-
         config
       );
-      console.log("response data", response);
+      setTimeStart("");
+      setTimeFinish("");
+      setValueFile(undefined);
+      resetForm();
+      toast.success("🦄 Tạo voucher thành công!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
     } catch (error) {
       console.log("error new", error);
     }
   };
 
+  async function onFileChange(e: any) {
+    const formData = new FormData();
+    formData.append("file", e.target.files[0]);
+
+    try {
+      const response = await axios({
+        method: "post",
+        url: "http://localhost:8000/file/upload",
+        data: formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: "Bearer " + localStorage.getItem("Name"),
+        },
+      });
+      setValueFile(response.data);
+    } catch (error) {
+      console.log("error new", error);
+    }
+  }
+
+  const cancelForm = async (resetForm: any) => {
+    setTimeStart("");
+    setTimeFinish("");
+    setValueFile(undefined);
+    //  await resetForm();
+    console.log("click");
+  };
   return (
     <div className="containerRestaurant">
       <div className="blockContentRestaurant">
+        <ToastContainer />
+
         <div className="headerTitleRestaurant">
-          <h6 className="titleRestaurant">Thêm mới voucher</h6>
+          <h6 className="titleRestaurant">Cap nhat voucher</h6>
         </div>
         <Formik
           initialValues={{
@@ -77,9 +122,9 @@ const RestaurantCreate = () => {
             totalVoucher: 0,
           }}
           validationSchema={createVoucher}
-          onSubmit={async (values) => {
+          onSubmit={async (values, { resetForm }) => {
             console.log("values", values);
-            await submitForm(values);
+            await submitForm(values, resetForm);
           }}
         >
           {({
@@ -89,7 +134,7 @@ const RestaurantCreate = () => {
             handleChange,
             handleBlur,
             handleSubmit,
-            isSubmitting,
+            resetForm,
             /* and other goodies */
           }) => (
             <form onSubmit={handleSubmit}>
@@ -219,6 +264,16 @@ const RestaurantCreate = () => {
                     </p>
                   )}
                 <div className="formBlock">
+                  <p className="vouchername">Chọn file</p>
+                  <input
+                    type="file"
+                    id="avatar"
+                    name="avatar"
+                    accept="image/png, image/jpeg"
+                    onChange={onFileChange}
+                  />
+                </div>
+                <div className="formBlock">
                   <p className="vouchername">Thời gian bắt đầu</p>
                   <DatePickerComponent
                     handleDatePickerChange={handleDatePickerChange}
@@ -231,7 +286,12 @@ const RestaurantCreate = () => {
                   />
                 </div>
                 <div className="buttonSubmit">
-                  <Button type="primary" danger style={{ width: "40%" }}>
+                  <Button
+                    type="primary"
+                    danger
+                    style={{ width: "40%" }}
+                    onClick={() => cancelForm(resetForm)}
+                  >
                     Huỷ
                   </Button>
                   <button
@@ -257,4 +317,4 @@ const RestaurantCreate = () => {
   );
 };
 
-export default RestaurantCreate;
+export default VoucherUpdate;

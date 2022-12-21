@@ -71,10 +71,10 @@ const Restaurant = () => {
                       <div className="containerButton">
                         <Button
                           color="primary"
-                          href="#"
+                       
                           tag="a"
                           className="button"
-                          onClick={() => navigate('/Home/RestaurantUpdate')}
+                          onClick={() => navigate(`/Home/RestaurantUpdate/${item._id}`)}
                         >
                           <AiOutlineEdit />
                         </Button>
@@ -83,7 +83,6 @@ const Restaurant = () => {
                       <div className="containerButton">
                         <Button
                           color="primary"
-                          href="#"
                           tag="a"
                           className="button"
                         >

@@ -10,53 +10,20 @@ import "./restaurantUpdate.scss";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { Formik } from "formik";
 import { updateInputSchema } from "../../utils/Utils";
-
+import axios from "axios";
+import useFetchApi from "../../hook/useFetchApi";
+import { useLocation, useParams } from 'react-router-dom';
 //thêm trường miêu tả khách sạn : décription
-const RestaurantUpdate = () => {
-  const getBase64 = (img: RcFile, callback: (url: string) => void) => {
-    const reader = new FileReader();
-    reader.addEventListener("load", () => callback(reader.result as string));
-    reader.readAsDataURL(img);
-  };
+const RestaurantUpdate = (props: any) => {
+  const params = useParams()
+  console.log('props param',params)
 
-  const beforeUpload = (file: RcFile) => {
-    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-    if (!isJpgOrPng) {
-      message.error("You can only upload JPG/PNG file!");
-    }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      message.error("Image must smaller than 2MB!");
-    }
-    return isJpgOrPng && isLt2M;
-  };
-
-  const [loading, setLoading] = useState<boolean>(false);
-  const [imageUrl, setImageUrl] = useState<string>();
-
-  const handleChangeUpload: UploadProps["onChange"] = (
-    info: UploadChangeParam<UploadFile>
-  ) => {
-    console.log("file new", info);
-    if (info.file.status === "uploading") {
-      setLoading(true);
-      return;
-    }
-    if (info.file.status === "done") {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj as RcFile, (url) => {
-        setLoading(false);
-        setImageUrl(url);
-        console.log("url ", url);
-      });
-    }
-  };
-  const uploadButton = (
-    <div>
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </div>
-  );
+  async function onFileChange(e: any) {
+    const formData = new FormData();
+    formData.append("file", e.target.files[0]);
+    // const data = useUploadFile(e.target.files[0]);
+    // console.log('data new', data)
+  }
   return (
     <Formik
       initialValues={{
@@ -89,10 +56,15 @@ const RestaurantUpdate = () => {
             <div className="headerRestaurant">
               <p className="titleHeader">CẬP NHẬT NHÀ HÀNG</p>
               <div className="headerRightRestaurant">
-                <Button type="primary" size={"large"} className='buttonForm' danger>
+                <Button
+                  type="primary"
+                  size={"large"}
+                  className="buttonForm"
+                  danger
+                >
                   Huỷ
                 </Button>
-                <Button type="primary" size={"large"} className='buttonForm'>
+                <Button type="primary" size={"large"} className="buttonForm">
                   Lưu
                 </Button>
               </div>
@@ -203,16 +175,18 @@ const RestaurantUpdate = () => {
                   />
                 </div>
               </div>
-              {errors.discription && touched.discription && errors.discription && (
-                <div className="containError">
-                  <div className="leftError" />
-                  <p className="rightError">
-                    {errors.discription &&
-                      touched.discription &&
-                      errors.discription}
-                  </p>
-                </div>
-              )}
+              {errors.discription &&
+                touched.discription &&
+                errors.discription && (
+                  <div className="containError">
+                    <div className="leftError" />
+                    <p className="rightError">
+                      {errors.discription &&
+                        touched.discription &&
+                        errors.discription}
+                    </p>
+                  </div>
+                )}
               <div className="blockContentRes">
                 <div className="leftContent">
                   <p className="titleContent">Giá</p>
@@ -241,99 +215,34 @@ const RestaurantUpdate = () => {
                   <p className="titleContent">Ảnh</p>
                 </div>
                 <div className="rightContent">
-                  <Upload
-                    name="file"
-                    listType="picture-card"
-                    className="avatar-uploader"
-                    showUploadList={false}
-                    action={"http://localhost:8000/file/upload"}
-                    beforeUpload={beforeUpload}
-                    onChange={handleChangeUpload}
-                    headers={{
-                      Authorization: "Bearer " + localStorage.getItem("Name"),
-                    }}
-                    withCredentials
-                  >
-                    {imageUrl ? (
-                      <img
-                        src={imageUrl}
-                        alt="avatar"
-                        className="imagePreview"
-                      />
-                    ) : (
-                      uploadButton
-                    )}
-                  </Upload>
-
-                  <Upload
-                    name="file"
-                    listType="picture-card"
-                    className="avatar-uploader"
-                    showUploadList={false}
-                    action={"http://localhost:8000/file/upload"}
-                    beforeUpload={beforeUpload}
-                    onChange={handleChangeUpload}
-                    headers={{
-                      Authorization: "Bearer " + localStorage.getItem("Name"),
-                    }}
-                    withCredentials
-                  >
-                    {imageUrl ? (
-                      <img
-                        src={imageUrl}
-                        alt="avatar"
-                        className="imagePreview"
-                      />
-                    ) : (
-                      uploadButton
-                    )}
-                  </Upload>
-                  <Upload
-                    name="file"
-                    listType="picture-card"
-                    className="avatar-uploader"
-                    showUploadList={false}
-                    action={"http://localhost:8000/file/upload"}
-                    beforeUpload={beforeUpload}
-                    onChange={handleChangeUpload}
-                    headers={{
-                      Authorization: "Bearer " + localStorage.getItem("Name"),
-                    }}
-                    withCredentials
-                  >
-                    {imageUrl ? (
-                      <img
-                        src={imageUrl}
-                        alt="avatar"
-                        className="imagePreview"
-                      />
-                    ) : (
-                      uploadButton
-                    )}
-                  </Upload>
-                  <Upload
-                    name="file"
-                    listType="picture-card"
-                    className="avatar-uploader"
-                    showUploadList={false}
-                    action={"http://localhost:8000/file/upload"}
-                    beforeUpload={beforeUpload}
-                    onChange={handleChangeUpload}
-                    headers={{
-                      Authorization: "Bearer " + localStorage.getItem("Name"),
-                    }}
-                    withCredentials
-                  >
-                    {imageUrl ? (
-                      <img
-                        src={imageUrl}
-                        alt="avatar"
-                        className="imagePreview"
-                      />
-                    ) : (
-                      uploadButton
-                    )}
-                  </Upload>
+                  <input
+                    type="file"
+                    id="avatar"
+                    name="avatar"
+                    accept="image/png, image/jpeg"
+                    onChange={onFileChange}
+                  />
+                  <input
+                    type="file"
+                    id="avatar"
+                    name="avatar"
+                    accept="image/png, image/jpeg"
+                    onChange={onFileChange}
+                  />
+                  <input
+                    type="file"
+                    id="avatar"
+                    name="avatar"
+                    accept="image/png, image/jpeg"
+                    onChange={onFileChange}
+                  />
+                  <input
+                    type="file"
+                    id="avatar"
+                    name="avatar"
+                    accept="image/png, image/jpeg"
+                    onChange={onFileChange}
+                  />
                 </div>
               </div>
             </div>

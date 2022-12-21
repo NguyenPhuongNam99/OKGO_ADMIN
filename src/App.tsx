@@ -13,7 +13,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { QueryClient, QueryClientProvider, useQuery } from "react-query";
 import RestaurantUpdate from "./features/restaurant-update/RestaurantUpdate";
 import LoginScreen from "./features/login-screen";
-import RestaurantCreate from "./features/restaurant-create/RestaurantCreate";
+import RestaurantCreate from "./features/voucher-create/VoucherCreate";
+import VoucherCreate from "./features/voucher-create/VoucherCreate";
+import VoucherUpdate from "./features/voucher-update/VoucherUpdate";
 
 const router = createBrowserRouter([
   {
@@ -59,8 +61,12 @@ const router = createBrowserRouter([
         element: <Voucher />,
       },
       {
-        path: "/Home/RestaurantCreate",
-        element: <RestaurantCreate />
+        path: "/Home/VoucherCreate",
+        element: <VoucherCreate />
+      },
+      {
+        path: "/Home/VoucherUpdate/:id",
+        element: <VoucherUpdate />
       }
     ],
   },
