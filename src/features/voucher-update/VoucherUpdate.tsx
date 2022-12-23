@@ -1,4 +1,4 @@
-import { Button } from "antd";
+import { Button, Modal, Spin } from "antd";
 import axios from "axios";
 import { Formik } from "formik";
 import React, { useState } from "react";
@@ -18,13 +18,30 @@ interface TypeSetValue {
   maxPrice: number;
   totalVoucher: number;
 }
+
+interface TypeData {
+  code: string;
+  decription: string;
+  idVoucher: number;
+  image_url: string;
+  name: string;
+  percent_discount: number;
+  price_max_condition: number;
+  price_min_condition: number;
+  quantity: number;
+  time_end: string;
+  time_start: string;
+  __v: number;
+  _id: string;
+}
 const VoucherUpdate = () => {
+  const params = useParams();
   const [valueFile, setValueFile] = useState<any>();
   const [timeStart, setTimeStart] = useState<string>();
   const [timeFinish, setTimeFinish] = useState<string>();
-  const uri = '/v1/voucher/getUserId/63a2caa0d8854308444c89e4'
-  const data = useFetchApi(uri);
-  console.log('data new', data)
+  const [data, setData] = useState<TypeData | undefined>();
+  const [checkSubmit, setCheckSubmit] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleDatePickerChange = (date: any, dateString: any, id: any) => {
     setTimeStart(dateString);
@@ -35,6 +52,7 @@ const VoucherUpdate = () => {
 
   const submitForm = async (values: TypeSetValue, resetForm: any) => {
     try {
+      setLoading(true);
       let config = {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("Name"),
@@ -52,8 +70,8 @@ const VoucherUpdate = () => {
         time_start: timeStart,
         time_end: timeFinish,
       };
-      const response = await axios.post(
-        "http://localhost:8000/v1/voucher/createVoucher",
+      const response = await axios.put(
+        `http://localhost:8000/v1/voucher/getvoucher/${params.id}`,
         obj,
         config
       );
@@ -61,7 +79,9 @@ const VoucherUpdate = () => {
       setTimeFinish("");
       setValueFile(undefined);
       resetForm();
-      toast.success("🦄 Tạo voucher thành công!", {
+      setCheckSubmit(true);
+      setLoading(false);
+      toast.success("🦄 Cập nhật voucher thành công!", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -71,6 +91,7 @@ const VoucherUpdate = () => {
         progress: undefined,
         theme: "colored",
       });
+      fetchDataUpdate();
     } catch (error) {
       console.log("error new", error);
     }
@@ -103,217 +124,245 @@ const VoucherUpdate = () => {
     //  await resetForm();
     console.log("click");
   };
-  return (
-    <div className="containerRestaurant">
-      <div className="blockContentRestaurant">
-        <ToastContainer />
 
-        <div className="headerTitleRestaurant">
-          <h6 className="titleRestaurant">Cap nhat voucher</h6>
-        </div>
-        <Formik
-          initialValues={{
-            name: "",
-            discription: "",
-            code: "",
-            percentDiscount: 0,
-            minPrice: 0,
-            maxPrice: 0,
-            totalVoucher: 0,
-          }}
-          validationSchema={createVoucher}
-          onSubmit={async (values, { resetForm }) => {
-            console.log("values", values);
-            await submitForm(values, resetForm);
-          }}
-        >
-          {({
-            values,
-            errors,
-            touched,
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            resetForm,
-            /* and other goodies */
-          }) => (
-            <form onSubmit={handleSubmit}>
-              <div className="FormContent">
-                <div className="formBlock">
-                  <p className="vouchername">Tên voucher</p>
-                  <input
-                    className="inputContent"
-                    placeholder="Nhập tên voucher"
-                    name="name"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.name}
-                  />
-                </div>
-                {errors.name && touched.name && errors.name && (
-                  <p className="errorInput">
-                    {errors.name && touched.name && errors.name}
-                  </p>
-                )}
-                <div className="formBlock">
-                  <p className="vouchername">Miêu tả voucher</p>
-                  <input
-                    className="inputContent"
-                    placeholder="Nhập miêu tả voucher"
-                    name="discription"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.discription}
-                  />
-                </div>
-                {errors.discription &&
-                  touched.discription &&
-                  errors.discription && (
-                    <p className="errorInput">
-                      {errors.discription &&
-                        touched.discription &&
-                        errors.discription}
-                    </p>
-                  )}
-                <div className="formBlock">
-                  <p className="vouchername">Mã giảm giá</p>
-                  <input
-                    className="inputContent"
-                    placeholder="Nhập mã giảm giá"
-                    name="code"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.code}
-                  />
-                </div>
-                {errors.code && touched.code && errors.code && (
-                  <p className="errorInput">
-                    {errors.code && touched.code && errors.code}
-                  </p>
-                )}
-                <div className="formBlock">
-                  <p className="vouchername">% được giảm</p>
-                  <input
-                    className="inputContent"
-                    placeholder="Nhập % được giảm"
-                    name="percentDiscount"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.percentDiscount}
-                  />
-                </div>
-                {errors.percentDiscount &&
-                  touched.percentDiscount &&
-                  errors.percentDiscount && (
-                    <p className="errorInput">
-                      {errors.percentDiscount &&
-                        touched.percentDiscount &&
-                        errors.percentDiscount}
-                    </p>
-                  )}
-                <div className="formBlock">
-                  <p className="vouchername">Giá tối thiểu để áp dụng mã</p>
-                  <input
-                    className="inputContent"
-                    placeholder="Nhập giá tối thiểu để áp dụng mã"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.minPrice}
-                    name="minPrice"
-                  />
-                </div>
-                {errors.minPrice && touched.minPrice && errors.minPrice && (
-                  <p className="errorInput">
-                    {errors.minPrice && touched.minPrice && errors.minPrice}
-                  </p>
-                )}
-                <div className="formBlock">
-                  <p className="vouchername">Giá tối đa để áp dụng mã</p>
-                  <input
-                    className="inputContent"
-                    placeholder="Nhập giá tối đa để áp dụng mã"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.maxPrice}
-                    name="maxPrice"
-                  />
-                </div>
-                {errors.maxPrice && touched.maxPrice && errors.maxPrice && (
-                  <p className="errorInput">
-                    {errors.maxPrice && touched.maxPrice && errors.maxPrice}
-                  </p>
-                )}
-                <div className="formBlock">
-                  <p className="vouchername">Tổng số voucher phát hành</p>
-                  <input
-                    className="inputContent"
-                    placeholder="Nhập tổng số voucher phát hành"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.totalVoucher}
-                    name="totalVoucher"
-                  />
-                </div>
-                {errors.totalVoucher &&
-                  touched.totalVoucher &&
-                  errors.totalVoucher && (
-                    <p className="errorInput">
-                      {errors.totalVoucher &&
-                        touched.totalVoucher &&
-                        errors.totalVoucher}
-                    </p>
-                  )}
-                <div className="formBlock">
-                  <p className="vouchername">Chọn file</p>
-                  <input
-                    type="file"
-                    id="avatar"
-                    name="avatar"
-                    accept="image/png, image/jpeg"
-                    onChange={onFileChange}
-                  />
-                </div>
-                <div className="formBlock">
-                  <p className="vouchername">Thời gian bắt đầu</p>
-                  <DatePickerComponent
-                    handleDatePickerChange={handleDatePickerChange}
-                  />
-                </div>
-                <div className="formBlock">
-                  <p className="vouchername">Thời gian kết thúc</p>
-                  <DatePickerComponent
-                    handleDatePickerChange={handleDatePickerChange2}
-                  />
-                </div>
-                <div className="buttonSubmit">
-                  <Button
-                    type="primary"
-                    danger
-                    style={{ width: "40%" }}
-                    onClick={() => cancelForm(resetForm)}
-                  >
-                    Huỷ
-                  </Button>
-                  <button
-                    type="submit"
-                    style={{
-                      width: "40%",
-                      border: 1,
-                      borderColor: "green",
-                      backgroundColor: "#5468ff",
-                      color: "white",
-                      borderRadius: 7,
-                    }}
-                  >
-                    Lưu
-                  </button>
-                </div>
-              </div>
-            </form>
+  const fetchDataUpdate = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/v1/voucher/getUserId/${params.id}`,
+        {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("Name"),
+          },
+        }
+      );
+      console.log("response fetch", response);
+      setData(response.data);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchDataUpdate();
+  }, [checkSubmit]);
+  console.log("data view", data?.name);
+  return (
+    <Spin spinning={loading} tip="Loading" size="large">
+      <div className="containerRestaurant">
+        <div className="blockContentRestaurant">
+          <ToastContainer />
+
+          <div className="headerTitleRestaurant">
+            <h6 className="titleRestaurant">Cap nhat voucher</h6>
+          </div>
+          {data && (
+            <Formik
+              enableReinitialize
+              initialValues={{
+                name: data?.name ? data?.name : "",
+                discription: data?.decription,
+
+                code: data?.code,
+                percentDiscount: data?.percent_discount,
+                minPrice: data?.price_min_condition,
+                maxPrice: data?.price_max_condition,
+                totalVoucher: data?.quantity,
+              }}
+              validationSchema={createVoucher}
+              onSubmit={async (values, { resetForm }) => {
+                console.log("values", values);
+                await submitForm(values as any, resetForm);
+              }}
+            >
+              {({
+                values,
+                errors,
+                touched,
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                resetForm,
+                /* and other goodies */
+              }) => (
+                <form onSubmit={handleSubmit}>
+                  <div className="FormContent">
+                    <div className="formBlock">
+                      <p className="vouchername">Tên voucher</p>
+                      <input
+                        className="inputContent"
+                        placeholder="Nhập tên voucher"
+                        name="name"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.name}
+                      />
+                    </div>
+                    {errors.name && touched.name && errors.name && (
+                      <p className="errorInput">
+                        {errors.name && touched.name && errors.name}
+                      </p>
+                    )}
+                    <div className="formBlock">
+                      <p className="vouchername">Miêu tả voucher</p>
+                      <input
+                        className="inputContent"
+                        placeholder="Nhập miêu tả voucher"
+                        name="discription"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.discription}
+                      />
+                    </div>
+                    {errors.discription &&
+                      touched.discription &&
+                      errors.discription && (
+                        <p className="errorInput">
+                          {errors.discription &&
+                            touched.discription &&
+                            errors.discription}
+                        </p>
+                      )}
+                    <div className="formBlock">
+                      <p className="vouchername">Mã giảm giá</p>
+                      <input
+                        className="inputContent"
+                        placeholder="Nhập mã giảm giá"
+                        name="code"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.code}
+                      />
+                    </div>
+                    {errors.code && touched.code && errors.code && (
+                      <p className="errorInput">
+                        {errors.code && touched.code && errors.code}
+                      </p>
+                    )}
+                    <div className="formBlock">
+                      <p className="vouchername">% được giảm</p>
+                      <input
+                        className="inputContent"
+                        placeholder="Nhập % được giảm"
+                        name="percentDiscount"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.percentDiscount}
+                      />
+                    </div>
+                    {errors.percentDiscount &&
+                      touched.percentDiscount &&
+                      errors.percentDiscount && (
+                        <p className="errorInput">
+                          {errors.percentDiscount &&
+                            touched.percentDiscount &&
+                            errors.percentDiscount}
+                        </p>
+                      )}
+                    <div className="formBlock">
+                      <p className="vouchername">Giá tối thiểu để áp dụng mã</p>
+                      <input
+                        className="inputContent"
+                        placeholder="Nhập giá tối thiểu để áp dụng mã"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.minPrice}
+                        name="minPrice"
+                      />
+                    </div>
+                    {errors.minPrice && touched.minPrice && errors.minPrice && (
+                      <p className="errorInput">
+                        {errors.minPrice && touched.minPrice && errors.minPrice}
+                      </p>
+                    )}
+                    <div className="formBlock">
+                      <p className="vouchername">Giá tối đa để áp dụng mã</p>
+                      <input
+                        className="inputContent"
+                        placeholder="Nhập giá tối đa để áp dụng mã"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.maxPrice}
+                        name="maxPrice"
+                      />
+                    </div>
+                    {errors.maxPrice && touched.maxPrice && errors.maxPrice && (
+                      <p className="errorInput">
+                        {errors.maxPrice && touched.maxPrice && errors.maxPrice}
+                      </p>
+                    )}
+                    <div className="formBlock">
+                      <p className="vouchername">Tổng số voucher phát hành</p>
+                      <input
+                        className="inputContent"
+                        placeholder="Nhập tổng số voucher phát hành"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.totalVoucher}
+                        name="totalVoucher"
+                      />
+                    </div>
+                    {errors.totalVoucher &&
+                      touched.totalVoucher &&
+                      errors.totalVoucher && (
+                        <p className="errorInput">
+                          {errors.totalVoucher &&
+                            touched.totalVoucher &&
+                            errors.totalVoucher}
+                        </p>
+                      )}
+                    <div className="formBlock">
+                      <p className="vouchername">Chọn file</p>
+                      <input
+                        type="file"
+                        id="avatar"
+                        name="avatar"
+                        accept="image/png, image/jpeg"
+                        onChange={onFileChange}
+                      />
+                    </div>
+                    <div className="formBlock">
+                      <p className="vouchername">Thời gian bắt đầu</p>
+                      <DatePickerComponent
+                        handleDatePickerChange={handleDatePickerChange}
+                      />
+                    </div>
+                    <div className="formBlock">
+                      <p className="vouchername">Thời gian kết thúc</p>
+                      <DatePickerComponent
+                        handleDatePickerChange={handleDatePickerChange2}
+                      />
+                    </div>
+                    <div className="buttonSubmit">
+                      <Button
+                        type="primary"
+                        danger
+                        style={{ width: "40%" }}
+                        onClick={() => cancelForm(resetForm)}
+                      >
+                        Huỷ
+                      </Button>
+                      <button
+                        type="submit"
+                        style={{
+                          width: "40%",
+                          border: 1,
+                          borderColor: "green",
+                          backgroundColor: "#5468ff",
+                          color: "white",
+                          borderRadius: 7,
+                        }}
+                      >
+                        Lưu
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              )}
+            </Formik>
           )}
-        </Formik>
+        </div>
       </div>
-    </div>
+    </Spin>
   );
 };
 

@@ -1,7 +1,8 @@
 import React from "react";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { DatePicker } from "antd";
+import moment from "moment";
 
 interface TypeDatePickerComponent {
     handleDatePickerChange: (date: any, dateString: any, id: any) => void;
