@@ -1,20 +1,14 @@
 import "../tour.scss";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import Editor from "ckeditor5-custom-build/build/ckeditor";
-import { useState, useEffect } from "react";
-import {
-  Button,
-  Checkbox,
-  Form,
-  Input,
-  InputNumber,
-  Select,
-  AutoComplete,
-  Upload,
-} from "antd";
+import { useState, useEffect, useRef } from "react";
+import { Form, Input, InputNumber, Select, Upload, DatePicker, Button } from "antd";
 import { cityApi, provincesApi } from "../tourApi";
 import { autoCompleteType } from "../type";
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined } from "@ant-design/icons";
+import TourDetail from "./component/tourDetail";
+
+const { RangePicker } = DatePicker;
 
 const CreateTour = () => {
   const [CKEditorDataDB, setCKEditorDataDB] = useState<string>("");
@@ -22,8 +16,17 @@ const CreateTour = () => {
   const [cities, setCities] = useState<autoCompleteType[]>([]);
   const [provinces, setProvinces] = useState<autoCompleteType[]>([]);
   const [isSelectedCity, setIsSelectCity] = useState<boolean>(false);
-  const [hotelList,setHotelList] = useState<autoCompleteType[]>([])
-  const [restaurantList,setRestaurantList] = useState<autoCompleteType[]>([])
+  const [hotelList, setHotelList] = useState<autoCompleteType[]>([]);
+  const [restaurantList, setRestaurantList] = useState<autoCompleteType[]>([]);
+  const [isPageReady, setIsPageReady] = useState<boolean>(false);
+  const [countFile, setCountFile] = useState<number>(0);
+  const [totalDay, setTotalDay] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (!isPageReady) {
+      setIsPageReady(true);
+    }
+  }, []);
 
   useEffect(() => {
     const listCity = cityApi();
@@ -81,7 +84,7 @@ const CreateTour = () => {
     },
 
     ckfinder: {
-      uploadUrl: `${process.env.REACT_APP_API_URL}/uploadImage`,
+      uploadUrl: 'http://localhost:8000/uploadImage',
     },
   };
 
@@ -111,13 +114,12 @@ const CreateTour = () => {
 
   const handleClearCity = () => {
     setProvinces([]);
- 
+
     // clear nha hang hoac khach san
     form.setFieldsValue({
       provinces: "",
     });
   };
-
 
   const handleSelectProvinces = (id: string) => {
     form.setFieldsValue({
@@ -125,11 +127,46 @@ const CreateTour = () => {
     });
   };
 
+  const onFinish = (values: any) => {
+    console.log(values);
+  };
 
-  const onFinish = (values:any) => {
-    console.log(values)
-  }
+  const handleUploadChange = (uploadInfo: any) => {
+    setCountFile(uploadInfo.fileList.length);
+  };
 
+  const handleOnCalendarChange = (dates: any) => {
+    if (dates && dates[0] && dates[1]) {
+      const array = [formatterDate(dates[0])];
+      const total_day = caculateStartDateAndEndDate(dates[0], dates[1]);
+
+      for (let i = 0; i < total_day; i++) {
+        const date = new Date(dates[0]);
+        date.setDate(date.getDate() + (i + 1));
+        array.push(formatterDate(date));
+      }
+
+      setTotalDay(array);
+    }
+  };
+
+  const formatterDate = (date: any) => {
+    const today = new Date(date);
+    const yyyy = today.getFullYear();
+    let mm: any = today.getMonth() + 1; // Months start at 0!
+    let dd: any = today.getDate();
+    if (dd < 10) dd = "0" + dd;
+    if (mm < 10) mm = "0" + mm;
+    const formatted = dd + "/" + mm + "/" + yyyy;
+    return formatted;
+  };
+
+  const caculateStartDateAndEndDate = (start: any, end: any) => {
+    const startTime = new Date(start).getTime();
+    const endTime = new Date(end).getTime();
+    const time = endTime - startTime;
+    return Math.floor(time / (60 * 1000 * 60 * 24));
+  };
 
   return (
     <Form
@@ -188,7 +225,7 @@ const CreateTour = () => {
             rules={[{ required: true, message: "Please input your city!" }]}
           >
             <Select
-            showSearch
+              showSearch
               allowClear
               onClear={handleClearCity}
               style={{ width: "100%" }}
@@ -210,7 +247,7 @@ const CreateTour = () => {
             ]}
           >
             <Select
-            showSearch
+              showSearch
               allowClear
               style={{ width: "100%" }}
               options={provinces}
@@ -222,7 +259,7 @@ const CreateTour = () => {
               }
             />
           </Form.Item>
-{/* 
+          {/* 
           <Form.Item
             label="Nhà hàng"
             name="restaurant"
@@ -266,40 +303,55 @@ const CreateTour = () => {
             />
           </Form.Item> */}
 
-<Form.Item label="Upload" valuePropName="fileList">
-          <Upload multiple maxCount={4} accept="image/png, image/jpeg" action="/upload.do" listType="picture-card">
-            <div>
-              <PlusOutlined />
-              <div style={{ marginTop: 8 }}>Upload</div>
-            </div>
-          </Upload>
-        </Form.Item>
-
+          <Form.Item
+            label="Thumbnail (4 files)"
+            name="thumbnail"
+            valuePropName="fileList1"
+            // rules={[{ required: true, message: "Please input your hotel!" }]}
+          >
+            <Upload
+              multiple
+              maxCount={4}
+              accept="image/png, image/jpeg"
+              action="/upload.do"
+              listType="picture-card"
+              onChange={handleUploadChange}
+            >
+              {countFile < 4 && (
+                <div>
+                  <PlusOutlined />
+                  <div style={{ marginTop: 8 }}>Upload</div>
+                </div>
+              )}
+            </Upload>
+          </Form.Item>
         </div>
         <div className="tourContainer-create-second">
-          <CKEditor
-            editor={Editor}
-            config={editorConfiguration}
-            data={CKEditorDataDB}
-            // onReady={(editor) => {
-            // 	if (
-            // 		functions.includes('function_post_list') &&
-            // 		((state != undefined &&
-            // 			functions.includes('function_edit_post')) ||
-            // 			(state == undefined &&
-            // 				functions.includes('function_create_post')))
-            // 	) {
-            // 		editor.isReadOnly = false;
-            // 	} else {
-            // 		editor.isReadOnly = true;
-            // 	}
-            // }}
-            onChange={(event: any, editor: any) => {
-              setCKEditorDataDB(editor.getData());
-            }}
-            // onBlur={(event, editor) => {}}
-            // onFocus={(event, editor) => {}}
-          />
+          {isPageReady && (
+            <CKEditor
+              editor={Editor}
+              config={editorConfiguration}
+              data={CKEditorDataDB}
+              // onReady={(editor) => {
+              // 	if (
+              // 		functions.includes('function_post_list') &&
+              // 		((state != undefined &&
+              // 			functions.includes('function_edit_post')) ||
+              // 			(state == undefined &&
+              // 				functions.includes('function_create_post')))
+              // 	) {
+              // 		editor.isReadOnly = false;
+              // 	} else {
+              // 		editor.isReadOnly = true;
+              // 	}
+              // }}
+              onChange={(event: any, editor: any) => {
+                setCKEditorDataDB(editor.getData());
+              }}
+              // onBlur={(event, editor) => {}}
+              // onFocus={(event, editor) => {}}
+            />
+          )}
         </div>
 
         {/* <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
@@ -308,6 +360,29 @@ const CreateTour = () => {
         </Button>
       </Form.Item> */}
       </div>
+
+      <div className="tourContainer-create">
+        <Form.Item
+          labelCol={{ span: 10 }}
+          label="Thời gian diễn ra chương trình"
+          name="tour_time"
+        >
+          <RangePicker onCalendarChange={handleOnCalendarChange} />
+        </Form.Item>
+      </div>
+
+      <div className="tourContainer-create detail">
+        {totalDay?.map((item) => (
+          <TourDetail key={item} date={item} />
+        ))}
+      </div>
+
+      <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+        <Button type="primary" htmlType="submit">
+          Submit
+        </Button>
+      </Form.Item>
+
     </Form>
   );
 };

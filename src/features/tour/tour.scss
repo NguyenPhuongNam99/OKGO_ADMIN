@@ -1,6 +1,6 @@
 .tourContainer {
-    width: 100%;
-    height: 100vh;
+    // width: 100%;
+    // height: 100vh;
 
     & > .TourContain {
         width: 100%;
@@ -33,19 +33,25 @@
         padding: 10px 20px;
         display: flex;
         justify-content: space-between;
+
         &-first {
             flex: 0 0 25%;
         }
+
         &-second {
             flex: 0 0 70%;
         }
 
         & .ck-editor__editable {
-            height: 85vh;
+            height: 50vh;
         }
 
         & .ant-form-item .ant-form-item-label {
             text-align: left;
+        }
+
+        &.detail {
+            flex-direction: column;
         }
     }
 }

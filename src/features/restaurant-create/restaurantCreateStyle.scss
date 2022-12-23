@@ -1,15 +1,29 @@
 .restaurantCreate {
-    width: 100%;
-    height: 100%;
-    background-color: green;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-      padding-top: 10px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 10px;
 
-    .restaurantBlock {
-        width: 85%;
-        background-color: blue;
-        height: 100%;
+  .restaurantBlock {
+    width: 85%;
+    background-color: white;
+    height: 100%;
+
+    .headerTitleRestaurant {
+      width: 100%;
+      height: 50px;
+      justify-content: flex-start;
+      align-items: center;
+      display: flex;
+      border-bottom: 1px solid rgba(120, 130, 140, 0.13);
+      .titleRestaurant {
+        color: #3e5569;
+        padding-left: 15px;
+        font-size: 18;
+        font-weight: 700;
+      }
     }
+  }
 }
