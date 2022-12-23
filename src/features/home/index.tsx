@@ -29,12 +29,17 @@ const App: React.FC = () => {
   return (
     <Layout
       style={{
-        height: "100vh",
+        height: "100%",
         width: "100%",
-        overflowY: 'scroll'
+        overflow: "auto",
       }}
     >
-      <Sider trigger={null} collapsible collapsed={collapsed} style={{height: 'auto'}}>
+      <Sider
+        trigger={null}
+        collapsible
+        collapsed={collapsed}
+        style={{ height: "auto" }}
+      >
         <div className="logo">
           {!collapsed && (
             <img
@@ -47,23 +52,22 @@ const App: React.FC = () => {
           theme="dark"
           mode="inline"
           defaultSelectedKeys={["1"]}
-          className='menuLeft'
+          className="menuLeft"
           onSelect={(selectedKeys) => {
             console.log("selectedKeys", selectedKeys.key);
             setRoute(Number(selectedKeys.key));
-            if(Number(selectedKeys.key) === Number(1)){
-              navigate('/Home/Tour')
+            if (Number(selectedKeys.key) === Number(1)) {
+              navigate("/Home/Tour");
             }
-            if(Number(selectedKeys.key) === Number(3)){
-              navigate('/Home/Voucher')
+            if (Number(selectedKeys.key) === Number(3)) {
+              navigate("/Home/Voucher");
             }
-            if(Number(selectedKeys.key) === Number(4)){
-              navigate('/Home/Hotel')
+            if (Number(selectedKeys.key) === Number(4)) {
+              navigate("/Home/Hotel");
             }
-            if(Number(selectedKeys.key) === Number(6)){
-              navigate('/Home/Restaurant')
+            if (Number(selectedKeys.key) === Number(6)) {
+              navigate("/Home/Restaurant");
             }
-
           }}
           items={[
             {
@@ -104,7 +108,7 @@ const App: React.FC = () => {
       <Layout className="site-layout">
         <Header
           className="site-layout-background"
-          style={{ padding: 0, backgroundColor: '#fff' }}
+          style={{ padding: 0, backgroundColor: "#fff" }}
         >
           <div></div>
           <div className="avatarContainer">
@@ -130,15 +134,14 @@ const App: React.FC = () => {
         </Header>
         <Content
           style={{
-            height: '100%'
+            height: "100%",
           }}
         >
           <Outlet />
-
         </Content>
       </Layout>
     </Layout>
-  )
+  );
 };
 
 export default App;
