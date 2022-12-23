@@ -16,6 +16,8 @@ import LoginScreen from "./features/login-screen";
 import VoucherCreate from "./features/voucher-create/VoucherCreate";
 import VoucherUpdate from "./features/voucher-update/VoucherUpdate";
 import RestaurantCreate from "./features/restaurant-create/RestaurantCreate";
+import CreateTour from "./features/tour/createTour/createTour";
+import TourList from "./features/tour/tourList/tourList";
 
 const router = createBrowserRouter([
   {
@@ -46,7 +48,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/Home/Restaurant",
-        element: <Restaurant />
+        element: <Restaurant />,
       },
       {
         path: "/Home/RestaurantUpdate",
@@ -55,6 +57,11 @@ const router = createBrowserRouter([
       {
         path: "/Home/Tour",
         element: <Tour />,
+        children: [
+          { path: "/Home/Tour", element: <TourList /> },
+          { path: "/Home/Tour/create", element: <CreateTour /> }
+        
+        ],
       },
       {
         path: "/Home/Voucher",
@@ -70,8 +77,8 @@ const router = createBrowserRouter([
       },
       {
         path: "/Home/RestaurantCreate",
-        element: <RestaurantCreate />
-      }
+        element: <RestaurantCreate />,
+      },
     ],
   },
 ]);

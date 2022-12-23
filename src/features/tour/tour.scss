@@ -28,6 +28,26 @@
             text-align: center;
         }
     }
+
+    &-create {
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        &-first {
+            flex: 0 0 25%;
+        }
+        &-second {
+            flex: 0 0 70%;
+        }
+
+        & .ck-editor__editable {
+            height: 85vh;
+        }
+
+        & .ant-form-item .ant-form-item-label {
+            text-align: left;
+        }
+    }
 }
 
 
