@@ -81,7 +81,7 @@ const LoginScreen = () => {
               /* and other goodies */
             }) => (
               <form onSubmit={handleSubmit} className="fullBlockRight">
-                <ToastContainer />
+                {/* <ToastContainer /> */}
 
                 <h4 className="headerTitle">Welcome Back</h4>
                 <Input

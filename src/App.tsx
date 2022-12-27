@@ -16,6 +16,7 @@ import LoginScreen from "./features/login-screen";
 import RestaurantCreate from "./features/restaurant-create/RestaurantCreate";
 import CreateTour from "./features/tour/createTour/createTour";
 import TourList from "./features/tour/tourList/tourList";
+import { ToastContainer } from "react-toastify";
 
 const router = createBrowserRouter([
   {
@@ -57,8 +58,7 @@ const router = createBrowserRouter([
         element: <Tour />,
         children: [
           { path: "/Home/Tour", element: <TourList /> },
-          { path: "/Home/Tour/create", element: <CreateTour /> }
-        
+          { path: "/Home/Tour/create", element: <CreateTour /> },
         ],
       },
       {
@@ -78,6 +78,7 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <ToastContainer />
       <RouterProvider router={router} />
     </QueryClientProvider>
   );

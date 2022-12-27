@@ -10,114 +10,56 @@ import {
   Card,
   Col,
   Row,
+  Button,
 } from "antd";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import LocationDetail from "./locationDetail";
+import { v4 as uuid } from "uuid";
+
 const { TextArea } = Input;
 
 const { RangePicker } = DatePicker;
 
 const TourDetail = (props: any) => {
-  const { date } = props;
-  const [countFile, setCountFile] = useState<number>(0);
+  const { location, form,handleAddLocation } = props;
+  // const [listLocation, setListLocation] = useState<string[]>([]);
 
-  const handleUploadChange = (uploadInfo: any) => {
-    setCountFile(uploadInfo.fileList.length);
-  };
+  // useEffect(() => {
+  //   const id = uuid();
+  //   setListLocation([id]);
+  // }, []);
+
+  // const handleAddLocation = () => {
+  //   setListLocation((current) => {
+  //     return [...current, uuid()];
+  //   });
+  // };
+
+  // const handleDeleteLocation = (item: string) => {
+  //   setListLocation((current) => {
+  //     const clone = [...current];
+  //     const index = clone.indexOf(item);
+  //     if (index > -1) {
+  //       clone.splice(index, 1);
+  //     }
+  //     return clone;
+  //   });
+  // };
 
   return (
     <>
-      <Card style={{ marginTop: "20px" }} title={date} bordered={true}>
-        <Row gutter={[8, 8]}>
-          <Col span={12}>
-            <Form.Item
-              label="Địa điểm"
-              labelCol={{ span: 3 }}
-              wrapperCol={{ span: 12 }}
-              name={`location_${date}`}
-              rules={[
-                { required: true, message: "Please input your location!" },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-
-          <Col span={12}>
-            <Form.Item
-              label="Thời gian"
-              name={`time_${date}`}
-              labelCol={{ span: 3 }}
-              wrapperCol={{ span: 12 }}
-              rules={[{ required: true, message: "Please input your time!" }]}
-            >
-              <RangePicker picker="time" />
-            </Form.Item>
-          </Col>
-
-          <Col span={12}>
-            <Form.Item
-              labelCol={{ span: 3 }}
-              wrapperCol={{ span: 12 }}
-              label="Giá vào cửa"
-              name={`door_price_${date}`}
-              rules={[
-                { required: true, message: "Please input your price!" },
-              ]}
-            >
-              <InputNumber
-                style={{ width: "100%" }}
-                prefix="VND"
-                formatter={(value) =>
-                  `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                }
-              />
-            </Form.Item>
-          </Col>
-
-          <Col span={12}>
-            <Form.Item
-              label="Thumbnail"
-              name={`thumbnail_${date}`}
-              labelCol={{ span: 3 }}
-              wrapperCol={{ span: 12 }}
-              valuePropName={`fileList1_${date}`}
-
-            //   rules={[
-            //     { required: true, message: "Please input your thumbnail!" },
-            //   ]}
-            >
-              <Upload
-                multiple
-                maxCount={4}
-                accept="image/png, image/jpeg"
-                action="/upload.do"
-                listType="picture-card"
-                onChange={handleUploadChange}
-              >
-                {countFile < 1 && (
-                  <div>
-                    <PlusOutlined />
-                    <div style={{ marginTop: 8 }}>Upload</div>
-                  </div>
-                )}
-              </Upload>
-            </Form.Item>
-          </Col>
-
-          <Col span={12}>
-            <Form.Item
-              label="Description"
-              name={`description_${date}`}
-              labelCol={{ span: 3 }}
-              wrapperCol={{ span: 21 }}
-              rules={[
-                { required: true, message: "Please input your description!" },
-              ]}
-            >
-              <TextArea rows={6}/>
-            </Form.Item>
-          </Col>
-        </Row>
+      <Card style={{ marginTop: "20px" }} title={location.day} bordered={true}>
+        {location?.listId?.map((item:any,index:number) => (
+          <LocationDetail
+            form={form}
+            date={location.day}
+            key={`${item}`}
+            index={index}
+            item={item}
+            // handleDeleteLocation={() => handleDeleteLocation(item)}
+          />
+        ))}
+        <Button onClick={()=>handleAddLocation(location)}>Thêm địa chỉ</Button>
       </Card>
     </>
   );
