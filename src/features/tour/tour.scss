@@ -1,64 +1,77 @@
 .tourContainer {
-    // width: 100%;
-    // height: 100vh;
+  // width: 100%;
+  // height: 100vh;
 
-    & > .TourContain {
-        width: 100%;
-        height: 100%;
+  & > .TourContain {
+    width: 100%;
+    height: 100%;
 
-        .centerView {
-            // width: 100%;
-            // height: 100%;
-            justify-content: center;
-            align-items: center;
-            // background-color: green;
-            display: flex;
-        }
-
-        .imageTour {
-            width: auto;
-            height: auto;
-            // max-width: 180px;
-            max-height: 115px;
-            border-radius: 9px;
-            max-width: 200px;
-        }
-
-        .textCenter {
-            text-align: center;
-        }
+    .centerView {
+      // width: 100%;
+      // height: 100%;
+      justify-content: center;
+      align-items: center;
+      // background-color: green;
+      display: flex;
     }
 
-    &-create {
-        padding: 10px 20px;
-        display: flex;
-        justify-content: space-between;
-
-        &-first {
-            flex: 0 0 25%;
-        }
-
-        &-second {
-            flex: 0 0 70%;
-        }
-
-        & .ck-editor__editable {
-            height: 50vh;
-        }
-
-        & .ant-form-item .ant-form-item-label {
-            text-align: left;
-        }
-
-        &.detail {
-            flex-direction: column;
-        }
+    .imageTour {
+      width: auto;
+      height: auto;
+      // max-width: 180px;
+      max-height: 115px;
+      border-radius: 9px;
+      max-width: 200px;
     }
+
+    .textCenter {
+      text-align: center;
+    }
+  }
+
+  &-create {
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+
+    &-first {
+      flex: 0 0 25%;
+    }
+
+    &-second {
+      flex: 0 0 70%;
+    }
+
+    & .ck-editor__editable {
+      height: 50vh;
+    }
+
+    & .ant-form-item .ant-form-item-label {
+      text-align: left;
+    }
+
+    &.detail {
+      flex-direction: column;
+    }
+
+    &-location {
+      border-top: 1px solid red;
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+
+    &-icon {
+      cursor: pointer;
+      font-size: 24px;
+      &:hover {
+        color: red;
+      }
+    }
+  }
 }
 
-
 .centerAll {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

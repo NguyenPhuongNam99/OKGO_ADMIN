@@ -66,7 +66,7 @@ const Login = () => {
         /* and other goodies */
       }) => (
         <form onSubmit={handleSubmit} className='containerForm'>
-          <ToastContainer />
+          {/* <ToastContainer /> */}
             <div className="blockContent">
               <div className="itemContent">
                 <img
