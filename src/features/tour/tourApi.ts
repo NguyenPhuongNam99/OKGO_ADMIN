@@ -17,7 +17,7 @@ const provincesApi = async (cityId: string) => {
   const createTour = async (data: any) => {
     return await axios({
       method: "post",
-      url: `http://206.189.37.26:8080/v1/tour/createTour`,
+      url: `http://localhost:8080/v1/tour/createTour`,
       data: data,
       headers: {
         Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJhZG1pbiI6ZmFsc2UsImlhdCI6MTY3MjEzMjcyOCwiZXhwIjoxNjcyMzA1NTI4fQ.xxx0fLhQ5lKAU5w4QLTQGVlYWzm9dXeSck9cMGNOrdg",

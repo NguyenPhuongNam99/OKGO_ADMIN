@@ -156,7 +156,7 @@ const CreateTour = () => {
 
   const onFinish = (values: any) => {
     if (values && CKEditorDataDB) {
-      const finalData = {
+      const finalData: any = {
         tour_name: values.tour_name,
         city: values.city,
         price: values.price,
@@ -165,6 +165,8 @@ const CreateTour = () => {
         is_show:true,
         time_line: [],
         description: CKEditorDataDB,
+        restaurant_id: '1233',
+        hotel_id: '111',
       };
       // Lấy chi tiết lịch trình
       const listSchedule:any = [];
@@ -199,7 +201,7 @@ const CreateTour = () => {
       const formData = new FormData();
       formData.append("upload", uploadInfo.file);
       // // You can use any AJAX library you like
-      fetch("http://206.189.37.26:8080/uploadImageCloud", {
+      fetch("http://localhost:8080/uploadImageCloud", {
         method: "POST",
         body: formData,
       })
