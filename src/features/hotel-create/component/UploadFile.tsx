@@ -33,30 +33,28 @@ const UploadFileComponent: React.FC<TypeUploadFile> = ({setValueFile, valueFile,
   );
   console.log('valufile index', valueFile)
   return (
-   
-      <Upload
-        name="upload"
-        listType="picture-card"
-        className="avatar-uploader"
-        showUploadList={false}
-        action="http://206.189.37.26:8080/uploadImageCloud"
-        onChange={handleChangeView}
-      >
-        {valueFile[index] ? (
-          <img
-            src={valueFile[index]}
-            alt="avatar"
-            style={{
-              width: "100%",
-              height: "100%",
-              overflow: "hidden",
-            }}
-          />
-        ) : (
-          uploadButton
-        )}
-      </Upload>
-
+    <Upload
+      name="upload"
+      listType="picture-card"
+      className="avatar-uploader"
+      showUploadList={false}
+      action="http://206.189.37.26:8080/uploadImageCloud"
+      onChange={handleChangeView}
+    >
+      {valueFile[Number(index)] ? (
+        <img
+          src={valueFile[Number(index)]}
+          alt="avatar"
+          style={{
+            width: "100%",
+            height: "100%",
+            overflow: "hidden",
+          }}
+        />
+      ) : (
+        uploadButton
+      )}
+    </Upload>
   );
 };
 

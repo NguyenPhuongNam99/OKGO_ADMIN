@@ -1,14 +1,11 @@
-import { Button, Form, Select, Upload } from "antd";
-import { UploadChangeParam, UploadFile, UploadProps } from "antd/es/upload";
+import { Button, Form, Select } from "antd";
 import axios from "axios";
 import { Formik } from "formik";
 import { useEffect, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
 import { validateCreateHotel } from "../../utils/Utils";
 import { cityApi, provincesApi } from "../tour/tourApi";
-import { autoCompleteType } from "../tour/type";
+import { AutoCompleteType } from "../tour/type";
 import "../voucher-create/voucherCreateStyles.scss";
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import UploadFileComponent from "./component/UploadFile";
 
 const HotelCreate = () => {
@@ -16,9 +13,9 @@ const HotelCreate = () => {
   const [timeStart, setTimeStart] = useState<string>();
   const [timeFinish, setTimeFinish] = useState<string>();
   const [isSelectedCity, setIsSelectCity] = useState<boolean>(false);
-  const [provinces, setProvinces] = useState<autoCompleteType[]>([]);
+  const [provinces, setProvinces] = useState<AutoCompleteType[]>([]);
   const [form] = Form.useForm();
-  const [cities, setCities] = useState<autoCompleteType[]>([]);
+  const [cities, setCities] = useState<AutoCompleteType[]>([]);
   const [valueForm, setValueForm] = useState({
     cityForm: "",
     districtForm: "",
@@ -29,7 +26,7 @@ const HotelCreate = () => {
   useEffect(() => {
     const listCity = cityApi();
     Promise.all([listCity]).then((values) => {
-      const listCity = values[0].data.data.data;
+      const listCity = values[0]?.data?.data?.data;
       const convertList = convertDataSource(listCity);
       setCities(convertList);
     });
@@ -82,22 +79,8 @@ const HotelCreate = () => {
     });
   };
 
-  console.log('value file', valueFile)
-  async function onFileChange(e: any) {
-    const formData = new FormData();
-    formData.append("upload", e.target.files[0]);
-
-    try {
-      const response = await axios({
-        method: "post",
-        url: "http://206.189.37.26:8080/uploadImageCloudArray",
-        data: formData,
-      });
-      setValueFile([...valueFile, response.data]);
-    } catch (error) {
-      console.log("error new", error);
-    }
-  }
+  console.log("value file", valueFile);
+  console.log("value file [0]", valueFile[0]);
 
   const submitForm = async (values: any, resetForm: any) => {
     try {
@@ -119,31 +102,19 @@ const HotelCreate = () => {
         city_id: valueForm.cityForm,
         district_id: valueForm.districtForm,
         address_detail: values.address_detail,
-        images: formatFile,
+        image: formatFile,
         price: values.price,
         type: valueForm.type,
       };
 
       const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/v1/restaurant/createRestaurant`,
+        `${process.env.REACT_APP_BASE_URL}/v1/hotel/createHotel`,
         obj,
         config
       );
       console.log("response new", response);
-      toast.success("🦄 Tạo nhà hàng thành công!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-      });
-      form.setFieldsValue({
-        provinces: "",
-        city: "",
-      });
+    
+     
       resetForm();
       setTimeStart("");
       setTimeFinish("");
@@ -159,25 +130,6 @@ const HotelCreate = () => {
       type: value,
     });
   };
-
-  const handleChangeView: UploadProps["onChange"] = async (
-    info: UploadChangeParam<UploadFile>
-  ) => {
-    if (info?.file.status === "uploading") {
-      setLoading(true);
-    }
-    if (info?.file.status === "done") {
-      setLoading(false);
-      setValueFile([...valueFile, info?.file?.response?.url]);
-    }
-  };
-
-  const uploadButton = (
-    <div>
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </div>
-  );
 
   return (
     <div className="containerRestaurant">
@@ -211,7 +163,6 @@ const HotelCreate = () => {
           }) => (
             <form onSubmit={handleSubmit}>
               <div className="FormContent">
-                <ToastContainer />
 
                 <div className="formBlock">
                   <p className="vouchername">Tên khách sạn</p>
@@ -348,16 +299,29 @@ const HotelCreate = () => {
                 </div>
                 <div className="formBlock">
                   <p className="vouchername">Chọn file</p>
-                  <UploadFileComponent
-                    setValueFile={setValueFile}
-                    valueFile={valueFile}
-                    index={0}
-                  />
-                  <UploadFileComponent
-                    setValueFile={setValueFile}
-                    valueFile={valueFile}
-                    index={1}
-                  />
+
+                  <div style={{ display: "flex", flexDirection: "row" }}>
+                    <UploadFileComponent
+                      setValueFile={setValueFile}
+                      valueFile={valueFile}
+                      index={0}
+                    />
+                    <UploadFileComponent
+                      setValueFile={setValueFile}
+                      valueFile={valueFile}
+                      index={1}
+                    />
+                    <UploadFileComponent
+                      setValueFile={setValueFile}
+                      valueFile={valueFile}
+                      index={2}
+                    />
+                    <UploadFileComponent
+                      setValueFile={setValueFile}
+                      valueFile={valueFile}
+                      index={3}
+                    />
+                  </div>
                 </div>
 
                 <div className="buttonSubmit">

@@ -7,7 +7,7 @@ import axiosClient from "../../api/api";
 import DatePickerComponent from "../../components/date/DatePickerComponent";
 import { validateCreateRestaurant } from "../../utils/Utils";
 import { cityApi, provincesApi } from "../tour/tourApi";
-import { autoCompleteType } from "../tour/type";
+import { AutoCompleteType } from "../tour/type";
 import "../voucher-create/voucherCreateStyles.scss";
 
 const RestaurantCreate = () => {
@@ -15,9 +15,9 @@ const RestaurantCreate = () => {
   const [timeStart, setTimeStart] = useState<string>();
   const [timeFinish, setTimeFinish] = useState<string>();
   const [isSelectedCity, setIsSelectCity] = useState<boolean>(false);
-  const [provinces, setProvinces] = useState<autoCompleteType[]>([]);
+  const [provinces, setProvinces] = useState<AutoCompleteType[]>([]);
   const [form] = Form.useForm();
-  const [cities, setCities] = useState<autoCompleteType[]>([]);
+  const [cities, setCities] = useState<AutoCompleteType[]>([]);
   const [valueForm, setValueForm] = useState({
     cityForm: "",
     districtForm: "",

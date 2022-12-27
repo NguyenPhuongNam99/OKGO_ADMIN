@@ -21,7 +21,7 @@ import TourList from "./features/tour/tourList/tourList";
 import HotelCreate from "./features/hotel-create/HotelCreate";
 import { ToastContainer } from "react-toastify";
 
-const router = createBrowserRouter([v
+const router = createBrowserRouter([
   {
     path: "/",
     element: <LoginScreen />,

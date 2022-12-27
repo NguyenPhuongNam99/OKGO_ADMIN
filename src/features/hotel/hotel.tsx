@@ -48,7 +48,7 @@ const Hotel = () => {
 
   return (
     <div>
-      <HeaderForm onclick={() => navigate('/Home/HotelCreate')}  />
+      <HeaderForm onclick={() => navigate("/Home/HotelCreate")} />
       <div className="hotelContainer">
         <Table bordered hover responsive size="sm" striped>
           <thead>
@@ -64,49 +64,50 @@ const Hotel = () => {
             </tr>
           </thead>
           <tbody style={{ verticalAlign: "middle", textAlign: "center" }}>
-            {dataHotel?.map((item: any, index: number) => {
-              return (
-                <tr>
-                  <th scope="row">{index}</th>
-                  <td>{item.name}</td>
-                  <td>
-                    <span>{item.description}</span>
-                  </td>
-                  <td className="centerView">
-                    <img src={item.image[0].image} className="imageHotel" />
-                  </td>
-                  <td className="centerText">{item.price}</td>
-                  <td>{item.address}</td>
-                  <td style={{ textAlign: "center" }}>{item.type}</td>
-                  <td style={{ textAlign: "center" }}>{item.rate}</td>
-                  <td>
-                    <span className="buttonClickVoucher">
-                      <div className="containerButton">
-                        <Button
-                          color="primary"
-                          href="#"
-                          tag="a"
-                          className="button"
-                        >
-                          <AiOutlineEdit />
-                        </Button>
-                      </div>
+            {dataHotel &&
+              dataHotel?.map((item: any, index: number) => {
+                return (
+                  <tr>
+                    <th scope="row">{index}</th>
+                    <td>{item.name}</td>
+                    <td>
+                      <span>{item.description}</span>
+                    </td>
+                    <td className="centerView">
+                      <img src={item.image[0]?.image} className="imageHotel" />
+                    </td>
+                    <td className="centerText">{item.price}</td>
+                    <td>{item.address}</td>
+                    <td style={{ textAlign: "center" }}>{item.type}</td>
+                    <td style={{ textAlign: "center" }}>{item.rate}</td>
+                    <td>
+                      <span className="buttonClickVoucher">
+                        <div className="containerButton">
+                          <Button
+                            color="primary"
+                            href="#"
+                            tag="a"
+                            className="button"
+                          >
+                            <AiOutlineEdit />
+                          </Button>
+                        </div>
 
-                      <div className="containerButton">
-                        <Button
-                          color="primary"
-                          href="#"
-                          tag="a"
-                          className="button"
-                        >
-                          <AiOutlineDelete />
-                        </Button>
-                      </div>
-                    </span>
-                  </td>
-                </tr>
-              );
-            })}
+                        <div className="containerButton">
+                          <Button
+                            color="primary"
+                            href="#"
+                            tag="a"
+                            className="button"
+                          >
+                            <AiOutlineDelete />
+                          </Button>
+                        </div>
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
           </tbody>
         </Table>
       </div>
