@@ -120,3 +120,17 @@ export const createVoucher = Yup.object().shape({
   maxPrice: Yup.number().required("Giá tối đa đang rỗng *"),
   totalVoucher: Yup.number().required("Tổng số voucher đang rỗng *"),
 });
+
+export const validateCreateRestaurant = Yup.object().shape({
+  name: Yup.string().min(3).required("Tên nhà hàng đang rỗng *"),
+  discription: Yup.string().min(3).required("Miêu tả đang rỗng *"),
+  address_detail: Yup.string().min(3).required("Địa chỉ chi tiết đang rỗng *"),
+  price: Yup.string().min(3).required("Giá đang rỗng *"),
+})
+
+export const validateCreateHotel = Yup.object().shape({
+  name: Yup.string().min(3).required("Tên khách sạn đang rỗng *"),
+  description: Yup.string().min(3).required("Miêu tả đang rỗng *"),
+  address_detail: Yup.string().min(3).required("Địa chỉ chi tiết đang rỗng *"),
+  price: Yup.string().min(3).required("Giá đang rỗng *"),
+})

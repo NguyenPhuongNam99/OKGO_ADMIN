@@ -10,13 +10,16 @@ import Voucher from "../voucher/Voucher";
 import Tour from "../tour/Tour";
 import Hotel from "../hotel/hotel";
 import { Outlet, useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../app/store";
+import { getRoute } from "../../globalStore";
 
 const { Header, Sider, Content } = Layout;
 
 const App: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [route, setRoute] = useState<number>(1);
-  console.log("route new", route);
+  const dispatch = useAppDispatch();
+
   const navigate = useNavigate();
 
   const items = [
@@ -56,14 +59,18 @@ const App: React.FC = () => {
           onSelect={(selectedKeys) => {
             console.log("selectedKeys", selectedKeys.key);
             setRoute(Number(selectedKeys.key));
+            dispatch(getRoute(selectedKeys.key));
             if (Number(selectedKeys.key) === Number(1)) {
               navigate("/Home/Tour");
             }
             // if(Number(selectedKeys.key) === Number(4)){
             //   navigate('/Home/Voucher')
             // }
-            if(Number(selectedKeys.key) === Number(4)){
-              navigate('/Home/Voucher')
+            if (Number(selectedKeys.key) === Number(4)) {
+              navigate("/Home/Voucher");
+            }
+            if(Number(selectedKeys.key) === Number(5)){
+              navigate("/Home/Hotel")
             }
             if (Number(selectedKeys.key) === Number(6)) {
               navigate("/Home/Restaurant");

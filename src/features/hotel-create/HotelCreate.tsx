@@ -1,16 +1,17 @@
-import { Button, Form, Modal, Select } from "antd";
+import { Button, Form, Select, Upload } from "antd";
+import { UploadChangeParam, UploadFile, UploadProps } from "antd/es/upload";
 import axios from "axios";
 import { Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
-import axiosClient from "../../api/api";
-import DatePickerComponent from "../../components/date/DatePickerComponent";
-import { validateCreateRestaurant } from "../../utils/Utils";
+import { validateCreateHotel } from "../../utils/Utils";
 import { cityApi, provincesApi } from "../tour/tourApi";
 import { autoCompleteType } from "../tour/type";
 import "../voucher-create/voucherCreateStyles.scss";
+import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import UploadFileComponent from "./component/UploadFile";
 
-const RestaurantCreate = () => {
+const HotelCreate = () => {
   const [valueFile, setValueFile] = useState<any>([]);
   const [timeStart, setTimeStart] = useState<string>();
   const [timeFinish, setTimeFinish] = useState<string>();
@@ -21,7 +22,9 @@ const RestaurantCreate = () => {
   const [valueForm, setValueForm] = useState({
     cityForm: "",
     districtForm: "",
+    type: "",
   });
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const listCity = cityApi();
@@ -39,14 +42,6 @@ const RestaurantCreate = () => {
         value: item.code,
       };
     });
-  };
-
-  const handleDatePickerChange = (date: any, dateString: any, id: any) => {
-    setTimeStart(dateString);
-  };
-
-  const handleDatePickerChange2 = (date: any, dateString: any, id: any) => {
-    setTimeFinish(dateString);
   };
 
   const handleSelectCity = (id: string) => {
@@ -87,6 +82,7 @@ const RestaurantCreate = () => {
     });
   };
 
+  console.log('value file', valueFile)
   async function onFileChange(e: any) {
     const formData = new FormData();
     formData.append("upload", e.target.files[0]);
@@ -119,17 +115,15 @@ const RestaurantCreate = () => {
       };
       const obj = {
         name: values.name,
-        description: values.discription,
+        description: values.description,
         city_id: valueForm.cityForm,
         district_id: valueForm.districtForm,
         address_detail: values.address_detail,
         images: formatFile,
         price: values.price,
-        open_time: timeStart,
-        close_time: timeFinish,
+        type: valueForm.type,
       };
 
-      console.log("obj", obj);
       const response = await axios.post(
         `${process.env.REACT_APP_BASE_URL}/v1/restaurant/createRestaurant`,
         obj,
@@ -158,6 +152,33 @@ const RestaurantCreate = () => {
       console.log("error", error);
     }
   };
+
+  const onChange = (value: string) => {
+    setValueForm({
+      ...valueForm,
+      type: value,
+    });
+  };
+
+  const handleChangeView: UploadProps["onChange"] = async (
+    info: UploadChangeParam<UploadFile>
+  ) => {
+    if (info?.file.status === "uploading") {
+      setLoading(true);
+    }
+    if (info?.file.status === "done") {
+      setLoading(false);
+      setValueFile([...valueFile, info?.file?.response?.url]);
+    }
+  };
+
+  const uploadButton = (
+    <div>
+      {loading ? <LoadingOutlined /> : <PlusOutlined />}
+      <div style={{ marginTop: 8 }}>Upload</div>
+    </div>
+  );
+
   return (
     <div className="containerRestaurant">
       <div className="blockContentRestaurant">
@@ -168,11 +189,11 @@ const RestaurantCreate = () => {
         <Formik
           initialValues={{
             name: "",
-            discription: "",
+            description: "",
             address_detail: "",
             price: "",
           }}
-          validationSchema={validateCreateRestaurant}
+          validationSchema={validateCreateHotel}
           onSubmit={async (values, { resetForm }) => {
             console.log("values", values);
             await submitForm(values, resetForm);
@@ -193,10 +214,10 @@ const RestaurantCreate = () => {
                 <ToastContainer />
 
                 <div className="formBlock">
-                  <p className="vouchername">Tên nhà hàng</p>
+                  <p className="vouchername">Tên khách sạn</p>
                   <input
                     className="inputContent"
-                    placeholder="Nhập tên nhà hàng"
+                    placeholder="Nhập tên khách sạn"
                     name="name"
                     onChange={handleChange}
                     onBlur={handleBlur}
@@ -209,23 +230,23 @@ const RestaurantCreate = () => {
                   </p>
                 )}
                 <div className="formBlock">
-                  <p className="vouchername">Miêu tả nhà hàng</p>
+                  <p className="vouchername">Miêu tả khách sạn</p>
                   <input
                     className="inputContent"
-                    placeholder="Nhập miêu tả nhà hàng"
-                    name="discription"
+                    placeholder="Nhập miêu tả khách sạn"
+                    name="description"
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    value={values.discription}
+                    value={values.description}
                   />
                 </div>
-                {errors.discription &&
-                  touched.discription &&
-                  errors.discription && (
+                {errors.description &&
+                  touched.description &&
+                  errors.description && (
                     <p className="errorInput">
-                      {errors.discription &&
-                        touched.discription &&
-                        errors.discription}
+                      {errors.description &&
+                        touched.description &&
+                        errors.description}
                     </p>
                   )}
 
@@ -300,59 +321,45 @@ const RestaurantCreate = () => {
                     </p>
                   )}
                 <div className="formBlock">
-                  <p className="vouchername">Chọn file</p>
-                  <input
-                    type="file"
-                    id="avatar"
-                    name="avatar"
-                    accept="image/png, image/jpeg"
-                    onChange={onFileChange}
+                  <p className="vouchername">Loại</p>
+
+                  <Select
+                    style={{ width: "100%" }}
+                    showSearch
+                    placeholder="Chọn loại"
+                    optionFilterProp="children"
+                    onChange={onChange}
+                    filterOption={(input, option) =>
+                      (option?.label ?? "")
+                        .toLowerCase()
+                        .includes(input.toLowerCase())
+                    }
+                    options={[
+                      {
+                        value: "hotel",
+                        label: "khách sạn",
+                      },
+                      {
+                        value: "homeStay",
+                        label: "homeStay",
+                      },
+                    ]}
                   />
                 </div>
                 <div className="formBlock">
                   <p className="vouchername">Chọn file</p>
-                  <input
-                    type="file"
-                    id="avatar"
-                    name="avatar"
-                    accept="image/png, image/jpeg"
-                    onChange={onFileChange}
+                  <UploadFileComponent
+                    setValueFile={setValueFile}
+                    valueFile={valueFile}
+                    index={0}
+                  />
+                  <UploadFileComponent
+                    setValueFile={setValueFile}
+                    valueFile={valueFile}
+                    index={1}
                   />
                 </div>
-                <div className="formBlock">
-                  <p className="vouchername">Chọn file</p>
-                  <input
-                    type="file"
-                    id="avatar"
-                    name="avatar"
-                    accept="image/png, image/jpeg"
-                    onChange={onFileChange}
-                  />
-                </div>
-                <div className="formBlock">
-                  <p className="vouchername">Chọn file</p>
-                  <input
-                    type="file"
-                    id="avatar"
-                    name="avatar"
-                    accept="image/png, image/jpeg"
-                    onChange={onFileChange}
-                  />
-                </div>
-                <div className="formBlock">
-                  <p className="vouchername">Thời gian mở cửa</p>
-                  <DatePickerComponent
-                    handleDatePickerChange={handleDatePickerChange}
-                    onlyTimeNow
-                  />
-                </div>
-                <div className="formBlock">
-                  <p className="vouchername">Thời gian đóng cửa</p>
-                  <DatePickerComponent
-                    handleDatePickerChange={handleDatePickerChange2}
-                    onlyTimeNow
-                  />
-                </div>
+
                 <div className="buttonSubmit">
                   <Button
                     type="primary"
@@ -385,4 +392,4 @@ const RestaurantCreate = () => {
   );
 };
 
-export default RestaurantCreate;
+export default HotelCreate;

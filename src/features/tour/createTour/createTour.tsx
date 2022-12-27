@@ -84,7 +84,7 @@ const CreateTour = () => {
     },
 
     ckfinder: {
-      uploadUrl: 'http://localhost:8000/uploadImage',
+      uploadUrl: 'http://206.189.37.26:8080/uploadImageCloud',
     },
   };
 

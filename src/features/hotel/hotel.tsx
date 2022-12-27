@@ -4,6 +4,7 @@ import { Button, Table } from "reactstrap";
 import axiosClient from "../../api/api";
 import HeaderForm from "../../components/header-form/HeaderForm";
 import "./hotel.scss";
+import { useNavigate } from "react-router-dom";
 
 interface TypeImage {
   image: String;
@@ -27,6 +28,7 @@ const Hotel = () => {
 
   const [dataHotel, setDataHotel] = useState<TypeListHotel[] | any>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const navigate = useNavigate();
 
   const getListHotel = async () => {
     try {
@@ -46,7 +48,7 @@ const Hotel = () => {
 
   return (
     <div>
-      <HeaderForm />
+      <HeaderForm onclick={() => navigate('/Home/HotelCreate')}  />
       <div className="hotelContainer">
         <Table bordered hover responsive size="sm" striped>
           <thead>

@@ -1,4 +1,4 @@
-import { Button, Modal, Spin } from "antd";
+import { Button, Modal, Spin, UploadProps } from "antd";
 import axios from "axios";
 import { Formik } from "formik";
 import React, { useState } from "react";
@@ -8,6 +8,8 @@ import { createVoucher } from "../../utils/Utils";
 import "./voucherUpdate.scss";
 import { useParams } from "react-router-dom";
 import useFetchApi from "../../hook/useFetchApi";
+import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
+import Upload, { UploadChangeParam, UploadFile } from "antd/es/upload";
 
 interface TypeSetValue {
   name: string;
@@ -36,10 +38,14 @@ interface TypeData {
 }
 const VoucherUpdate = () => {
   const params = useParams();
-  const [valueFile, setValueFile] = useState<any>();
-  const [timeStart, setTimeStart] = useState<string>();
-  const [timeFinish, setTimeFinish] = useState<string>();
   const [data, setData] = useState<TypeData | undefined>();
+  const [valueFile, setValueFile] = useState<any>();
+  const [timeStart, setTimeStart] = useState<string | undefined>(
+    data?.time_start
+  );
+  const [timeFinish, setTimeFinish] = useState<string | undefined>(
+    data?.time_end
+  );
   const [checkSubmit, setCheckSubmit] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -71,7 +77,7 @@ const VoucherUpdate = () => {
         time_end: timeFinish,
       };
       const response = await axios.put(
-        `http://localhost:8000/v1/voucher/getvoucher/${params.id}`,
+        `http://206.189.37.26:8080/v1/voucher/getvoucher/${params.id}`,
         obj,
         config
       );
@@ -97,26 +103,6 @@ const VoucherUpdate = () => {
     }
   };
 
-  async function onFileChange(e: any) {
-    const formData = new FormData();
-    formData.append("file", e.target.files[0]);
-
-    try {
-      const response = await axios({
-        method: "post",
-        url: "http://localhost:8000/file/upload",
-        data: formData,
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: "Bearer " + localStorage.getItem("Name"),
-        },
-      });
-      setValueFile(response.data);
-    } catch (error) {
-      console.log("error new", error);
-    }
-  }
-
   const cancelForm = async (resetForm: any) => {
     setTimeStart("");
     setTimeFinish("");
@@ -127,25 +113,48 @@ const VoucherUpdate = () => {
 
   const fetchDataUpdate = async () => {
     try {
+      setLoading(true);
       const response = await axios.get(
-        `http://localhost:8000/v1/voucher/getUserId/${params.id}`,
+        `http://206.189.37.26:8080/v1/voucher/getUserId/${params.id}`,
         {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("Name"),
           },
         }
       );
+      setLoading(false);
       console.log("response fetch", response);
       setData(response.data);
+      setTimeStart(response.data?.time_start);
+      setTimeFinish(response.data?.time_end);
     } catch (error) {
       console.log("error", error);
+    }
+  };
+
+  const uploadButton = (
+    <div>
+      {loading ? <LoadingOutlined /> : <PlusOutlined />}
+      <div style={{ marginTop: 8 }}>Upload</div>
+    </div>
+  );
+
+  const handleChangeView: UploadProps["onChange"] = async (
+    info: UploadChangeParam<UploadFile>
+  ) => {
+    if (info?.file.status === "uploading") {
+      setLoading(true);
+    }
+    if (info?.file.status === "done") {
+      setLoading(false);
+      setValueFile(info?.file?.response?.url);
     }
   };
 
   React.useEffect(() => {
     fetchDataUpdate();
   }, [checkSubmit]);
-  console.log("data view", data?.name);
+
   return (
     <Spin spinning={loading} tip="Loading" size="large">
       <div className="containerRestaurant">
@@ -311,25 +320,49 @@ const VoucherUpdate = () => {
                         </p>
                       )}
                     <div className="formBlock">
-                      <p className="vouchername">Chọn file</p>
-                      <input
-                        type="file"
-                        id="avatar"
-                        name="avatar"
-                        accept="image/png, image/jpeg"
-                        onChange={onFileChange}
-                      />
+                      <p className="vouchername">Chọn file2</p>
+
+                      <Upload
+                        name="upload"
+                        listType="picture-card"
+                        className="avatar-uploader"
+                        showUploadList={false}
+                        action="http://206.189.37.26:8080/uploadImageCloud"
+                        onChange={handleChangeView}
+                      >
+                        {valueFile !== undefined ? (
+                          <img
+                            src={valueFile}
+                            alt="avatar"
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              overflow: "hidden",
+                            }}
+                          />
+                        ) : data?.image_url ? (
+                          <img
+                            src={data?.image_url}
+                            alt="avatar"
+                            style={{ width: "100%" }}
+                          />
+                        ) : (
+                          uploadButton
+                        )}
+                      </Upload>
                     </div>
                     <div className="formBlock">
                       <p className="vouchername">Thời gian bắt đầu</p>
                       <DatePickerComponent
                         handleDatePickerChange={handleDatePickerChange}
+                        timeValue={data.time_start}
                       />
                     </div>
                     <div className="formBlock">
                       <p className="vouchername">Thời gian kết thúc</p>
                       <DatePickerComponent
                         handleDatePickerChange={handleDatePickerChange2}
+                        timeValue={data.time_end}
                       />
                     </div>
                     <div className="buttonSubmit">

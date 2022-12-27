@@ -49,7 +49,7 @@ const VoucherCreate = () => {
         time_end: timeFinish,
       };
       const response = await axios.post(
-        "http://localhost:8000/v1/voucher/createVoucher",
+        "http://206.189.37.26:8080/v1/voucher/createVoucher",
         obj,
         config
       );
@@ -74,12 +74,12 @@ const VoucherCreate = () => {
 
   async function onFileChange(e: any) {
     const formData = new FormData();
-    formData.append("file", e.target.files[0]);
-
+    formData.append("upload", e.target.files[0]);
+    
     try {
       const response = await axios({
         method: "post",
-        url: "http://localhost:8000/file/upload",
+        url: "http://206.189.37.26:8080/uploadImageCloudArray",
         data: formData,
         headers: {
           "Content-Type": "multipart/form-data",

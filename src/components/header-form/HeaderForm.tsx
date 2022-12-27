@@ -1,9 +1,13 @@
 import React from "react";
 import { BsPlusLg } from "react-icons/bs";
 
-const HeaderForm = () => {
+interface TypeHeaderForm {
+  onclick?: any
+}
+
+const HeaderForm:React.FC<TypeHeaderForm> = ({onclick}) => {
   return (
-    <div className="headerForm">
+    <div className="headerForm" onClick={onclick}>
       <div />
       <div className="buttonCreate">
         <BsPlusLg color="white" />

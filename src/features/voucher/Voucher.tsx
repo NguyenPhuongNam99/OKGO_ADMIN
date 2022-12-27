@@ -23,7 +23,7 @@ const Voucher = () => {
       console.log("token ", localStorage.getItem("Name"));
       setLoading(true);
       axios
-        .get("http://localhost:8000/v1/voucher/getAllVoucher", {
+        .get("http://206.189.37.26:8080/v1/voucher/getAllVoucher", {
           headers: { Authorization: `Bearer ${localStorage.getItem("Name")}` },
         })
         .then((response) => {
@@ -118,7 +118,7 @@ const Voucher = () => {
                     {" "}
                     <img
                       src={item.image_url}
-                      style={{ width: 80, height: 80 }}
+                      style={{  height: 80 }}
                     />
                   </td>
                   <td>{item.quantity}</td>

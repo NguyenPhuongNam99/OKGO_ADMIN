@@ -18,6 +18,7 @@ import VoucherUpdate from "./features/voucher-update/VoucherUpdate";
 import RestaurantCreate from "./features/restaurant-create/RestaurantCreate";
 import CreateTour from "./features/tour/createTour/createTour";
 import TourList from "./features/tour/tourList/tourList";
+import HotelCreate from "./features/hotel-create/HotelCreate";
 
 const router = createBrowserRouter([
   {
@@ -41,6 +42,14 @@ const router = createBrowserRouter([
       {
         path: "/Home/Hotel",
         element: <Hotel />,
+      },
+      {
+        path: "/Home/HotelCreate",
+        element: <HotelCreate />
+      },
+      {
+        path: "/Home/HotelCreate",
+        element: <HotelCreate />,
       },
       {
         path: "/Home/OrderTour",
