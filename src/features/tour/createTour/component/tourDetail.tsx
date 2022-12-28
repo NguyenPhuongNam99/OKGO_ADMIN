@@ -21,7 +21,7 @@ const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
 const TourDetail = (props: any) => {
-  const { location, form,handleAddLocation } = props;
+  const { location, form,handleAddLocation, handleDeleteLocation } = props;
   // const [listLocation, setListLocation] = useState<string[]>([]);
 
   // useEffect(() => {
@@ -53,10 +53,11 @@ const TourDetail = (props: any) => {
           <LocationDetail
             form={form}
             date={location.day}
-            key={`${item}`}
+            key={`${item.id}`}
             index={index}
-            item={item}
-            // handleDeleteLocation={() => handleDeleteLocation(item)}
+            defaultThumbnail={item.thumbnail}
+            id={item.id}
+            handleDeleteLocation={() => handleDeleteLocation(item)}
           />
         ))}
         <Button onClick={()=>handleAddLocation(location)}>Thêm địa chỉ</Button>

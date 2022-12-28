@@ -11,10 +11,11 @@ import {
   Col,
   Row,
 } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Icon, { DeleteOutlined } from "@ant-design/icons";
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
+import { url } from "inspector";
 
 const { TextArea } = Input;
 
@@ -22,9 +23,15 @@ const { RangePicker } = DatePicker;
 const uploadURl = "http://206.189.37.26:8080/uploadImageCloud";
 
 const LocationDetail = (props: any) => {
-  const { date, index, item, handleDeleteLocation, form } = props;
+  const { date, index, defaultThumbnail, handleDeleteLocation, form,id } = props;
 
   const [countFile, setCountFile] = useState<number>(0);
+
+  useEffect(()=>{
+    if(!!defaultThumbnail){
+      setCountFile(1)
+    }
+  },[defaultThumbnail])
 
   const handleUploadChange = (uploadInfo: any) => {
     setCountFile(uploadInfo.fileList.length);
@@ -43,7 +50,7 @@ const LocationDetail = (props: any) => {
             return res.json();
           }).then((value)=>{
             form.setFieldsValue({
-                [`thumbnail_${date}_${item}`]: value.url,
+                [`thumbnail_${date}_${id}`]: value.url,
               });
           })
           .catch(() => {})
@@ -64,7 +71,7 @@ const LocationDetail = (props: any) => {
           <DeleteOutlined
             onClick={handleDeleteLocation}
             className="tourContainer-create-icon"
-          />{" "}
+          />
         </Col>
       ) : null}
 
@@ -73,7 +80,7 @@ const LocationDetail = (props: any) => {
           label="Địa điểm"
           labelCol={{ span: 3 }}
           wrapperCol={{ span: 12 }}
-          name={`location_${date}_${item}`}
+          name={`location_${date}_${id}`}
           rules={[{ required: true, message: "Please input your location!" }]}
         >
           <Input />
@@ -83,7 +90,7 @@ const LocationDetail = (props: any) => {
       <Col span={12}>
         <Form.Item
           label="Thời gian"
-          name={`time_${date}_${item}`}
+          name={`time_${date}_${id}`}
           labelCol={{ span: 3 }}
           wrapperCol={{ span: 12 }}
           rules={[{ required: true, message: "Please input your time!" }]}
@@ -97,7 +104,7 @@ const LocationDetail = (props: any) => {
           labelCol={{ span: 3 }}
           wrapperCol={{ span: 12 }}
           label="Giá vào cửa"
-          name={`door_price_${date}_${item}`}
+          name={`door_price_${date}_${id}`}
           rules={[{ required: true, message: "Please input your price!" }]}
         >
           <InputNumber
@@ -113,7 +120,7 @@ const LocationDetail = (props: any) => {
       <Col span={12}>
         <Form.Item
           label="Thumbnail"
-          name={`thumbnail_${date}_${item}`}
+          name={`thumbnail_${date}_${id}`}
           labelCol={{ span: 3 }}
           wrapperCol={{ span: 12 }}
           valuePropName={`fileList1_${date}`}
@@ -138,14 +145,21 @@ const LocationDetail = (props: any) => {
           <Upload
             multiple
             maxCount={1}
-
+            defaultFileList={[
+              {
+                uid: id ,
+                name: 'xxx.png',
+                status: 'done',
+                url: defaultThumbnail,
+              }
+            ]}
             accept="image/png, image/jpeg"
             action={uploadURl}
             listType="picture-card"
             onChange={handleUploadChange}
             onRemove={() => {
               form.setFieldsValue({
-                [`thumbnail_${date}_${item}`]: undefined,
+                [`thumbnail_${date}_${id}`]: undefined,
               });
             }}
             beforeUpload={(file) => {
@@ -166,7 +180,7 @@ const LocationDetail = (props: any) => {
       <Col span={12}>
         <Form.Item
           label="Description"
-          name={`description_${date}_${item}`}
+          name={`description_${date}_${id}`}
           labelCol={{ span: 3 }}
           wrapperCol={{ span: 21 }}
           rules={[

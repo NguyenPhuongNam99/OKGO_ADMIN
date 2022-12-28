@@ -10,9 +10,16 @@ import {
   Upload,
   DatePicker,
   Button,
+  ConfigProvider,
 } from "antd";
-import { cityApi, createTour, provincesApi } from "../tourApi";
-import { AutoCompleteType, TourDetailType } from "../type";
+import {
+  cityApi,
+  createTour,
+  provincesApi,
+  listHotelApi,
+  listRestaurentApi,
+} from "../tourApi";
+import { AutoCompleteType, ListIdType, TourDetailType } from "../type";
 import { PlusOutlined } from "@ant-design/icons";
 import TourDetail from "./component/tourDetail";
 import type { RcFile, UploadFile, UploadProps } from "antd/es/upload/interface";
@@ -20,7 +27,23 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { current } from "@reduxjs/toolkit";
 import { v4 as uuid } from "uuid";
+import { useParams } from "react-router-dom";
+import e from "express";
+import moment from "moment";
+import dayjs from "dayjs";
+// import advancedFormat from 'dayjs/plugin/advancedFormat'
+// import customParseFormat from 'dayjs/plugin/customParseFormat'
+import weekday from "dayjs/plugin/weekday";
+import weekOfYear from "dayjs/plugin/weekOfYear";
+import weekYear from "dayjs/plugin/weekYear";
+import localeData from "dayjs/plugin/localeData";
 
+// dayjs.extend(customParseFormat)
+// dayjs.extend(advancedFormat)
+dayjs.extend(localeData);
+dayjs.extend(weekday);
+dayjs.extend(weekOfYear);
+dayjs.extend(weekYear);
 const { RangePicker } = DatePicker;
 
 const uploadURl = "http://206.189.37.26:8080/uploadImageCloud";
@@ -30,15 +53,16 @@ const CreateTour = () => {
   const [form] = Form.useForm();
   const [cities, setCities] = useState<AutoCompleteType[]>([]);
   const [provinces, setProvinces] = useState<AutoCompleteType[]>([]);
-  const [isSelectedCity, setIsSelectCity] = useState<boolean>(false);
   const [hotelList, setHotelList] = useState<AutoCompleteType[]>([]);
   const [restaurantList, setRestaurantList] = useState<AutoCompleteType[]>([]);
   const [isPageReady, setIsPageReady] = useState<boolean>(false);
-  const [countFile, setCountFile] = useState<number>(0);
-  // const [totalDay, setTotalDay] = useState<any[]>([]);
+  // const [countFile, setCountFile] = useState<number>(0);
   const [fileList, setFileList] = useState<any[]>([]);
   const [uploading, setUploading] = useState(false);
   const [listLocation, setListLocation] = useState<TourDetailType[]>([]);
+
+  const params = useParams();
+  const { id } = params;
 
   useEffect(() => {
     if (!isPageReady) {
@@ -47,13 +71,136 @@ const CreateTour = () => {
   }, []);
 
   useEffect(() => {
-    const listCity = cityApi();
-    Promise.all([listCity]).then((values) => {
-      const listCity = values[0].data.data.data;
-      const convertList = convertDataSource(listCity);
-      setCities(convertList);
-    });
-  }, []);
+    if (isPageReady) {
+      const fillData = async () => {
+        const fakeData = {
+          tour_name: "tour 1",
+          city: "01",
+          price: 1,
+          provinces: "002",
+          thumbnail: [
+            {
+              uid: "rc-upload-1672198194844-5",
+              url: "https://res.cloudinary.com/dqpxzkx9r/image/upload/v1672198210/learn_nodejs/l9gcpw42n2mrt9y9yhct.png",
+            },
+            {
+              uid: "rc-upload-1672198194844-3",
+              url: "https://res.cloudinary.com/dqpxzkx9r/image/upload/v1672198210/learn_nodejs/isgwmisuuarasbag0oal.jpg",
+            },
+            {
+              uid: "rc-upload-1672198194844-4",
+              url: "https://res.cloudinary.com/dqpxzkx9r/image/upload/v1672198211/learn_nodejs/dx8gdamn5ptmuovqjtkl.jpg",
+            },
+            {
+              uid: "rc-upload-1672198194844-6",
+              url: "https://res.cloudinary.com/dqpxzkx9r/image/upload/v1672198211/learn_nodejs/tuuspxbtz8ddqa4udkk1.jpg",
+            },
+          ],
+          is_show: true,
+          time_line: [
+            {
+              day: "2022-12-28",
+              schedule: [
+                {
+                  location: "HN_1",
+                  door_price: 200000,
+                  description: "HN_1 description 2",
+                  time_start: "00:00",
+                  time_end: "00:04",
+                  thumbnail:
+                    "https://res.cloudinary.com/dqpxzkx9r/image/upload/v1672198236/learn_nodejs/agqygmz5gptimp3dfxjb.png",
+                },
+                {
+                  location: "HN_2",
+                  door_price: 300000,
+                  description: "HN_2 description",
+                  time_start: "00:05",
+                  time_end: "00:10",
+                  thumbnail:
+                    "https://res.cloudinary.com/dqpxzkx9r/image/upload/v1672198260/learn_nodejs/a07e0a0tq5asjcacktll.jpg",
+                },
+              ],
+            },
+            {
+              day: "2022-12-29",
+              schedule: [
+                {
+                  location: "SG",
+                  door_price: 400000,
+                  description: "SG description",
+                  time_start: "00:04",
+                  time_end: "00:08",
+                  thumbnail:
+                    "https://res.cloudinary.com/dqpxzkx9r/image/upload/v1672198274/learn_nodejs/zvutnsygqxv1touzb46s.jpg",
+                },
+              ],
+            },
+          ],
+          description: "<p>CKeditor</p>",
+          restaurant_id: "13",
+          hotel_id: "",
+        };
+
+        await handleSelectCity(fakeData.city);
+
+        setCKEditorDataDB(fakeData.description);
+        setFileList(fakeData.thumbnail);
+
+        const defaultTourTime: any = [];
+
+        const defaultListLocation: TourDetailType[] = fakeData.time_line.map(
+          (item) => {
+            const listId: ListIdType[] = item.schedule.map((schedule_item) => {
+              const uniId = uuid();
+              const prefix = `${item.day}_${uniId}`;
+              const testDate = dayjs(new Date(`${item.day} ${schedule_item.time_start}`));
+              console.log(testDate)
+              form.setFieldsValue({
+                [`location_${prefix}`]: schedule_item.location,
+                [`door_price_${prefix}`]: schedule_item.door_price,
+                [`description_${prefix}`]: schedule_item.description,
+                [`thumbnail_${prefix}`]: schedule_item.thumbnail,
+                [`time_${prefix}`]: [dayjs(new Date(`${item.day} ${schedule_item.time_start}`)),dayjs(new Date(`${item.day} ${schedule_item.time_end}`))],
+                // [`location_${prefix}`]: schedule_item.location,
+              });
+              return {
+                id: uniId,
+                thumbnail: schedule_item.thumbnail
+              };
+            });
+            defaultTourTime.push(dayjs(item.day));
+            return {
+              day: item.day,
+              listId: listId,
+            };
+          }
+        );
+
+        setListLocation(defaultListLocation);
+        form.setFieldsValue({
+          tour_name: fakeData.tour_name,
+          price: fakeData.price,
+          city: fakeData.city,
+          provinces: fakeData.provinces,
+          restaurant: fakeData.restaurant_id,
+          hotel: fakeData.hotel_id,
+          thumbnail: "123123",
+          tour_time: defaultTourTime,
+        });
+      };
+
+      fillData();
+      // if (!!id) {
+
+      // }
+      const listCity = cityApi();
+      Promise.all([listCity]).then((values) => {
+        const listCity = values[0].data.data.data;
+        const convertList = convertDataSource(listCity);
+        setCities(convertList);
+      });
+    }
+  }, [isPageReady]);
 
   const editorConfiguration = {
     toolbar: {
@@ -111,7 +258,7 @@ const CreateTour = () => {
     const convertList = clone.map((item) => {
       if (item.day === itemLocation.day) {
         const currentListId = item.listId;
-        currentListId.push(uuid());
+        currentListId.push({id: uuid()});
         return {
           day: item.day,
           listId: currentListId,
@@ -131,14 +278,35 @@ const CreateTour = () => {
     });
   };
 
-  const handleSelectCity = (id: string) => {
-    setIsSelectCity(true);
-    provincesApi(id)
-      .then((value) => {
-        const provincesList = value.data.data.data;
-        setProvinces(convertDataSource(provincesList));
-      })
-      .catch();
+  const handleSelectCity = async (id: string) => {
+    const provinces = await provincesApi(id);
+    const provincesList = provinces.data.data.data;
+    setProvinces(convertDataSource(provincesList));
+
+    const hotel: any = await listHotelApi(id);
+    const convertData: any = [];
+    hotel.forEach((element: any) => {
+      if (element.city_id === id) {
+        convertData.push({
+          label: element.name,
+          value: element.idHotel.toString(),
+        });
+      }
+    });
+
+    setHotelList(convertData);
+
+    const restaurant: any = await listRestaurentApi(id);
+    const convertData_2: any = [];
+    restaurant.forEach((element: any) => {
+      if (element.city_id === id) {
+        convertData_2.push({
+          label: element.name,
+          value: element.idrestaurant.toString(),
+        });
+      }
+    });
+    setRestaurantList(convertData_2);
     // set nha hang hoac khach san
     form.setFieldsValue({
       city: id,
@@ -148,81 +316,68 @@ const CreateTour = () => {
 
   const handleClearCity = () => {
     setProvinces([]);
+    setHotelList([]);
+    setRestaurantList([]);
     // clear nha hang hoac khach san
     form.setFieldsValue({
       provinces: "",
+      hotel: "",
+      restaurant: "",
     });
   };
 
   const onFinish = (values: any) => {
+    console.log(values)
     if (values && CKEditorDataDB) {
       const finalData: any = {
         tour_name: values.tour_name,
         city: values.city,
         price: values.price,
         provinces: values.provinces,
-        thumbnail: fileList,
-        is_show:true,
+        thumbnail: fileList.map((item) => {
+          if (!!item.response) {
+            return item.response;
+          } else {
+            return item;
+          }
+        }),
+        is_show: true,
         time_line: [],
         description: CKEditorDataDB,
-        restaurant_id: '1233',
-        hotel_id: '111',
+        restaurant_id: values.hotel ? values.hotel.toString() : " ",
+        hotel_id: values.restaurant ? values.restaurant?.toString() : " ",
       };
       // Lấy chi tiết lịch trình
-      const listSchedule:any = [];
+  
+      const listSchedule: any = [];
       listLocation.map((item) => {
         const schedule: any = {
           day: item.day,
           schedule: [],
         };
-        item.listId?.map((id) => {
+        item.listId?.map((data) => {
+          const preFix = `${item.day}_${data.id}`;
+          console.log(preFix)
           const scheduleDetail = {
-            location: values[`location_${item.day}_${id}`],
-            door_price: values[`door_price_${item.day}_${id}`],
-            description: values[`description_${item.day}_${id}`],
-            time_start: formatterHours(values[`time_${item.day}_${id}`][0]),
-            time_end: formatterHours(values[`time_${item.day}_${id}`][1]),
-            thumbnail: values[`thumbnail_${item.day}_${id}`],
+            location: values[`location_${item.day}_${data.id}`],
+            door_price: values[`door_price_${item.day}_${data.id}`],
+            description: values[`description_${item.day}_${data.id}`],
+            time_start: formatterHours(values[`time_${item.day}_${data.id}`][0]),
+            time_end: formatterHours(values[`time_${item.day}_${data.id}`][1]),
+            thumbnail: values[`thumbnail_${item.day}_${data.id}`],
           };
           schedule["schedule"].push(scheduleDetail);
         });
         listSchedule.push(schedule);
       });
       finalData.time_line = listSchedule;
-      
-      createTour(finalData)
-    }
 
+      createTour(finalData);
+    }
   };
 
-  const handleUploadChange = (uploadInfo: any) => {
-    setCountFile(uploadInfo.fileList.length);
-    if (uploadInfo.file.status !== "removed") {
-      const formData = new FormData();
-      formData.append("upload", uploadInfo.file);
-      // // You can use any AJAX library you like
-      fetch("http://localhost:8080/uploadImageCloud", {
-        method: "POST",
-        body: formData,
-      })
-        .then((res) => {
-          return res.json();
-        })
-        .then((value) => {
-          console.log("therer");
-          setFileList((current) => [
-            ...current,
-            {
-              uid: uploadInfo.file.uid,
-              url: value.url,
-            },
-          ]);
-        })
-        .catch(() => {})
-        .finally(() => {
-          setUploading(false);
-        });
-    }
+  const handleUploadChange = ({ fileList: newFileList }: any) => {
+    setFileList(newFileList);
   };
 
   const handleOnCalendarChange = (dates: any) => {
@@ -230,7 +385,7 @@ const CreateTour = () => {
       const array: TourDetailType[] = [
         {
           day: formatterDate(dates[0]),
-          listId: [uuid()],
+          listId: [{id: uuid()}],
         },
       ];
       const total_day = caculateStartDateAndEndDate(dates[0], dates[1]);
@@ -240,13 +395,15 @@ const CreateTour = () => {
         date.setDate(date.getDate() + (i + 1));
         array.push({
           day: formatterDate(date),
-          listId: [uuid()],
+          listId: [{id:uuid()}],
         });
       }
 
       setListLocation(array);
 
       // setTotalDay(array);
+    } else {
+      setListLocation([]);
     }
   };
 
@@ -257,15 +414,15 @@ const CreateTour = () => {
     let dd: any = today.getDate();
     if (dd < 10) dd = "0" + dd;
     if (mm < 10) mm = "0" + mm;
-    const formatted = dd + "/" + mm + "/" + yyyy;
+    const formatted = yyyy + "-" + mm + "-" + dd;
     return formatted;
   };
 
   const formatterHours = (date: any) => {
     const today = new Date(date);
     return today.toLocaleTimeString(navigator.language, {
-      hour: '2-digit',
-      minute:'2-digit'
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -275,6 +432,26 @@ const CreateTour = () => {
     const time = endTime - startTime;
     return Math.floor(time / (60 * 1000 * 60 * 24));
   };
+
+
+  //   const handleDeleteLocation = (item: any) => {
+  //   setListLocation((current) => {
+  //     const clone = [...current];
+  //     let index  = -1;
+  //     for(let i = 0; i <current.length;i++){
+        
+  //       for(let k = 0; i <current[i].listId.length;i++){
+       
+  //       }
+  //     }
+  //     // const index = clone.indexOf((item));
+  //     if (index > -1) {
+  //       clone.splice(index, 1);
+  //     }
+  //     return clone;
+  //   });
+  // };
+
 
   // const handleAntdUpload = () => {
   //   const formData = new FormData();
@@ -388,49 +565,46 @@ const CreateTour = () => {
               }
             />
           </Form.Item>
-          {/* 
+
           <Form.Item
             label="Nhà hàng"
             name="restaurant"
-            rules={[
-              { required: true, message: "Please input your restaurant!" },
-            ]}
+            // rules={[
+            //   { required: true, message: "Please input your restaurant!" },
+            // ]}
           >
             <Select
-            showSearch
+              showSearch
               allowClear
               style={{ width: "100%" }}
-              // options={provinces}
-              onSelect={handleSelectProvinces}
-              // filterOption={(inputValue, option) =>
-              //   option!.label
-              //     .toUpperCase()
-              //     .indexOf(inputValue.toUpperCase()) !== -1
-              // }
+              options={restaurantList}
+              // onSelect={handleSelectProvinces}
+              filterOption={(inputValue, option) =>
+                option!.label
+                  .toUpperCase()
+                  .indexOf(inputValue.toUpperCase()) !== -1
+              }
             />
           </Form.Item>
 
-          
           <Form.Item
             label="Khách sạn"
             name="hotel"
-            rules={[
-              { required: true, message: "Please input your hotel!" },
-            ]}
+            // rules={[{ required: true, message: "Please input your hotel!" }]}
           >
-           <Select
-            showSearch
+            <Select
+              showSearch
               allowClear
               style={{ width: "100%" }}
-              // options={provinces}
-              onSelect={handleSelectProvinces}
-              // filterOption={(inputValue, option) =>
-              //   option!.label
-              //     .toUpperCase()
-              //     .indexOf(inputValue.toUpperCase()) !== -1
-              // }
+              options={hotelList}
+              // onSelect={handleSelectProvinces}
+              filterOption={(inputValue, option) =>
+                option!.label
+                  .toUpperCase()
+                  .indexOf(inputValue.toUpperCase()) !== -1
+              }
             />
-          </Form.Item> */}
+          </Form.Item>
 
           <Form.Item
             label="Thumbnail (4 files)"
@@ -440,7 +614,7 @@ const CreateTour = () => {
               { required: true, message: "Please input 4 img thumnail" },
               {
                 validator: (_, value) =>
-                  countFile === 4
+                  fileList.length === 4
                     ? Promise.resolve()
                     : Promise.reject(new Error("Please input 4 img thumnail")),
               },
@@ -449,8 +623,10 @@ const CreateTour = () => {
             <Upload
               multiple
               maxCount={4}
+              name="upload"
               accept="image/png, image/jpeg"
-              // action={uploadURl}
+              fileList={fileList}
+              action={uploadURl}
               listType="picture-card"
               onChange={handleUploadChange}
               onRemove={(file: any) => {
@@ -460,11 +636,8 @@ const CreateTour = () => {
                 );
                 setFileList(newList);
               }}
-              beforeUpload={(file) => {
-                return false;
-              }}
             >
-              {countFile < 4 && (
+              {fileList.length < 4 && (
                 <div>
                   <PlusOutlined />
                   <div style={{ marginTop: 8 }}>Upload</div>
@@ -509,7 +682,11 @@ const CreateTour = () => {
           name="tour_time"
           rules={[{ required: true, message: "Please input time" }]}
         >
-          <RangePicker onCalendarChange={handleOnCalendarChange} />
+          <RangePicker
+            format="YYYY-MM-DD"
+            picker="week"
+            onCalendarChange={handleOnCalendarChange}
+          />
         </Form.Item>
       </div>
 
@@ -517,8 +694,6 @@ const CreateTour = () => {
         {listLocation?.map((item) => (
           <TourDetail
             handleAddLocation={handleAddLocation}
-            // handleSetListLocation={handleSetListLocation}
-
             form={form}
             key={item.day}
             location={item}

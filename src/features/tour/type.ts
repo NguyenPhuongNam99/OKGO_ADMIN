@@ -3,7 +3,12 @@ export interface AutoCompleteType {
     label: string
 }
 
+export interface ListIdType {
+    id: string
+    thumbnail?: string
+}
+
 export interface TourDetailType {
     day: string,
-    listId: string[]
+    listId: ListIdType[]
 }
