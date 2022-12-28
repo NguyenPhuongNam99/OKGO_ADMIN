@@ -1,4 +1,4 @@
-import { Button, Form, Select, Spin } from "antd";
+import { Button, Form, Select, Spin, Upload } from "antd";
 import axios from "axios";
 import { Formik } from "formik";
 import { useEffect, useState } from "react";
@@ -10,21 +10,25 @@ import "../voucher-create/voucherCreateStyles.scss";
 import UploadFileComponent from "../hotel-create/component/UploadFile";
 import axiosClient from "../../api/api";
 import { useParams } from "react-router-dom";
+import { PlusOutlined } from "@ant-design/icons";
+import _ from 'lodash'
 
 const HotelUpdate = () => {
   const params = useParams();
 
   const [data, setData] = useState<any>();
-  const [valueFile, setValueFile] = useState<any>(data ? data.image : []);
   const [isSelectedCity, setIsSelectCity] = useState<boolean>(false);
   const [provinces, setProvinces] = useState<AutoCompleteType[]>([]);
   const [form] = Form.useForm();
   const [cities, setCities] = useState<AutoCompleteType[]>([]);
+  const [fileList, setFileList] = useState<any>([]);
+  const [countFile, setCountFile] = useState();
   const [valueForm, setValueForm] = useState({
     cityForm: "",
     districtForm: "",
     type: "",
   });
+  const [count, setCount] = useState(0)
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -86,11 +90,12 @@ const HotelUpdate = () => {
   const submitForm = async (values: any, resetForm: any) => {
     try {
       const formatFile: any = [];
-      valueFile.map((item: any) => {
+      fileList.map((item: any) => {
         return formatFile.push({
-          image: item,
+          image: item.url,
         });
       });
+      console.log("fomat file", formatFile);
       let config = {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("Name"),
@@ -107,11 +112,12 @@ const HotelUpdate = () => {
         type: valueForm.type,
       };
 
-      const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/v1/hotel/createHotel`,
+      const response = await axios.put(
+        `${process.env.REACT_APP_BASE_URL}/v1/hotel/updateHotel/${params.id}`,
         obj,
         config
       );
+      resetForm();
       toast.success("🦄 Cập nhật nhà hàng thành công!", {
         position: "top-right",
         autoClose: 5000,
@@ -126,9 +132,6 @@ const HotelUpdate = () => {
         provinces: "",
         city: "",
       });
-      resetForm();
-
-      setValueFile([]);
     } catch (error) {
       console.log("error", error);
     }
@@ -139,22 +142,23 @@ const HotelUpdate = () => {
       ...valueForm,
       type: value,
     });
-
-    setValueForm({
-        ...valueForm,
-        type: data?.type
-    })
   };
 
   const fetchIDHotel = async () => {
     try {
       setLoading(true);
-      const response = await axiosClient.get(`/v1/hotel/${params.id}`);
+      const response: any = await axiosClient.get(`/v1/hotel/${params.id}`);
       console.log("response new", response);
       setData(response);
-       form.setFieldsValue({
+      setCount(response.image.length)
+      form.setFieldsValue({
         provinces: data.district_id,
-        city: data.district_id,
+        city: data.city_id,
+      });
+      setValueForm({
+        type: data?.type,
+        districtForm: data?.district_id,
+        cityForm: data?.city_id,
       });
       setLoading(false);
     } catch (error) {
@@ -167,7 +171,45 @@ const HotelUpdate = () => {
     fetchIDHotel();
   }, []);
 
-  console.log("data name", data?.name);
+  const handleUploadChange = (uploadInfo: any) => {
+    setCountFile(uploadInfo.fileList.length);
+    if (uploadInfo.file.status !== "removed") {
+      const formData = new FormData();
+      console.log(uploadInfo.file);
+      formData.append("upload", uploadInfo.file);
+      fetch("http://206.189.37.26:8080/uploadImageCloud", {
+        method: "POST",
+        body: formData,
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((value) => {
+          console.log("therer");
+          setFileList((current: any) => [
+            ...current,
+            {
+              uid: uploadInfo.file.uid,
+              url: value.url,
+            },
+          ]);
+        })
+        .catch(() => {})
+        .finally(() => {});
+    }
+  };
+
+  const formatDefaultList: any = [];
+  data?.image.map((item: any, index: any) => {
+    formatDefaultList.push({
+      uid: index,
+      url: item.image,
+      status: "done",
+    });
+  });
+
+  console.log("format", formatDefaultList.length, count);
+
   return (
     <Spin tip="loading" spinning={loading} size={"large"}>
       <div className="containerRestaurant">
@@ -181,9 +223,9 @@ const HotelUpdate = () => {
             <Formik
               initialValues={{
                 name: data?.name ? data.name : "",
-                description:data?.description ? data?.description : "",
-                address_detail: data ? data.address_detail: "",
-                price: data? data?.price: "",
+                description: data?.description ? data?.description : "",
+                address_detail: data ? data.address_detail : "",
+                price: data ? data?.price : "",
               }}
               validationSchema={validateCreateHotel}
               onSubmit={async (values, { resetForm }) => {
@@ -260,7 +302,7 @@ const HotelUpdate = () => {
                     <div className="formBlock">
                       <p className="vouchername">Thành phố</p>
                       <Select
-                      defaultValue={data?.city_id}
+                        defaultValue={data?.city_id}
                         showSearch
                         allowClear
                         onClear={handleClearCity}
@@ -279,8 +321,7 @@ const HotelUpdate = () => {
                       <p className="vouchername">Quận huyện</p>
 
                       <Select
-                                            defaultValue={data?.district_id}
-
+                        defaultValue={data?.district_id}
                         showSearch
                         allowClear
                         style={{ width: "100%" }}
@@ -317,7 +358,7 @@ const HotelUpdate = () => {
                       <p className="vouchername">Loại</p>
 
                       <Select
-                      defaultValue={data?.type}
+                        defaultValue={data?.type}
                         style={{ width: "100%" }}
                         showSearch
                         placeholder="Chọn loại"
@@ -344,26 +385,34 @@ const HotelUpdate = () => {
                       <p className="vouchername">Chọn file</p>
 
                       <div style={{ display: "flex", flexDirection: "row" }}>
-                        <UploadFileComponent
-                          setValueFile={setValueFile}
-                          valueFile={valueFile}
-                          index={0}
-                        />
-                        <UploadFileComponent
-                          setValueFile={setValueFile}
-                          valueFile={valueFile}
-                          index={1}
-                        />
-                        <UploadFileComponent
-                          setValueFile={setValueFile}
-                          valueFile={valueFile}
-                          index={2}
-                        />
-                        <UploadFileComponent
-                          setValueFile={setValueFile}
-                          valueFile={valueFile}
-                          index={3}
-                        />
+                        <Upload
+                          multiple
+                          maxCount={4}
+                          defaultFileList={formatDefaultList}
+                          accept="image/png, image/jpeg"
+                          // action={uploadURl}
+                          listType="picture-card"
+                          onChange={handleUploadChange}
+                          onRemove={(file: any) => {
+                            setCount(count - 1);
+                            console.log('count', count -1 )
+                            const cloneFileList = [...fileList];
+                            const newList = cloneFileList.filter(
+                              (item) => item.uid !== file.uid
+                            );
+                            setFileList(newList);
+                          }}
+                          beforeUpload={(file) => {
+                            return false;
+                          }}
+                        >
+                          {count < 4  && (
+                            <div>
+                              <PlusOutlined />
+                              <div style={{ marginTop: 8 }}>Upload</div>
+                            </div>
+                          )}
+                        </Upload>
                       </div>
                     </div>
 

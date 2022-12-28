@@ -3,6 +3,7 @@ import { UploadChangeParam } from "antd/es/upload";
 import React, { useState } from "react";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import "../hotelCreateStyles.scss";
+import axios from "axios";
 
 interface TypeUploadFile {
   setValueFile: any;
@@ -17,46 +18,50 @@ const UploadFileComponent: React.FC<TypeUploadFile> = ({
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleChangeView: UploadProps["onChange"] = async (
-    info: UploadChangeParam<UploadFile>
-  ) => {
-    if (info?.file.status === "uploading") {
-      setLoading(true);
-    }
-    if (info?.file.status === "done") {
-      setLoading(false);
-      console.log("file", info?.file?.response?.url);
-      setValueFile([...valueFile, info?.file?.response?.url]);
+  const handleUploadChange = (uploadInfo: any) => {
+    console.log("upload", uploadInfo);
+    if (uploadInfo.file.status !== "removed") {
+      const formData = new FormData();
+      console.log(uploadInfo.file);
+      formData.append("upload", uploadInfo.file);
+      fetch("http://localhost:8080/uploadImageCloud", {
+        method: "POST",
+        body: formData,
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((value) => {
+          console.log("therer");
+        })
+        .catch(() => {})
+        .finally(() => {});
     }
   };
+
   const uploadButton = (
     <div>
       {loading ? <LoadingOutlined /> : <PlusOutlined />}
       <div style={{ marginTop: 8 }}>Upload</div>
     </div>
   );
+
+  console.log("inde", index);
+
   return (
     <Upload
-      name="upload"
+      // name="upload"
+      beforeUpload={(file) => {
+        return false;
+      }}
       listType="picture-card"
       className="avatar-uploader"
+      accept="image/png, image/jpeg"
       showUploadList={false}
-      action="http://206.189.37.26:8080/uploadImageCloud"
-      onChange={handleChangeView}
+      // action="http://206.189.37.26:8080/uploadImageCloud"
+      onChange={handleUploadChange}
     >
-      {valueFile[Number(index)] && valueFile[Number(index)] ? (
-        <img
-          src={valueFile[Number(index)]}
-          alt="avatar"
-          style={{
-            width: "100%",
-            height: "100%",
-            overflow: "hidden",
-          }}
-        />
-      ) : (
-        uploadButton
-      )}
+      {uploadButton}
     </Upload>
   );
 };
