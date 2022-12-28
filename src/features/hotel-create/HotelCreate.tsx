@@ -2,6 +2,7 @@ import { Button, Form, Select } from "antd";
 import axios from "axios";
 import { Formik } from "formik";
 import { useEffect, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
 import { validateCreateHotel } from "../../utils/Utils";
 import { cityApi, provincesApi } from "../tour/tourApi";
 import { AutoCompleteType } from "../tour/type";
@@ -80,7 +81,6 @@ const HotelCreate = () => {
   };
 
   console.log("value file", valueFile);
-  console.log("value file [0]", valueFile[0]);
 
   const submitForm = async (values: any, resetForm: any) => {
     try {
@@ -90,7 +90,6 @@ const HotelCreate = () => {
           image: item,
         });
       });
-      console.log("format file", formatFile);
       let config = {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("Name"),
@@ -112,13 +111,24 @@ const HotelCreate = () => {
         obj,
         config
       );
-      console.log("response new", response);
-    
-     
+      toast.success("🦄 Tạo nhà hàng thành công!", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+      form.setFieldsValue({
+        provinces: "",
+        city: "",
+      });
       resetForm();
       setTimeStart("");
       setTimeFinish("");
-      setValueFile(undefined);
+      setValueFile([]);
     } catch (error) {
       console.log("error", error);
     }
@@ -137,6 +147,7 @@ const HotelCreate = () => {
         <div className="headerTitleRestaurant">
           <h5 className="titleRestaurant">Thêm mới nhà hàng</h5>
         </div>
+        <ToastContainer />
 
         <Formik
           initialValues={{
@@ -163,7 +174,6 @@ const HotelCreate = () => {
           }) => (
             <form onSubmit={handleSubmit}>
               <div className="FormContent">
-
                 <div className="formBlock">
                   <p className="vouchername">Tên khách sạn</p>
                   <input

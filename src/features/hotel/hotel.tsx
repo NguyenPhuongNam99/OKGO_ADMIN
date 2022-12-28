@@ -5,6 +5,8 @@ import axiosClient from "../../api/api";
 import HeaderForm from "../../components/header-form/HeaderForm";
 import "./hotel.scss";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { Modal } from "antd";
 
 interface TypeImage {
   image: String;
@@ -24,10 +26,10 @@ interface TypeListHotel {
 }
 const Hotel = () => {
   const icon = require("../../assets/icons/hotel.svg").default;
-  console.log(icon);
-
   const [dataHotel, setDataHotel] = useState<TypeListHotel[] | any>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [idDelete, setIdDelete] = useState<string>();
   const navigate = useNavigate();
 
   const getListHotel = async () => {
@@ -42,6 +44,33 @@ const Hotel = () => {
     }
   };
 
+  const deleteVoucher = async (paramId: string | undefined) => {
+    try {
+      const response = axiosClient
+        .delete(`/v1/hotel/${paramId}`)
+        .then(() => {
+          getListHotel();
+        })
+        .catch((error) => {
+          console.log("error", error);
+        });
+      console.log("response delete", response);
+      toast.success("🦄 Bạn đã xoá khách sạn thành công!", {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+      setIsModalOpen(false);
+    } catch (error) {
+      console.log("error new", error);
+    }
+  };
+
   useEffect(() => {
     getListHotel();
   }, []);
@@ -49,6 +78,14 @@ const Hotel = () => {
   return (
     <div>
       <HeaderForm onclick={() => navigate("/Home/HotelCreate")} />
+      <Modal
+        title="Basic Modal"
+        open={isModalOpen}
+        onCancel={() => setIsModalOpen(!isModalOpen)}
+        onOk={() => deleteVoucher(idDelete ? idDelete : undefined)}
+      >
+        <p>Bạn có muốn xoá không ?</p>
+      </Modal>
       <div className="hotelContainer">
         <Table bordered hover responsive size="sm" striped>
           <thead>
@@ -83,12 +120,7 @@ const Hotel = () => {
                     <td>
                       <span className="buttonClickVoucher">
                         <div className="containerButton">
-                          <Button
-                            color="primary"
-                            href="#"
-                            tag="a"
-                            className="button"
-                          >
+                          <Button color="primary" tag="a" className="button" onClick={() => navigate(`/Home/HotelUpdate/${item._id}`)}>
                             <AiOutlineEdit />
                           </Button>
                         </div>
@@ -96,9 +128,12 @@ const Hotel = () => {
                         <div className="containerButton">
                           <Button
                             color="primary"
-                            href="#"
                             tag="a"
                             className="button"
+                            onClick={() => (
+                              setIsModalOpen(true), setIdDelete(item._id),
+                              console.log('click')
+                            )}
                           >
                             <AiOutlineDelete />
                           </Button>

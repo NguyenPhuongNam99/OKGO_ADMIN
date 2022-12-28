@@ -2,17 +2,21 @@ import { Upload, UploadFile, UploadProps } from "antd";
 import { UploadChangeParam } from "antd/es/upload";
 import React, { useState } from "react";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import "../hotelCreateStyles.scss"
+import "../hotelCreateStyles.scss";
 
 interface TypeUploadFile {
-    setValueFile: any;
-    valueFile: any;
-    index: number;
+  setValueFile: any;
+  valueFile: any;
+  index: number;
 }
 
-const UploadFileComponent: React.FC<TypeUploadFile> = ({setValueFile, valueFile, index}) => {
+const UploadFileComponent: React.FC<TypeUploadFile> = ({
+  setValueFile,
+  valueFile,
+  index,
+}) => {
   const [loading, setLoading] = useState<boolean>(false);
-  
+
   const handleChangeView: UploadProps["onChange"] = async (
     info: UploadChangeParam<UploadFile>
   ) => {
@@ -21,7 +25,7 @@ const UploadFileComponent: React.FC<TypeUploadFile> = ({setValueFile, valueFile,
     }
     if (info?.file.status === "done") {
       setLoading(false);
-      console.log('file', info?.file?.response?.url)
+      console.log("file", info?.file?.response?.url);
       setValueFile([...valueFile, info?.file?.response?.url]);
     }
   };
@@ -31,7 +35,6 @@ const UploadFileComponent: React.FC<TypeUploadFile> = ({setValueFile, valueFile,
       <div style={{ marginTop: 8 }}>Upload</div>
     </div>
   );
-  console.log('valufile index', valueFile)
   return (
     <Upload
       name="upload"
@@ -41,7 +44,7 @@ const UploadFileComponent: React.FC<TypeUploadFile> = ({setValueFile, valueFile,
       action="http://206.189.37.26:8080/uploadImageCloud"
       onChange={handleChangeView}
     >
-      {valueFile[Number(index)] ? (
+      {valueFile[Number(index)] && valueFile[Number(index)] ? (
         <img
           src={valueFile[Number(index)]}
           alt="avatar"

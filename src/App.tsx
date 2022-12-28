@@ -20,6 +20,7 @@ import CreateTour from "./features/tour/createTour/createTour";
 import TourList from "./features/tour/tourList/tourList";
 import HotelCreate from "./features/hotel-create/HotelCreate";
 import { ToastContainer } from "react-toastify";
+import HotelUpdate from "./features/hotel-update/HotelUpdate";
 
 const router = createBrowserRouter([
   {
@@ -87,6 +88,10 @@ const router = createBrowserRouter([
       {
         path: "/Home/RestaurantCreate",
         element: <RestaurantCreate />,
+      },
+      {
+        path: "/Home/HotelUpdate/:id",
+        element: <HotelUpdate />,
       },
     ],
   },
