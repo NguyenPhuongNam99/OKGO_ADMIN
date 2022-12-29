@@ -71,6 +71,7 @@ const router = createBrowserRouter([
         children: [
           { path: "/Home/Tour", element: <TourList /> },
           { path: "/Home/Tour/create", element: <CreateTour /> },
+          { path: "/Home/Tour/update/:id", element: <CreateTour /> },
         ],
       },
       {

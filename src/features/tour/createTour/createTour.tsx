@@ -14,12 +14,14 @@ import {
 } from "antd";
 import {
   cityApi,
-  createTour,
   provincesApi,
   listHotelApi,
   listRestaurentApi,
+  getTourScheduleApi,
+  updateTourApi,
+  createTourApi,
 } from "../tourApi";
-import { AutoCompleteType, ListIdType, TourDetailType } from "../type";
+import { AutoCompleteType, ListIdType, TourDetailType, TourTimeLineScheduleType, TourTimeLineType } from "../type";
 import { PlusOutlined } from "@ant-design/icons";
 import TourDetail from "./component/tourDetail";
 import type { RcFile, UploadFile, UploadProps } from "antd/es/upload/interface";
@@ -60,7 +62,7 @@ const CreateTour = () => {
   const [fileList, setFileList] = useState<any[]>([]);
   const [uploading, setUploading] = useState(false);
   const [listLocation, setListLocation] = useState<TourDetailType[]>([]);
-
+  const [updateID,setUpdateID] = useState<string>('');
   const params = useParams();
   const { id } = params;
 
@@ -71,135 +73,79 @@ const CreateTour = () => {
   }, []);
 
   useEffect(() => {
-    if (isPageReady) {
-      const fillData = async () => {
-        const fakeData = {
-          tour_name: "tour 1",
-          city: "01",
-          price: 1,
-          provinces: "002",
-          thumbnail: [
-            {
-              uid: "rc-upload-1672198194844-5",
-              url: "https://res.cloudinary.com/dqpxzkx9r/image/upload/v1672198210/learn_nodejs/l9gcpw42n2mrt9y9yhct.png",
-            },
-            {
-              uid: "rc-upload-1672198194844-3",
-              url: "https://res.cloudinary.com/dqpxzkx9r/image/upload/v1672198210/learn_nodejs/isgwmisuuarasbag0oal.jpg",
-            },
-            {
-              uid: "rc-upload-1672198194844-4",
-              url: "https://res.cloudinary.com/dqpxzkx9r/image/upload/v1672198211/learn_nodejs/dx8gdamn5ptmuovqjtkl.jpg",
-            },
-            {
-              uid: "rc-upload-1672198194844-6",
-              url: "https://res.cloudinary.com/dqpxzkx9r/image/upload/v1672198211/learn_nodejs/tuuspxbtz8ddqa4udkk1.jpg",
-            },
-          ],
-          is_show: true,
-          time_line: [
-            {
-              day: "2022-12-28",
-              schedule: [
-                {
-                  location: "HN_1",
-                  door_price: 200000,
-                  description: "HN_1 description 2",
-                  time_start: "00:00",
-                  time_end: "00:04",
-                  thumbnail:
-                    "https://res.cloudinary.com/dqpxzkx9r/image/upload/v1672198236/learn_nodejs/agqygmz5gptimp3dfxjb.png",
-                },
-                {
-                  location: "HN_2",
-                  door_price: 300000,
-                  description: "HN_2 description",
-                  time_start: "00:05",
-                  time_end: "00:10",
-                  thumbnail:
-                    "https://res.cloudinary.com/dqpxzkx9r/image/upload/v1672198260/learn_nodejs/a07e0a0tq5asjcacktll.jpg",
-                },
-              ],
-            },
-            {
-              day: "2022-12-29",
-              schedule: [
-                {
-                  location: "SG",
-                  door_price: 400000,
-                  description: "SG description",
-                  time_start: "00:04",
-                  time_end: "00:08",
-                  thumbnail:
-                    "https://res.cloudinary.com/dqpxzkx9r/image/upload/v1672198274/learn_nodejs/zvutnsygqxv1touzb46s.jpg",
-                },
-              ],
-            },
-          ],
-          description: "<p>CKeditor</p>",
-          restaurant_id: "13",
-          hotel_id: "",
-        };
+    try {
+      if (isPageReady) {
+        console.log(id)
+        if (!!id) {
+          const fillData = async () => {
+            const tour_detail:any = await getTourScheduleApi(id);
+          
+            const tour_detail_item = tour_detail[0]?.item
+            const tour_detail_time_line = tour_detail[0]?.time_line
 
-        await handleSelectCity(fakeData.city);
-
-        setCKEditorDataDB(fakeData.description);
-        setFileList(fakeData.thumbnail);
-
-        const defaultTourTime: any = [];
-
-        const defaultListLocation: TourDetailType[] = fakeData.time_line.map(
-          (item) => {
-            const listId: ListIdType[] = item.schedule.map((schedule_item) => {
-              const uniId = uuid();
-              const prefix = `${item.day}_${uniId}`;
-              const testDate = dayjs(new Date(`${item.day} ${schedule_item.time_start}`));
-              console.log(testDate)
-              form.setFieldsValue({
-                [`location_${prefix}`]: schedule_item.location,
-                [`door_price_${prefix}`]: schedule_item.door_price,
-                [`description_${prefix}`]: schedule_item.description,
-                [`thumbnail_${prefix}`]: schedule_item.thumbnail,
-                [`time_${prefix}`]: [dayjs(new Date(`${item.day} ${schedule_item.time_start}`)),dayjs(new Date(`${item.day} ${schedule_item.time_end}`))],
-                // [`location_${prefix}`]: schedule_item.location,
-              });
-              return {
-                id: uniId,
-                thumbnail: schedule_item.thumbnail
-              };
+            setUpdateID(tour_detail_item._id)
+            await handleSelectCity(tour_detail_item.city);
+    
+            setCKEditorDataDB(tour_detail_item.description);
+            setFileList(tour_detail_item.thumbnail);
+    
+            const defaultTourTime: any = [];
+    
+            const defaultListLocation: TourDetailType[] = tour_detail_time_line.map(
+              (item:TourTimeLineType) => {
+                const listId: ListIdType[] = item.schedule.map((schedule_item:TourTimeLineScheduleType) => {
+                  const uniId = uuid();
+                  const prefix = `${item.day}_${uniId}`;
+                  const testDate = dayjs(new Date(`${item.day} ${schedule_item.time_start}`));
+                  console.log(testDate)
+                  form.setFieldsValue({
+                    [`location_${prefix}`]: schedule_item.location,
+                    [`door_price_${prefix}`]: schedule_item.door_price,
+                    [`description_${prefix}`]: schedule_item.description,
+                    [`thumbnail_${prefix}`]: schedule_item.thumbnail,
+                    [`time_${prefix}`]: [dayjs(new Date(`${item.day} ${schedule_item.time_start}`)),dayjs(new Date(`${item.day} ${schedule_item.time_end}`))],
+                    // [`location_${prefix}`]: schedule_item.location,
+                  });
+                  return {
+                    id: uniId,
+                    thumbnail: schedule_item.thumbnail
+                  };
+                });
+                defaultTourTime.push(dayjs(item.day));
+                return {
+                  day: item.day,
+                  listId: listId,
+                };
+              }
+            );
+    
+            setListLocation(defaultListLocation);
+          
+            form.setFieldsValue({
+              tour_name: tour_detail_item.tour_name,
+              price: tour_detail_item.price,
+              city: tour_detail_item.city,
+              provinces: tour_detail_item.provinces,
+              restaurant: tour_detail_item.restaurant_id.toString(),
+              hotel: tour_detail_item.hotel_id.toString(),
+              thumbnail: "123123",
+              tour_time: defaultTourTime,
             });
-            defaultTourTime.push(dayjs(item.day));
-            return {
-              day: item.day,
-              listId: listId,
-            };
-          }
-        );
-
-        setListLocation(defaultListLocation);
-        form.setFieldsValue({
-          tour_name: fakeData.tour_name,
-          price: fakeData.price,
-          city: fakeData.city,
-          provinces: fakeData.provinces,
-          restaurant: fakeData.restaurant_id,
-          hotel: fakeData.hotel_id,
-          thumbnail: "123123",
-          tour_time: defaultTourTime,
+          };
+    
+          fillData();
+        }
+        const listCity = cityApi();
+        Promise.all([listCity]).then((values) => {
+          const listCity = values[0].data.data.data;
+          const convertList = convertDataSource(listCity);
+          setCities(convertList);
         });
-      };
-
-      fillData();
-      // if (!!id) {
-
-      // }
-      const listCity = cityApi();
-      Promise.all([listCity]).then((values) => {
-        const listCity = values[0].data.data.data;
-        const convertList = convertDataSource(listCity);
-        setCities(convertList);
-      });
+      }
+    } catch (error) {
+      
     }
+   
   }, [isPageReady]);
 
   const editorConfiguration = {
@@ -344,8 +290,8 @@ const CreateTour = () => {
         is_show: true,
         time_line: [],
         description: CKEditorDataDB,
-        restaurant_id: values.hotel ? values.hotel.toString() : " ",
-        hotel_id: values.restaurant ? values.restaurant?.toString() : " ",
+        restaurant_id: values.restaurant ? values.restaurant.toString() : " ",
+        hotel_id: values.hotel ? values.hotel.toString() : " ",
       };
       // Lấy chi tiết lịch trình
   
@@ -357,14 +303,13 @@ const CreateTour = () => {
         };
         item.listId?.map((data) => {
           const preFix = `${item.day}_${data.id}`;
-          console.log(preFix)
           const scheduleDetail = {
-            location: values[`location_${item.day}_${data.id}`],
-            door_price: values[`door_price_${item.day}_${data.id}`],
-            description: values[`description_${item.day}_${data.id}`],
-            time_start: formatterHours(values[`time_${item.day}_${data.id}`][0]),
-            time_end: formatterHours(values[`time_${item.day}_${data.id}`][1]),
-            thumbnail: values[`thumbnail_${item.day}_${data.id}`],
+            location: values[`location_${preFix}`],
+            door_price: values[`door_price_${preFix}`],
+            description: values[`description_${preFix}`],
+            time_start: formatterHours(values[`time_${preFix}`][0]),
+            time_end: formatterHours(values[`time_${preFix}`][1]),
+            thumbnail: values[`thumbnail_${preFix}`],
           };
           schedule["schedule"].push(scheduleDetail);
         });
@@ -372,7 +317,14 @@ const CreateTour = () => {
       });
       finalData.time_line = listSchedule;
 
-      createTour(finalData);
+      if(!!id){
+        finalData._id = updateID;
+        finalData.tour_id = id;
+        updateTourApi(finalData);
+      }else{
+        createTourApi(finalData);
+
+      }
     }
   };
 

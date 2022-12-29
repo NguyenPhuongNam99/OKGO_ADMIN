@@ -13,8 +13,8 @@ import {
 } from "antd";
 import { useEffect, useState } from "react";
 import Icon, { DeleteOutlined } from "@ant-design/icons";
-import dayjs from 'dayjs';
-import 'dayjs/locale/zh-cn';
+import dayjs from "dayjs";
+import "dayjs/locale/zh-cn";
 import { url } from "inspector";
 
 const { TextArea } = Input;
@@ -23,42 +23,42 @@ const { RangePicker } = DatePicker;
 const uploadURl = "http://206.189.37.26:8080/uploadImageCloud";
 
 const LocationDetail = (props: any) => {
-  const { date, index, defaultThumbnail, handleDeleteLocation, form,id } = props;
+  const { date, index, defaultThumbnail, handleDeleteLocation, form, id } =
+    props;
 
   const [countFile, setCountFile] = useState<number>(0);
 
-  useEffect(()=>{
-    if(!!defaultThumbnail){
-      setCountFile(1)
+  useEffect(() => {
+    if (!!defaultThumbnail) {
+      setCountFile(1);
     }
-  },[defaultThumbnail])
+  }, [defaultThumbnail]);
 
   const handleUploadChange = (uploadInfo: any) => {
     setCountFile(uploadInfo.fileList.length);
 
-    if(uploadInfo.file.status !== "removed"){
-        const formData = new FormData();
-        formData.append("upload", uploadInfo.file);
-        // setUploading(true);
-        // // You can use any AJAX library you like
-        fetch(uploadURl, {
-          method: "POST",
-          body: formData,
+    if (uploadInfo.file.status !== "removed") {
+      const formData = new FormData();
+      formData.append("upload", uploadInfo.file);
+      // setUploading(true);
+      // // You can use any AJAX library you like
+      fetch(uploadURl, {
+        method: "POST",
+        body: formData,
+      })
+        .then((res) => {
+          return res.json();
         })
-          .then((res) => {
-    
-            return res.json();
-          }).then((value)=>{
-            form.setFieldsValue({
-                [`thumbnail_${date}_${id}`]: value.url,
-              });
-          })
-          .catch(() => {})
-          .finally(() => {
-            // setUploading(false);
-          }); 
-    }        
-
+        .then((value) => {
+          form.setFieldsValue({
+            [`thumbnail_${date}_${id}`]: value.url,
+          });
+        })
+        .catch(() => {})
+        .finally(() => {
+          // setUploading(false);
+        });
+    }
   };
 
   return (
@@ -95,7 +95,7 @@ const LocationDetail = (props: any) => {
           wrapperCol={{ span: 12 }}
           rules={[{ required: true, message: "Please input your time!" }]}
         >
-          <RangePicker format='HH:mm:ss' picker="time"  />
+          <RangePicker format="HH:mm:ss" picker="time" />
         </Form.Item>
       </Col>
 
@@ -129,12 +129,15 @@ const LocationDetail = (props: any) => {
             {
               validator: (_, value) => {
                 let flat = false;
-                if(value && typeof value === 'string'){
-                    flat=true;
-                }else if(typeof value === 'object' && value?.fileList?.length > 0 ){
-                    flat =true
+                if (value && typeof value === "string") {
+                  flat = true;
+                } else if (
+                  typeof value === "object" &&
+                  value?.fileList?.length > 0
+                ) {
+                  flat = true;
                 }
-               
+
                 return flat
                   ? Promise.resolve()
                   : Promise.reject(new Error("Should accept agreement"));
@@ -145,14 +148,18 @@ const LocationDetail = (props: any) => {
           <Upload
             multiple
             maxCount={1}
-            defaultFileList={[
-              {
-                uid: id ,
-                name: 'xxx.png',
-                status: 'done',
-                url: defaultThumbnail,
-              }
-            ]}
+            defaultFileList={
+              defaultThumbnail
+                ? [
+                    {
+                      uid: id,
+                      name: "xxx.png",
+                      status: "done",
+                      url: defaultThumbnail,
+                    },
+                  ]
+                : []
+            }
             accept="image/png, image/jpeg"
             action={uploadURl}
             listType="picture-card"
