@@ -69,6 +69,16 @@ const VoucherCreate = () => {
       });
     } catch (error) {
       console.log("error new", error);
+       toast.success(error as any, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
     }
   };
 
