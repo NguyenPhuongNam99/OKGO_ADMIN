@@ -75,6 +75,7 @@ const Hotel = () => {
     getListHotel();
   }, []);
 
+
   return (
     <div>
       <HeaderForm onclick={() => navigate("/Home/HotelCreate")} />
@@ -114,7 +115,7 @@ const Hotel = () => {
                       <img src={item.image[0]?.image} className="imageHotel" />
                     </td>
                     <td className="centerText">{item.price}</td>
-                    <td>{item.address}</td>
+                    <td>{item.address_detail}</td>
                     <td style={{ textAlign: "center" }}>{item.type}</td>
                     <td style={{ textAlign: "center" }}>{item.rate}</td>
                     <td>

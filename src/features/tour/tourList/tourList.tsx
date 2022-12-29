@@ -68,7 +68,7 @@ const TourList = () => {
                       <span>{item.description}</span>
                     </td>
                     <td className="centerView">
-                      <img src={item.image[0].image} className="imageTour" />
+                      <img src={item.thumbnail[0].url} className="imageTour" />
                     </td>
                     <td className="centerText">{item.price}</td>
                     <td>{item.address}</td>

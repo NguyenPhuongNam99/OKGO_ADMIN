@@ -1,4 +1,4 @@
-import { Button, Form, Select } from "antd";
+import { Button, Form, Select, Upload } from "antd";
 import axios from "axios";
 import { Formik } from "formik";
 import { useEffect, useState } from "react";
@@ -8,6 +8,7 @@ import { cityApi, provincesApi } from "../tour/tourApi";
 import { AutoCompleteType } from "../tour/type";
 import "../voucher-create/voucherCreateStyles.scss";
 import UploadFileComponent from "./component/UploadFile";
+import { PlusOutlined } from "@ant-design/icons";
 
 const HotelCreate = () => {
   const [valueFile, setValueFile] = useState<any>([]);
@@ -17,6 +18,9 @@ const HotelCreate = () => {
   const [provinces, setProvinces] = useState<AutoCompleteType[]>([]);
   const [form] = Form.useForm();
   const [cities, setCities] = useState<AutoCompleteType[]>([]);
+  const [fileList, setFileList] = useState<any>([]);
+  const [countFile, setCountFile] = useState();
+
   const [valueForm, setValueForm] = useState({
     cityForm: "",
     districtForm: "",
@@ -85,11 +89,12 @@ const HotelCreate = () => {
   const submitForm = async (values: any, resetForm: any) => {
     try {
       const formatFile: any = [];
-      valueFile.map((item: any) => {
+      fileList.map((item: any) => {
         return formatFile.push({
-          image: item,
+          image: item.url,
         });
       });
+      console.log("fomat file", formatFile);
       let config = {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("Name"),
@@ -140,6 +145,40 @@ const HotelCreate = () => {
       type: value,
     });
   };
+
+  const handleUploadChange = (uploadInfo: any) => {
+    console.log("uploadInfo.file", uploadInfo.file);
+    console.log("1111111");
+
+    setCountFile(uploadInfo.fileList.length);
+    if (uploadInfo.file.status !== "removed") {
+      const formData = new FormData();
+      console.log(uploadInfo.file);
+      formData.append("upload", uploadInfo.file);
+      // // You can use any AJAX library you like
+      fetch("http://206.189.37.26:8080/uploadImageCloud", {
+        method: "POST",
+        body: formData,
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((value) => {
+          console.log("therer");
+          setFileList((current: any) => [
+            ...current,
+            {
+              uid: uploadInfo.file.uid,
+              url: value.url,
+            },
+          ]);
+        })
+        .catch(() => {})
+        .finally(() => {});
+    }
+  };
+
+  console.log("file list", fileList);
 
   return (
     <div className="containerRestaurant">
@@ -311,26 +350,29 @@ const HotelCreate = () => {
                   <p className="vouchername">Chọn file</p>
 
                   <div style={{ display: "flex", flexDirection: "row" }}>
-                    <UploadFileComponent
-                      setValueFile={setValueFile}
-                      valueFile={valueFile}
-                      index={0}
-                    />
-                    <UploadFileComponent
-                      setValueFile={setValueFile}
-                      valueFile={valueFile}
-                      index={1}
-                    />
-                    <UploadFileComponent
-                      setValueFile={setValueFile}
-                      valueFile={valueFile}
-                      index={2}
-                    />
-                    <UploadFileComponent
-                      setValueFile={setValueFile}
-                      valueFile={valueFile}
-                      index={3}
-                    />
+                    <Upload
+                      multiple
+                      maxCount={4}
+                      accept="image/png, image/jpeg"
+                      // action={uploadURl}
+                      listType="picture-card"
+                      onChange={handleUploadChange}
+                      onRemove={(file: any) => {
+                        const cloneFileList = [...fileList];
+                        const newList = cloneFileList.filter(
+                          (item) => item.uid !== file.uid
+                        );
+                        setFileList(newList);
+                      }}
+                      beforeUpload={(file) => {
+                        return false;
+                      }}
+                    >
+                      <div>
+                        <PlusOutlined />
+                        <div style={{ marginTop: 8 }}>Upload</div>
+                      </div>
+                    </Upload>
                   </div>
                 </div>
 
