@@ -30,7 +30,7 @@ const createTourApi = async (data: any) => {
 const updateTourApi = async (data: any) => {
   return await axios({
     method: "put",
-    url: `http://206.189.37.26:8080/v1/tour/updateTour`,
+    url: `http://206.189.37.26:8080/v1/tour/updateTour/${data.tour_id}`,
     data: data,
     headers: {
       Authorization:
