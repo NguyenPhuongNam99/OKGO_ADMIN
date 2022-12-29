@@ -59,7 +59,8 @@ const TourList = () => {
               </tr>
             </thead>
             <tbody style={{ verticalAlign: "middle", textAlign: "center" }}>
-              {dataTour?.map((item: any, index: number) => {
+              {dataTour?.map((itemData: any, index: number) => {
+                const item = itemData.item
                 return (
                   <tr>
                     <th scope="row">{index}</th>
