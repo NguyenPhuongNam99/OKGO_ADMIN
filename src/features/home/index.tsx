@@ -112,7 +112,7 @@ const App: React.FC = () => {
           ]}
         />
       </Sider>
-      <Layout className="site-layout">
+      <Layout className="site-layout slide-left">
         <Header
           className="site-layout-background"
           style={{ padding: 0, backgroundColor: "#fff" }}
