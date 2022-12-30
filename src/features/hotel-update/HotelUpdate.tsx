@@ -4,7 +4,7 @@ import { Formik } from "formik";
 import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { validateCreateHotel } from "../../utils/Utils";
-import { cityApi, provincesApi } from "../tour/tourApi";
+import { cityApi, cityCallApi, provincesApi, provincesApiData } from "../tour/tourApi";
 import { AutoCompleteType } from "../tour/type";
 import "../voucher-create/voucherCreateStyles.scss";
 import UploadFileComponent from "../hotel-create/component/UploadFile";
@@ -41,12 +41,19 @@ const HotelUpdate = () => {
       setIsPageReady(true);
     }
   }, []);
-
+ const convertDataCity = (data: any) => {
+    return data?.map((item: any) => {
+      return {
+        label: item.name,
+        value: item.cityId,
+      };
+    });
+  };
   useEffect(() => {
-    const listCity = cityApi();
+     const listCity = cityCallApi();
+    console.log("list city", listCity);
     Promise.all([listCity]).then((values) => {
-      const listCity = values[0]?.data?.data?.data;
-      const convertList = convertDataSource(listCity);
+      const convertList = convertDataCity(values[0]);
       setCities(convertList);
     });
   }, []);
@@ -62,9 +69,9 @@ const HotelUpdate = () => {
 
   const handleSelectCity = (id: string) => {
     setIsSelectCity(true);
-    provincesApi(id)
+    provincesApiData(id)
       .then((value) => {
-        const provincesList = value.data.data.data;
+        const provincesList = value;
         setProvinces(convertDataSource(provincesList));
       })
       .catch();

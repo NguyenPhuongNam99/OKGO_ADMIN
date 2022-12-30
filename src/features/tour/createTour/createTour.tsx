@@ -20,8 +20,16 @@ import {
   getTourScheduleApi,
   updateTourApi,
   createTourApi,
+  cityCallApi,
+  provincesApiData,
 } from "../tourApi";
-import { AutoCompleteType, ListIdType, TourDetailType, TourTimeLineScheduleType, TourTimeLineType } from "../type";
+import {
+  AutoCompleteType,
+  ListIdType,
+  TourDetailType,
+  TourTimeLineScheduleType,
+  TourTimeLineType,
+} from "../type";
 import { PlusOutlined } from "@ant-design/icons";
 import TourDetail from "./component/tourDetail";
 import type { RcFile, UploadFile, UploadProps } from "antd/es/upload/interface";
@@ -62,7 +70,7 @@ const CreateTour = () => {
   const [fileList, setFileList] = useState<any[]>([]);
   const [uploading, setUploading] = useState(false);
   const [listLocation, setListLocation] = useState<TourDetailType[]>([]);
-  const [updateID,setUpdateID] = useState<string>('');
+  const [updateID, setUpdateID] = useState<string>("");
   const params = useParams();
   const { id } = params;
 
@@ -72,55 +80,73 @@ const CreateTour = () => {
     }
   }, []);
 
+  const convertDataCity = (data: any) => {
+    return data?.map((item: any) => {
+      return {
+        label: item.name,
+        value: item.cityId,
+      };
+    });
+  };
   useEffect(() => {
     try {
       if (isPageReady) {
-        console.log(id)
+        console.log(id);
         if (!!id) {
           const fillData = async () => {
-            const tour_detail:any = await getTourScheduleApi(id);
-          
-            const tour_detail_item = tour_detail[0]?.item
-            const tour_detail_time_line = tour_detail[0]?.time_line
+            const tour_detail: any = await getTourScheduleApi(id);
 
-            setUpdateID(tour_detail_item._id)
+            const tour_detail_item = tour_detail[0]?.item;
+            const tour_detail_time_line = tour_detail[0]?.time_line;
+
+            setUpdateID(tour_detail_item._id);
             await handleSelectCity(tour_detail_item.city);
-    
+
             setCKEditorDataDB(tour_detail_item.description);
             setFileList(tour_detail_item.thumbnail);
-    
+
             const defaultTourTime: any = [];
-    
-            const defaultListLocation: TourDetailType[] = tour_detail_time_line.map(
-              (item:TourTimeLineType) => {
-                const listId: ListIdType[] = item.schedule.map((schedule_item:TourTimeLineScheduleType) => {
-                  const uniId = uuid();
-                  const prefix = `${item.day}_${uniId}`;
-                  const testDate = dayjs(new Date(`${item.day} ${schedule_item.time_start}`));
-                  console.log(testDate)
-                  form.setFieldsValue({
-                    [`location_${prefix}`]: schedule_item.location,
-                    [`door_price_${prefix}`]: schedule_item.door_price,
-                    [`description_${prefix}`]: schedule_item.description,
-                    [`thumbnail_${prefix}`]: schedule_item.thumbnail,
-                    [`time_${prefix}`]: [dayjs(new Date(`${item.day} ${schedule_item.time_start}`)),dayjs(new Date(`${item.day} ${schedule_item.time_end}`))],
-                    // [`location_${prefix}`]: schedule_item.location,
-                  });
-                  return {
-                    id: uniId,
-                    thumbnail: schedule_item.thumbnail
-                  };
-                });
+
+            const defaultListLocation: TourDetailType[] =
+              tour_detail_time_line.map((item: TourTimeLineType) => {
+                const listId: ListIdType[] = item.schedule.map(
+                  (schedule_item: TourTimeLineScheduleType) => {
+                    const uniId = uuid();
+                    const prefix = `${item.day}_${uniId}`;
+                    const testDate = dayjs(
+                      new Date(`${item.day} ${schedule_item.time_start}`)
+                    );
+                    console.log(testDate);
+                    form.setFieldsValue({
+                      [`location_${prefix}`]: schedule_item.location,
+                      [`door_price_${prefix}`]: schedule_item.door_price,
+                      [`description_${prefix}`]: schedule_item.description,
+                      [`thumbnail_${prefix}`]: schedule_item.thumbnail,
+                      [`time_${prefix}`]: [
+                        dayjs(
+                          new Date(`${item.day} ${schedule_item.time_start}`)
+                        ),
+                        dayjs(
+                          new Date(`${item.day} ${schedule_item.time_end}`)
+                        ),
+                      ],
+                      // [`location_${prefix}`]: schedule_item.location,
+                    });
+                    return {
+                      id: uniId,
+                      thumbnail: schedule_item.thumbnail,
+                    };
+                  }
+                );
                 defaultTourTime.push(dayjs(item.day));
                 return {
                   day: item.day,
                   listId: listId,
                 };
-              }
-            );
-    
+              });
+
             setListLocation(defaultListLocation);
-          
+
             form.setFieldsValue({
               tour_name: tour_detail_item.tour_name,
               price: tour_detail_item.price,
@@ -132,20 +158,17 @@ const CreateTour = () => {
               tour_time: defaultTourTime,
             });
           };
-    
+
           fillData();
         }
-        const listCity = cityApi();
+        const listCity = cityCallApi();
+        console.log("list city", listCity);
         Promise.all([listCity]).then((values) => {
-          const listCity = values[0].data.data.data;
-          const convertList = convertDataSource(listCity);
+          const convertList = convertDataCity(values[0]);
           setCities(convertList);
         });
       }
-    } catch (error) {
-      
-    }
-   
+    } catch (error) {}
   }, [isPageReady]);
 
   const editorConfiguration = {
@@ -204,7 +227,7 @@ const CreateTour = () => {
     const convertList = clone.map((item) => {
       if (item.day === itemLocation.day) {
         const currentListId = item.listId;
-        currentListId.push({id: uuid()});
+        currentListId.push({ id: uuid() });
         return {
           day: item.day,
           listId: currentListId,
@@ -218,21 +241,27 @@ const CreateTour = () => {
   const convertDataSource = (data: any) => {
     return data?.map((item: any) => {
       return {
-        label: item.name_with_type,
-        value: item.code,
+        label: item.name,
+        value: item.districtId,
       };
     });
   };
 
   const handleSelectCity = async (id: string) => {
-    const provinces = await provincesApi(id);
-    const provincesList = provinces.data.data.data;
+    console.log("id", id);
+    const provinces = await provincesApiData(id);
+    const provincesList = provinces;
+    console.log('province', provinces)
     setProvinces(convertDataSource(provincesList));
 
     const hotel: any = await listHotelApi(id);
     const convertData: any = [];
+    const response = hotel.filter((data: any) => Number(data.city_id) === Number(id))
+    console.log('response', response)
     hotel.forEach((element: any) => {
-      if (element.city_id === id) {
+      console.log('element', element)
+      console.log('id', id)
+      if (Number(element.city_id) === Number(id)) {
         convertData.push({
           label: element.name,
           value: element.idHotel.toString(),
@@ -240,12 +269,14 @@ const CreateTour = () => {
       }
     });
 
+    console.log('convert da', convertData)
+
     setHotelList(convertData);
 
     const restaurant: any = await listRestaurentApi(id);
     const convertData_2: any = [];
     restaurant.forEach((element: any) => {
-      if (element.city_id === id) {
+      if (Number(element.city_id) === Number(id)) {
         convertData_2.push({
           label: element.name,
           value: element.idrestaurant.toString(),
@@ -273,7 +304,7 @@ const CreateTour = () => {
   };
 
   const onFinish = (values: any) => {
-    console.log(values)
+    console.log(values);
     if (values && CKEditorDataDB) {
       const finalData: any = {
         tour_name: values.tour_name,
@@ -294,7 +325,7 @@ const CreateTour = () => {
         hotel_id: values.hotel ? values.hotel.toString() : " ",
       };
       // Lấy chi tiết lịch trình
-  
+
       const listSchedule: any = [];
       listLocation.map((item) => {
         const schedule: any = {
@@ -317,13 +348,13 @@ const CreateTour = () => {
       });
       finalData.time_line = listSchedule;
 
-      if(!!id){
+      if (!!id) {
         finalData._id = updateID;
         finalData.tour_id = id;
         updateTourApi(finalData);
-      }else{
+      } else {
+        console.log('finalda', finalData)
         createTourApi(finalData);
-
       }
     }
   };
@@ -337,7 +368,7 @@ const CreateTour = () => {
       const array: TourDetailType[] = [
         {
           day: formatterDate(dates[0]),
-          listId: [{id: uuid()}],
+          listId: [{ id: uuid() }],
         },
       ];
       const total_day = caculateStartDateAndEndDate(dates[0], dates[1]);
@@ -347,7 +378,7 @@ const CreateTour = () => {
         date.setDate(date.getDate() + (i + 1));
         array.push({
           day: formatterDate(date),
-          listId: [{id:uuid()}],
+          listId: [{ id: uuid() }],
         });
       }
 
@@ -385,15 +416,14 @@ const CreateTour = () => {
     return Math.floor(time / (60 * 1000 * 60 * 24));
   };
 
-
   //   const handleDeleteLocation = (item: any) => {
   //   setListLocation((current) => {
   //     const clone = [...current];
   //     let index  = -1;
   //     for(let i = 0; i <current.length;i++){
-        
+
   //       for(let k = 0; i <current[i].listId.length;i++){
-       
+
   //       }
   //     }
   //     // const index = clone.indexOf((item));
@@ -403,7 +433,6 @@ const CreateTour = () => {
   //     return clone;
   //   });
   // };
-
 
   // const handleAntdUpload = () => {
   //   const formData = new FormData();
@@ -625,7 +654,6 @@ const CreateTour = () => {
             />
           )}
         </div>
-        
       </div>
 
       <div className="tourContainer-create">

@@ -6,7 +6,7 @@ import { toast, ToastContainer } from "react-toastify";
 import axiosClient from "../../api/api";
 import DatePickerComponent from "../../components/date/DatePickerComponent";
 import { validateCreateRestaurant } from "../../utils/Utils";
-import { cityApi, provincesApi } from "../tour/tourApi";
+import { cityApi, cityCallApi, provincesApi, provincesApiData } from "../tour/tourApi";
 import { AutoCompleteType } from "../tour/type";
 import "../voucher-create/voucherCreateStyles.scss";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
@@ -27,18 +27,25 @@ const RestaurantCreate = () => {
   });
   const [CKEditorDataDB, setCKEditorDataDB] = useState<string>("");
   const [isPageReady, setIsPageReady] = useState<boolean>(false);
-  
+
   useEffect(() => {
     if (!isPageReady) {
       setIsPageReady(true);
     }
   }, []);
-
+const convertDataCity = (data: any) => {
+    return data?.map((item: any) => {
+      return {
+        label: item.name,
+        value: item.cityId,
+      };
+    });
+  };
   useEffect(() => {
-    const listCity = cityApi();
+      const listCity = cityCallApi();
+    console.log("list city", listCity);
     Promise.all([listCity]).then((values) => {
-      const listCity = values[0].data.data.data;
-      const convertList = convertDataSource(listCity);
+      const convertList = convertDataCity(values[0]);
       setCities(convertList);
     });
   }, []);
@@ -46,8 +53,8 @@ const RestaurantCreate = () => {
   const convertDataSource = (data: any) => {
     return data?.map((item: any) => {
       return {
-        label: item.name_with_type,
-        value: item.code,
+        label: item.name,
+        value: item.districtId,
       };
     });
   };
@@ -62,9 +69,9 @@ const RestaurantCreate = () => {
 
   const handleSelectCity = (id: string) => {
     setIsSelectCity(true);
-    provincesApi(id)
+    provincesApiData(id)
       .then((value) => {
-        const provincesList = value.data.data.data;
+        const provincesList = value;
         setProvinces(convertDataSource(provincesList));
       })
       .catch();
