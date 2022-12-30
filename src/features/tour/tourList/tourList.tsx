@@ -6,15 +6,43 @@ import HeaderForm from "../../../components/header-form/HeaderForm";
 import "../tour.scss";
 import axiosClient from "../../../api/api";
 import { AxiosResponse } from "axios";
-import { Spin } from "antd";
+import { Modal, Spin } from "antd";
 import { DataResponse } from "../../../types/type";
 import { Checkbox } from "antd";
-
+import { toast } from "react-toastify";
 
 const TourList = () => {
   const navigate = useNavigate();
   const [dataTour, setDataTour] = useState<Array<DataResponse>>();
   const [loading, setLoading] = useState<boolean>(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [idDelete, setIdDelete] = useState<string>();
+
+  const deleteVoucher = async (paramId: string | undefined) => {
+    try {
+      const response = axiosClient
+        .delete(`/v1/tour/deleteTourSchedule/${idDelete}`)
+        .then(() => {
+          getListTour();
+        })
+        .catch((error) => {
+          console.log("error", error);
+        });
+      toast.success("🦄 Bạn đã xoá voucher thành công!", {
+        position: "top-right",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+      setIsModalOpen(false);
+    } catch (error) {
+      console.log("error new", error);
+    }
+  };
 
   const getListTour = async () => {
     try {
@@ -36,10 +64,17 @@ const TourList = () => {
   }, []);
 
   return (
- 
     <Spin spinning={loading} tip="Loading" size="large">
       <div className="tourContainer">
-        <HeaderForm />
+        <HeaderForm onclick={() => navigate("/Home/Tour/create")} />
+        <Modal
+          title="Basic Modal"
+          open={isModalOpen}
+          onCancel={() => setIsModalOpen(!isModalOpen)}
+          onOk={() => deleteVoucher(idDelete ? idDelete : undefined)}
+        >
+          <p>Bạn có muốn xoá không ?</p>
+        </Modal>
         <div className="TourContain">
           <Table bordered hover responsive size="sm" striped>
             <thead>
@@ -59,7 +94,8 @@ const TourList = () => {
               </tr>
             </thead>
             <tbody style={{ verticalAlign: "middle", textAlign: "center" }}>
-              {dataTour?.map((item: any, index: number) => {
+              {dataTour?.map((itemData: any, index: number) => {
+                const item = itemData.item;
                 return (
                   <tr>
                     <th scope="row">{index}</th>
@@ -88,10 +124,9 @@ const TourList = () => {
                         <div className="containerButton">
                           <Button
                             color="primary"
-                            href="#"
                             tag="a"
                             className="button"
-                            onClick={() => navigate("/Restaurant")}
+                            onClick={() => navigate(`/Home/Tour/update/${item.idTour}`)}
                           >
                             <AiOutlineEdit />
                           </Button>
@@ -100,9 +135,11 @@ const TourList = () => {
                         <div className="containerButton">
                           <Button
                             color="primary"
-                            href="#"
                             tag="a"
                             className="button"
+                            onClick={() => (
+                              setIsModalOpen(true), setIdDelete(item.idTour)
+                            )}
                           >
                             <AiOutlineDelete />
                           </Button>

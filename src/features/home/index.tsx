@@ -60,7 +60,7 @@ const App: React.FC = () => {
             console.log("selectedKeys", selectedKeys.key);
             setRoute(Number(selectedKeys.key));
             dispatch(getRoute(selectedKeys.key));
-            if (Number(selectedKeys.key) === Number(1)) {
+            if (Number(selectedKeys.key) === Number(3)) {
               navigate("/Home/Tour");
             }
             // if(Number(selectedKeys.key) === Number(4)){
