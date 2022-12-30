@@ -5,18 +5,30 @@ import Upload, {
   UploadFile,
   UploadProps,
 } from "antd/es/upload";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./restaurantUpdate.scss";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import { Formik } from "formik";
 import { updateInputSchema } from "../../utils/Utils";
 import axios from "axios";
 import useFetchApi from "../../hook/useFetchApi";
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams } from "react-router-dom";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import { editorConfiguration } from "../../utils/Utils";
+import Editor from "ckeditor5-custom-build/build/ckeditor";
 //thêm trường miêu tả khách sạn : décription
 const RestaurantUpdate = (props: any) => {
-  const params = useParams()
-  console.log('props param',params)
+  const params = useParams();
+  console.log("props param", params);
+  const [isPageReady, setIsPageReady] = useState<boolean>(false);
+    const [CKEditorDataDB, setCKEditorDataDB] = useState<string>("");
+
+
+  useEffect(() => {
+    if (!isPageReady) {
+      setIsPageReady(true);
+    }
+  }, []);
 
   async function onFileChange(e: any) {
     const formData = new FormData();
@@ -165,28 +177,20 @@ const RestaurantUpdate = (props: any) => {
                   <p className="titleContent">Miêu tả</p>
                 </div>
                 <div className="rightContent">
-                  <input
-                    className="inputValue"
-                    type="discription"
-                    name="discription"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.discription}
-                  />
+                 {isPageReady && (
+                    <CKEditor
+                    
+                      editor={Editor}
+                      data={CKEditorDataDB}
+                      config={editorConfiguration}
+                      onChange={(event: any, editor: any) => {
+                        setCKEditorDataDB(editor.getData());
+                      }}
+                    />
+                  )}
                 </div>
               </div>
-              {errors.discription &&
-                touched.discription &&
-                errors.discription && (
-                  <div className="containError">
-                    <div className="leftError" />
-                    <p className="rightError">
-                      {errors.discription &&
-                        touched.discription &&
-                        errors.discription}
-                    </p>
-                  </div>
-                )}
+             
               <div className="blockContentRes">
                 <div className="leftContent">
                   <p className="titleContent">Giá</p>

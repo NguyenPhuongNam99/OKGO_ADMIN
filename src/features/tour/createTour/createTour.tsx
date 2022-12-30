@@ -625,6 +625,7 @@ const CreateTour = () => {
             />
           )}
         </div>
+        
       </div>
 
       <div className="tourContainer-create">

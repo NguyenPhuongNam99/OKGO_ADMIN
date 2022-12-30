@@ -11,7 +11,10 @@ import UploadFileComponent from "../hotel-create/component/UploadFile";
 import axiosClient from "../../api/api";
 import { useParams } from "react-router-dom";
 import { PlusOutlined } from "@ant-design/icons";
-import _ from 'lodash'
+import _ from "lodash";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import { editorConfiguration } from "../../utils/Utils";
+import Editor from "ckeditor5-custom-build/build/ckeditor";
 
 const HotelUpdate = () => {
   const params = useParams();
@@ -28,8 +31,16 @@ const HotelUpdate = () => {
     districtForm: "",
     type: "",
   });
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
   const [loading, setLoading] = useState<boolean>(false);
+  const [isPageReady, setIsPageReady] = useState<boolean>(false);
+  const [CKEditorDataDB, setCKEditorDataDB] = useState<string>("");
+
+  useEffect(() => {
+    if (!isPageReady) {
+      setIsPageReady(true);
+    }
+  }, []);
 
   useEffect(() => {
     const listCity = cityApi();
@@ -103,7 +114,7 @@ const HotelUpdate = () => {
       };
       const obj = {
         name: values.name,
-        description: values.description,
+        description: CKEditorDataDB,
         city_id: valueForm.cityForm,
         district_id: valueForm.districtForm,
         address_detail: values.address_detail,
@@ -150,16 +161,18 @@ const HotelUpdate = () => {
       const response: any = await axiosClient.get(`/v1/hotel/${params.id}`);
       console.log("response new", response);
       setData(response);
-      setCount(response.image.length)
+      setCount(response.image.length);
       form.setFieldsValue({
-        provinces: data.district_id,
-        city: data.city_id,
+        provinces: response.district_id,
+        city: response.city_id,
       });
       setValueForm({
-        type: data?.type,
-        districtForm: data?.district_id,
-        cityForm: data?.city_id,
+        type: response?.type,
+        districtForm: response?.district_id,
+        cityForm: response?.city_id,
       });
+      console.log('data new', response.description)
+      setCKEditorDataDB(response?.description)
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -223,7 +236,6 @@ const HotelUpdate = () => {
             <Formik
               initialValues={{
                 name: data?.name ? data.name : "",
-                description: data?.description ? data?.description : "",
                 address_detail: data ? data.address_detail : "",
                 price: data ? data?.price : "",
               }}
@@ -263,24 +275,17 @@ const HotelUpdate = () => {
                     )}
                     <div className="formBlock">
                       <p className="vouchername">Miêu tả khách sạn</p>
-                      <input
-                        className="inputContent"
-                        placeholder="Nhập miêu tả khách sạn"
-                        name="description"
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={values.description}
-                      />
-                    </div>
-                    {errors.description &&
-                      touched.description &&
-                      errors.description && (
-                        <p className="errorInput">
-                          {errors.description &&
-                            touched.description &&
-                            errors.description}
-                        </p>
+                      {isPageReady && (
+                        <CKEditor
+                          editor={Editor}
+                          data={CKEditorDataDB}
+                          config={editorConfiguration}
+                          onChange={(event: any, editor: any) => {
+                            setCKEditorDataDB(editor.getData());
+                          }}
+                        />
                       )}
+                    </div>
 
                     <div className="formBlock">
                       <p className="vouchername">Giá giao động</p>
@@ -395,7 +400,7 @@ const HotelUpdate = () => {
                           onChange={handleUploadChange}
                           onRemove={(file: any) => {
                             setCount(count - 1);
-                            console.log('count', count -1 )
+                            console.log("count", count - 1);
                             const cloneFileList = [...fileList];
                             const newList = cloneFileList.filter(
                               (item) => item.uid !== file.uid
@@ -406,7 +411,7 @@ const HotelUpdate = () => {
                             return false;
                           }}
                         >
-                          {count < 4  && (
+                          {count < 4 && (
                             <div>
                               <PlusOutlined />
                               <div style={{ marginTop: 8 }}>Upload</div>

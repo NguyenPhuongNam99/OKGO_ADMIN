@@ -123,14 +123,64 @@ export const createVoucher = Yup.object().shape({
 
 export const validateCreateRestaurant = Yup.object().shape({
   name: Yup.string().min(3).required("Tên nhà hàng đang rỗng *"),
-  discription: Yup.string().min(3).required("Miêu tả đang rỗng *"),
   address_detail: Yup.string().min(3).required("Địa chỉ chi tiết đang rỗng *"),
   price: Yup.string().min(3).required("Giá đang rỗng *"),
 })
 
 export const validateCreateHotel = Yup.object().shape({
   name: Yup.string().min(3).required("Tên khách sạn đang rỗng *"),
-  description: Yup.string().min(3).required("Miêu tả đang rỗng *"),
   address_detail: Yup.string().min(3).required("Địa chỉ chi tiết đang rỗng *"),
   price: Yup.string().min(3).required("Giá đang rỗng *"),
 })
+
+
+export const editorConfiguration = {
+    toolbar: {
+      items: [
+        "blockQuote",
+        "bold",
+        "imageTextAlternative",
+        "link",
+        "selectAll",
+        "undo",
+        "redo",
+        "heading",
+        "resizeImage:original",
+        "resizeImage:25",
+        "resizeImage:50",
+        "resizeImage:75",
+        "resizeImage",
+        "imageResize",
+        "imageStyle:full",
+        "imageStyle:side",
+        "imageUpload",
+        "indent",
+        "outdent",
+        "italic",
+        "numberedList",
+        "bulletedList",
+        "insertTable",
+        "tableColumn",
+        "tableRow",
+        "mergeTableCells",
+      ],
+
+      shouldNotGroupWhenFull: true,
+    },
+
+    image: {
+      styles: ["alignLeft", "alignCenter", "alignRight"],
+      toolbar: [
+        "imageStyle:alignLeft",
+        "imageStyle:alignCenter",
+        "imageStyle:alignRight",
+        "|",
+        "|",
+        "imageTextAlternative",
+      ],
+    },
+
+    ckfinder: {
+      uploadUrl: 'http://206.189.37.26:8080/uploadImageCloud',
+    },
+  };

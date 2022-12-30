@@ -8,6 +8,14 @@ const cityApi = async () => {
   });
 };
 
+
+export const cityCallApi = async () => {
+  return await axiosClient({
+    method: "get",
+    url: "http://206.189.37.26:8080/v1/city/getAllCity",
+  });
+};
+
 const provincesApi = async (cityId: string) => {
   return await axios({
     method: "get",

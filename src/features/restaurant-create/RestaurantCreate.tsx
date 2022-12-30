@@ -9,6 +9,9 @@ import { validateCreateRestaurant } from "../../utils/Utils";
 import { cityApi, provincesApi } from "../tour/tourApi";
 import { AutoCompleteType } from "../tour/type";
 import "../voucher-create/voucherCreateStyles.scss";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import { editorConfiguration } from "../../utils/Utils";
+import Editor from "ckeditor5-custom-build/build/ckeditor";
 
 const RestaurantCreate = () => {
   const [valueFile, setValueFile] = useState<any>([]);
@@ -22,6 +25,14 @@ const RestaurantCreate = () => {
     cityForm: "",
     districtForm: "",
   });
+  const [CKEditorDataDB, setCKEditorDataDB] = useState<string>("");
+  const [isPageReady, setIsPageReady] = useState<boolean>(false);
+  
+  useEffect(() => {
+    if (!isPageReady) {
+      setIsPageReady(true);
+    }
+  }, []);
 
   useEffect(() => {
     const listCity = cityApi();
@@ -103,6 +114,9 @@ const RestaurantCreate = () => {
     }
   }
 
+
+
+
   const submitForm = async (values: any, resetForm: any) => {
     try {
       const formatFile: any = [];
@@ -119,7 +133,7 @@ const RestaurantCreate = () => {
       };
       const obj = {
         name: values.name,
-        description: values.discription,
+        description: CKEditorDataDB,
         city_id: valueForm.cityForm,
         district_id: valueForm.districtForm,
         address_detail: values.address_detail,
@@ -168,7 +182,6 @@ const RestaurantCreate = () => {
         <Formik
           initialValues={{
             name: "",
-            discription: "",
             address_detail: "",
             price: "",
           }}
@@ -210,25 +223,19 @@ const RestaurantCreate = () => {
                 )}
                 <div className="formBlock">
                   <p className="vouchername">Miêu tả nhà hàng</p>
-                  <input
-                    className="inputContent"
-                    placeholder="Nhập miêu tả nhà hàng"
-                    name="discription"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.discription}
-                  />
-                </div>
-                {errors.discription &&
-                  touched.discription &&
-                  errors.discription && (
-                    <p className="errorInput">
-                      {errors.discription &&
-                        touched.discription &&
-                        errors.discription}
-                    </p>
+                   {isPageReady && (
+                    <CKEditor
+                    
+                      editor={Editor}
+                      data={CKEditorDataDB}
+                      config={editorConfiguration}
+                      onChange={(event: any, editor: any) => {
+                        setCKEditorDataDB(editor.getData());
+                      }}
+                    />
                   )}
-
+                </div>
+              
                 <div className="formBlock">
                   <p className="vouchername">Giá giao động</p>
                   <input
@@ -339,6 +346,7 @@ const RestaurantCreate = () => {
                     onChange={onFileChange}
                   />
                 </div>
+                
                 <div className="formBlock">
                   <p className="vouchername">Thời gian mở cửa</p>
                   <DatePickerComponent

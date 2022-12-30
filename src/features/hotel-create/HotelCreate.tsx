@@ -9,6 +9,9 @@ import { AutoCompleteType } from "../tour/type";
 import "../voucher-create/voucherCreateStyles.scss";
 import UploadFileComponent from "./component/UploadFile";
 import { PlusOutlined } from "@ant-design/icons";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import { editorConfiguration } from "../../utils/Utils";
+import Editor from "ckeditor5-custom-build/build/ckeditor";
 
 const HotelCreate = () => {
   const [valueFile, setValueFile] = useState<any>([]);
@@ -20,6 +23,14 @@ const HotelCreate = () => {
   const [cities, setCities] = useState<AutoCompleteType[]>([]);
   const [fileList, setFileList] = useState<any>([]);
   const [countFile, setCountFile] = useState();
+  const [isPageReady, setIsPageReady] = useState<boolean>(false);
+  const [CKEditorDataDB, setCKEditorDataDB] = useState<string>("");
+
+  useEffect(() => {
+    if (!isPageReady) {
+      setIsPageReady(true);
+    }
+  }, []);
 
   const [valueForm, setValueForm] = useState({
     cityForm: "",
@@ -102,7 +113,7 @@ const HotelCreate = () => {
       };
       const obj = {
         name: values.name,
-        description: values.description,
+        description: CKEditorDataDB,
         city_id: valueForm.cityForm,
         district_id: valueForm.districtForm,
         address_detail: values.address_detail,
@@ -191,7 +202,6 @@ const HotelCreate = () => {
         <Formik
           initialValues={{
             name: "",
-            description: "",
             address_detail: "",
             price: "",
           }}
@@ -231,24 +241,17 @@ const HotelCreate = () => {
                 )}
                 <div className="formBlock">
                   <p className="vouchername">Miêu tả khách sạn</p>
-                  <input
-                    className="inputContent"
-                    placeholder="Nhập miêu tả khách sạn"
-                    name="description"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.description}
-                  />
-                </div>
-                {errors.description &&
-                  touched.description &&
-                  errors.description && (
-                    <p className="errorInput">
-                      {errors.description &&
-                        touched.description &&
-                        errors.description}
-                    </p>
+                  {isPageReady && (
+                    <CKEditor
+                      editor={Editor}
+                      data={CKEditorDataDB}
+                      config={editorConfiguration}
+                      onChange={(event: any, editor: any) => {
+                        setCKEditorDataDB(editor.getData());
+                      }}
+                    />
                   )}
+                </div>
 
                 <div className="formBlock">
                   <p className="vouchername">Giá giao động</p>
