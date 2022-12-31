@@ -14,7 +14,6 @@ import { editorConfiguration } from "../../utils/Utils";
 import Editor from "ckeditor5-custom-build/build/ckeditor";
 
 const HotelCreate = () => {
-  const [valueFile, setValueFile] = useState<any>([]);
   const [timeStart, setTimeStart] = useState<string>();
   const [timeFinish, setTimeFinish] = useState<string>();
   const [isSelectedCity, setIsSelectCity] = useState<boolean>(false);
@@ -102,7 +101,6 @@ const HotelCreate = () => {
     });
   };
 
-  console.log("value file", valueFile);
 
   const submitForm = async (values: any, resetForm: any) => {
     try {
@@ -151,7 +149,6 @@ const HotelCreate = () => {
       resetForm();
       setTimeStart("");
       setTimeFinish("");
-      setValueFile([]);
     } catch (error) {
       console.log("error", error);
     }

@@ -251,16 +251,15 @@ const CreateTour = () => {
     console.log("id", id);
     const provinces = await provincesApiData(id);
     const provincesList = provinces;
-    console.log('province', provinces)
     setProvinces(convertDataSource(provincesList));
 
     const hotel: any = await listHotelApi(id);
     const convertData: any = [];
-    const response = hotel.filter((data: any) => Number(data.city_id) === Number(id))
-    console.log('response', response)
+    const response = hotel.filter(
+      (data: any) => Number(data.city_id) === Number(id)
+    );
     hotel.forEach((element: any) => {
-      console.log('element', element)
-      console.log('id', id)
+  
       if (Number(element.city_id) === Number(id)) {
         convertData.push({
           label: element.name,
@@ -269,7 +268,6 @@ const CreateTour = () => {
       }
     });
 
-    console.log('convert da', convertData)
 
     setHotelList(convertData);
 
@@ -352,9 +350,29 @@ const CreateTour = () => {
         finalData._id = updateID;
         finalData.tour_id = id;
         updateTourApi(finalData);
+        toast.success("🦄 Cập nhật Tour thành công!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
       } else {
-        console.log('finalda', finalData)
+        console.log("finalda", finalData);
         createTourApi(finalData);
+        toast.success("🦄 Tạo Tour thành công!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
       }
     }
   };
@@ -467,6 +485,8 @@ const CreateTour = () => {
       autoComplete="off"
     >
       <div className="tourContainer-create">
+        <ToastContainer />
+
         <div className="tourContainer-create-first">
           <Form.Item
             label="Tên Tour"
