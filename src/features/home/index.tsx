@@ -60,6 +60,9 @@ const App: React.FC = () => {
             console.log("selectedKeys", selectedKeys.key);
             setRoute(Number(selectedKeys.key));
             dispatch(getRoute(selectedKeys.key));
+            if(Number(selectedKeys.key) === Number(2)) {
+              navigate('/Home/TourOrder')
+            }
             if (Number(selectedKeys.key) === Number(3)) {
               navigate("/Home/Tour");
             }
@@ -74,6 +77,9 @@ const App: React.FC = () => {
             }
             if (Number(selectedKeys.key) === Number(6)) {
               navigate("/Home/Restaurant");
+            }
+             if (Number(selectedKeys.key) === Number(7)) {
+              navigate("/Home/TourGuide");
             }
           }}
           items={[
@@ -108,6 +114,11 @@ const App: React.FC = () => {
               key: "6",
               icon: <FaCity />,
               label: "Nhà hàng",
+            },
+               {
+              key: "7",
+              icon: <FaCity />,
+              label: "Hướng Dẫn Viên",
             },
           ]}
         />

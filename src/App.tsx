@@ -5,7 +5,6 @@ import ErrorPage from "./components/error-page/ErrorPage";
 import "./App.css";
 import Profile from "./features/Profile/Profile";
 import Hotel from "./features/hotel/hotel";
-import OrderTour from "./features/order-tour/OrderTour";
 import Restaurant from "./features/restaurant/Restaurant";
 import Tour from "./features/tour/Tour";
 import Voucher from "./features/voucher/Voucher";
@@ -21,6 +20,8 @@ import TourList from "./features/tour/tourList/tourList";
 import HotelCreate from "./features/hotel-create/HotelCreate";
 import { ToastContainer } from "react-toastify";
 import HotelUpdate from "./features/hotel-update/HotelUpdate";
+import TourOrder from "./features/tour-order/TourOrder";
+import TourGuide from "./features/tour-guide/TourGuide";
 
 const router = createBrowserRouter([
   {
@@ -47,15 +48,19 @@ const router = createBrowserRouter([
       },
       {
         path: "/Home/HotelCreate",
-        element: <HotelCreate />
+        element: <HotelCreate />,
       },
       {
         path: "/Home/HotelCreate",
         element: <HotelCreate />,
       },
       {
-        path: "/Home/OrderTour",
-        element: <OrderTour />,
+        path: "/Home/TourOrder",
+        element: <TourOrder />,
+      },
+      {
+        path: "/Home/TourGuide",
+        element: <TourGuide />,
       },
       {
         path: "/Home/Restaurant",
@@ -80,11 +85,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/Home/VoucherCreate",
-        element: <VoucherCreate />
+        element: <VoucherCreate />,
       },
       {
         path: "/Home/VoucherUpdate/:id",
-        element: <VoucherUpdate />
+        element: <VoucherUpdate />,
       },
       {
         path: "/Home/RestaurantCreate",
