@@ -88,7 +88,7 @@ const TourGuide = () => {
                   <th className="textCenter">Tên hướng dẫn viên</th>
                   <th className="textCenter">Email</th>
                   <th className="textCenter">Số điện thoại</th>
-                   <th className="textCenter">ảnh</th>
+                   <th className="textCenter">Gmail</th>
                   <th className="textCenter">Trạng thái</th>
                 </tr>
               </thead>

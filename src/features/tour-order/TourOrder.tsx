@@ -116,20 +116,20 @@ const TourOrder = () => {
 
                         <td>
                           <span className="buttonClickVoucher">
-                            <div className="containerButton">
+                            <div>
                               <Button
                                 color="primary"
                                 tag="a"
-                                className="button"
+                                style={{width: '100%', height: 30, backgroundColor: 'green'}}
                                 onClick={() =>
-                                  navigate(`/Home/Tour/update/${item.idTour}`)
+                                  navigate(`/Home/TourOrderUpdate/${item._id}`)
                                 }
                               >
-                                <AiOutlineEdit />
+                                Phê Duyệt
                               </Button>
                             </div>
 
-                            <div className="containerButton">
+                            {/* <div className="containerButton">
                               <Button
                                 color="primary"
                                 tag="a"
@@ -140,7 +140,7 @@ const TourOrder = () => {
                               >
                                 <AiOutlineDelete />
                               </Button>
-                            </div>
+                            </div> */}
                           </span>
                         </td>
                       </tr>

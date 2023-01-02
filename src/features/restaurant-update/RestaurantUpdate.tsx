@@ -19,7 +19,6 @@ import Editor from "ckeditor5-custom-build/build/ckeditor";
 //thêm trường miêu tả khách sạn : décription
 const RestaurantUpdate = (props: any) => {
   const params = useParams();
-  console.log("props param", params);
   const [isPageReady, setIsPageReady] = useState<boolean>(false);
     const [CKEditorDataDB, setCKEditorDataDB] = useState<string>("");
 
