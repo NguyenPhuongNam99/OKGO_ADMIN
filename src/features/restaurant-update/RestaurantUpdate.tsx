@@ -15,7 +15,9 @@ import useFetchApi from "../../hook/useFetchApi";
 import { useLocation, useParams } from "react-router-dom";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { editorConfiguration } from "../../utils/Utils";
-import Editor from "ckeditor5-custom-build/build/ckeditor";
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
+// import Editor from "ckeditor5-custom-build/build/ckeditor";
 //thêm trường miêu tả khách sạn : décription
 const RestaurantUpdate = (props: any) => {
   const params = useParams();
@@ -177,7 +179,7 @@ const RestaurantUpdate = (props: any) => {
                  {isPageReady && (
                     <CKEditor
                     
-                      editor={Editor}
+                      editor={ClassicEditor}
                       data={CKEditorDataDB}
                       config={editorConfiguration}
                       onChange={(event: any, editor: any) => {

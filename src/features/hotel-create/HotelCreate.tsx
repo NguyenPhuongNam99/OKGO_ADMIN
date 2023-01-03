@@ -1,17 +1,30 @@
-import { Button, Form, Select, Upload } from "antd";
+import { Button, Form, Modal, Select, Table, Upload } from "antd";
+import {lazy} from "react";
+
 import axios from "axios";
 import { Formik } from "formik";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { validateCreateHotel } from "../../utils/Utils";
-import { cityApi, cityCallApi, provincesApi, provincesApiData } from "../tour/tourApi";
+import {
+  cityApi,
+  cityCallApi,
+  provincesApi,
+  provincesApiData,
+} from "../tour/tourApi";
 import { AutoCompleteType } from "../tour/type";
 import "../voucher-create/voucherCreateStyles.scss";
-import UploadFileComponent from "./component/UploadFile";
+import "../hotel-create/hotelCreateStyles.scss";
 import { PlusOutlined } from "@ant-design/icons";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { editorConfiguration } from "../../utils/Utils";
-import Editor from "ckeditor5-custom-build/build/ckeditor";
+// import Editor from "ckeditor5-custom-build/build/ckeditor";
+import { current } from "@reduxjs/toolkit";
+import { v4 as uuid } from "uuid";
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
+
+// const CKEditor =  lazy(()=> import('@ckeditor/ckeditor5-react'));
 
 const HotelCreate = () => {
   const [timeStart, setTimeStart] = useState<string>();
@@ -21,15 +34,55 @@ const HotelCreate = () => {
   const [form] = Form.useForm();
   const [cities, setCities] = useState<AutoCompleteType[]>([]);
   const [fileList, setFileList] = useState<any>([]);
-  const [countFile, setCountFile] = useState();
   const [isPageReady, setIsPageReady] = useState<boolean>(false);
   const [CKEditorDataDB, setCKEditorDataDB] = useState<string>("");
+  const [valueForm, setValueForm] = useState({
+    cityForm: "",
+    districtForm: "",
+    type: "",
+  });
+  const [loading, setLoading] = useState<boolean>(false);
+  const [open, setOpen] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [rooms, setRooms] = useState<any>([]);
+
+  const columns = useMemo(
+    () => [
+      {
+        title: "Tên phòng",
+        dataIndex: "room_name",
+        key: "room_name",
+      },
+      {
+        title: "Giá",
+        dataIndex: "room_price",
+        key: "room_price",
+        render: (text: string) =>
+          `${text}`.replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+      },
+      {
+        title: "Số người",
+        dataIndex: "room_quantity",
+        key: "room_quantity",
+      },
+    ],
+    []
+  );
 
   useEffect(() => {
     if (!isPageReady) {
       setIsPageReady(true);
     }
   }, []);
+
+  useEffect(() => {
+    const listCity = cityCallApi();
+    Promise.all([listCity]).then((values) => {
+      const convertList = convertDataCity(values[0]);
+      setCities(convertList);
+    });
+  }, []);
+
   const convertDataCity = (data: any) => {
     return data?.map((item: any) => {
       return {
@@ -38,21 +91,64 @@ const HotelCreate = () => {
       };
     });
   };
-  const [valueForm, setValueForm] = useState({
-    cityForm: "",
-    districtForm: "",
-    type: "",
-  });
-  const [loading, setLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    const listCity = cityCallApi();
-    console.log("list city", listCity);
-    Promise.all([listCity]).then((values) => {
-      const convertList = convertDataCity(values[0]);
-      setCities(convertList);
-    });
-  }, []);
+  // modal function //
+  const showModal = () => {
+    setOpen(true);
+  };
+
+  const handleOk = async (values: any, setErrors: any) => {
+    let flag = true;
+    const errors: any = {};
+    if (!values.room_name) {
+      errors.room_name = "Tên phòng đang để trống";
+      flag = false;
+    }
+    if (!values.room_price) {
+      errors.room_price = "Giá phòng đang để trống";
+      flag = false;
+    }
+    if (!values.room_quantity) {
+      errors.room_quantity = "Số lượng người đang để trống";
+      flag = false;
+    }
+
+    setConfirmLoading(true);
+
+    if (flag) {
+      //call api here
+      await setRooms((current: any) => {
+        const filterList = current.filter(
+          (item: any) =>
+            item.room_name.toLowerCase() === values.room_name.toLowerCase()
+        );
+        if (filterList.length > 0) {
+          errors.room_name = "Tên phòng đang trùng";
+          flag = false;
+          return current;
+        } else {
+          return [
+            ...current,
+            {
+              key: uuid(),
+              room_name: values.room_name,
+              room_price: values.room_price,
+              room_quantity: values.room_quantity,
+              room_status: false
+            },
+          ];
+        }
+      });
+    }
+    setErrors(errors);
+    return flag;
+  };
+
+  const handleCancel = () => {
+    setOpen(false);
+  };
+
+  // modal function //
 
   const convertDataSource = (data: any) => {
     return data?.map((item: any) => {
@@ -101,7 +197,6 @@ const HotelCreate = () => {
     });
   };
 
-
   const submitForm = async (values: any, resetForm: any) => {
     try {
       const formatFile: any = [];
@@ -125,16 +220,17 @@ const HotelCreate = () => {
         image: formatFile,
         price: values.price,
         type: valueForm.type,
+        room: rooms,
       };
 
-      const response = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/v1/hotel/createHotel`,
+      await axios.post(
+        `http://206.189.37.26:8080/v1/hotel/createHotel`,
         obj,
         config
       );
-      toast.success("🦄 Tạo nhà hàng thành công!", {
+      toast.success("🦄 Tạo khách sạn thành công!", {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -162,10 +258,6 @@ const HotelCreate = () => {
   };
 
   const handleUploadChange = (uploadInfo: any) => {
-    console.log("uploadInfo.file", uploadInfo.file);
-    console.log("1111111");
-
-    setCountFile(uploadInfo.fileList.length);
     if (uploadInfo.file.status !== "removed") {
       const formData = new FormData();
       console.log(uploadInfo.file);
@@ -193,13 +285,11 @@ const HotelCreate = () => {
     }
   };
 
-  console.log("file list", fileList);
-
   return (
     <div className="containerRestaurant">
       <div className="blockContentRestaurant">
         <div className="headerTitleRestaurant">
-          <h5 className="titleRestaurant">Thêm mới nhà hàng</h5>
+          <h5 className="titleRestaurant">Thêm mới khách sạn</h5>
         </div>
         <ToastContainer />
 
@@ -208,10 +298,12 @@ const HotelCreate = () => {
             name: "",
             address_detail: "",
             price: "",
+            room_name: "",
+            room_price: "",
+            room_quantity: "",
           }}
           validationSchema={validateCreateHotel}
           onSubmit={async (values, { resetForm }) => {
-            console.log("values", values);
             await submitForm(values, resetForm);
           }}
         >
@@ -223,6 +315,8 @@ const HotelCreate = () => {
             handleBlur,
             handleSubmit,
             resetForm,
+            setFieldValue,
+            setErrors,
             /* and other goodies */
           }) => (
             <form onSubmit={handleSubmit}>
@@ -247,7 +341,7 @@ const HotelCreate = () => {
                   <p className="vouchername">Miêu tả khách sạn</p>
                   {isPageReady && (
                     <CKEditor
-                      editor={Editor}
+                      editor={ClassicEditor}
                       data={CKEditorDataDB}
                       config={editorConfiguration}
                       onChange={(event: any, editor: any) => {
@@ -380,6 +474,110 @@ const HotelCreate = () => {
                         <div style={{ marginTop: 8 }}>Upload</div>
                       </div>
                     </Upload>
+                  </div>
+                </div>
+
+                <div className="formBlock">
+                  {/* <p className="vouchername">Tạo phòng khách sạn</p> */}
+
+                  <div style={{ display: "flex", flexDirection: "row" }}>
+                    <Button
+                      type="primary"
+                      onClick={() => {
+                        setFieldValue("room_name", "");
+                        setFieldValue("room_price", "");
+                        setFieldValue("room_quantity", "");
+                        showModal();
+                      }}
+                    >
+                      Tạo phòng khách sạn
+                    </Button>
+                    <Modal
+                      title="Tạo phòng khách sạn"
+                      open={open}
+                      onOk={() => {
+                        handleOk(values, setErrors).then((value) => {
+                          if (value) {
+                            setConfirmLoading(false);
+                            toast.success("🦄 Tạo phòng thành công!", {
+                              position: "top-right",
+                              autoClose: 5000,
+                              hideProgressBar: false,
+                              closeOnClick: true,
+                              pauseOnHover: true,
+                              draggable: true,
+                              progress: undefined,
+                              theme: "colored",
+                            });
+                            setFieldValue("room_name", "");
+                            setFieldValue("room_price", "");
+                            setFieldValue("room_quantity", "");
+                          } else {
+                            setConfirmLoading(false);
+                          }
+                        });
+                      }}
+                      confirmLoading={confirmLoading}
+                      onCancel={handleCancel}
+                    >
+                      {/* <p>{modalText}</p> */}
+                      <div className="createRoomContainer">
+                        <div>
+                          <span className="title">Tên phòng</span>
+                          <input
+                            className="inputContent values"
+                            placeholder="Nhập tên phòng"
+                            name="room_name"
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.room_name}
+                          />
+                          {errors && errors.room_name && (
+                            <div className="error">{errors.room_name}</div>
+                          )}
+                        </div>
+
+                        <div>
+                          <span className="title">Giá</span>
+                          <input
+                            type="number"
+                            className="inputContent values"
+                            placeholder="Nhập giá"
+                            name="room_price"
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.room_price}
+                          />
+                          {errors && errors.room_price && (
+                            <div className="error">{errors.room_price}</div>
+                          )}
+                        </div>
+
+                        <div>
+                          <span className="title">Số người</span>
+                          <input
+                            type="number"
+                            className="inputContent values"
+                            placeholder="Nhập số lượng người"
+                            name="room_quantity"
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.room_quantity}
+                          />
+                          {errors && errors.room_quantity && (
+                            <div className="error">{errors.room_quantity}</div>
+                          )}
+                        </div>
+                      </div>
+                    </Modal>
+                  </div>
+
+                  <div>
+                    <Table
+                      columns={columns}
+                      dataSource={rooms}
+                      pagination={{ defaultPageSize: 5 }}
+                    />
                   </div>
                 </div>
 

@@ -1,6 +1,8 @@
 import "../tour.scss";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import Editor from "ckeditor5-custom-build/build/ckeditor";
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
+// import Editor from "ckeditor5-custom-build/build/ckeditor";
 import { useState, useEffect, useRef } from "react";
 import {
   Form,
@@ -361,7 +363,6 @@ const CreateTour = () => {
           theme: "colored",
         });
       } else {
-        console.log("finalda", finalData);
         createTourApi(finalData);
         toast.success("🦄 Tạo Tour thành công!", {
           position: "top-right",
@@ -650,7 +651,7 @@ const CreateTour = () => {
         <div className="tourContainer-create-second">
           {isPageReady && (
             <CKEditor
-              editor={Editor}
+              editor={ClassicEditor}
               config={editorConfiguration}
               data={CKEditorDataDB}
               // onReady={(editor) => {
