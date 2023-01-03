@@ -32,8 +32,6 @@ const RestaurantUpdate = (props: any) => {
   async function onFileChange(e: any) {
     const formData = new FormData();
     formData.append("file", e.target.files[0]);
-    // const data = useUploadFile(e.target.files[0]);
-    // console.log('data new', data)
   }
   return (
     <Formik
