@@ -14,7 +14,9 @@ import { PlusOutlined } from "@ant-design/icons";
 import _ from "lodash";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { editorConfiguration } from "../../utils/Utils";
-import Editor from "ckeditor5-custom-build/build/ckeditor";
+// import Editor from "ckeditor5-custom-build/build/ckeditor";
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
 
 const HotelUpdate = () => {
   const params = useParams();
@@ -284,7 +286,7 @@ const HotelUpdate = () => {
                       <p className="vouchername">Miêu tả khách sạn</p>
                       {isPageReady && (
                         <CKEditor
-                          editor={Editor}
+                          editor={ClassicEditor}
                           data={CKEditorDataDB}
                           config={editorConfiguration}
                           onChange={(event: any, editor: any) => {

@@ -97,7 +97,7 @@ const TourList = () => {
               {dataTour?.map((itemData: any, index: number) => {
                 const item = itemData.item;
                 return (
-                  <tr>
+                  <tr key={index}>
                     <th scope="row">{index}</th>
                     <td>{item.name}</td>
                     <td>

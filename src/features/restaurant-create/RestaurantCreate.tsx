@@ -11,7 +11,9 @@ import { AutoCompleteType } from "../tour/type";
 import "../voucher-create/voucherCreateStyles.scss";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { editorConfiguration } from "../../utils/Utils";
-import Editor from "ckeditor5-custom-build/build/ckeditor";
+// import Editor from "ckeditor5-custom-build/build/ckeditor";
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
 
 const RestaurantCreate = () => {
   const [valueFile, setValueFile] = useState<any>([]);
@@ -233,7 +235,7 @@ const convertDataCity = (data: any) => {
                    {isPageReady && (
                     <CKEditor
                     
-                      editor={Editor}
+                      editor={ClassicEditor}
                       data={CKEditorDataDB}
                       config={editorConfiguration}
                       onChange={(event: any, editor: any) => {
