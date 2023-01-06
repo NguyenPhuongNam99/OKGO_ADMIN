@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./index.scss";
 import { UserOutlined } from "@ant-design/icons";
 import { Dropdown, Layout, Menu } from "antd";
@@ -10,14 +10,16 @@ import Voucher from "../voucher/Voucher";
 import Tour from "../tour/Tour";
 import Hotel from "../hotel/hotel";
 import { Outlet, useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../../app/store";
+import { useAppDispatch, useAppSelector } from "../../app/store";
 import { getRoute } from "../../globalStore";
 
 const { Header, Sider, Content } = Layout;
 
 const App: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const [route, setRoute] = useState<number>(1);
+  // const {globalStore} = useAppSelector(state => state)
+
+  const [route, setRoute] = useState<string| null>(null);
   const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
@@ -28,6 +30,29 @@ const App: React.FC = () => {
       label: <p>Đăng xuất</p>,
     },
   ];
+
+  useEffect(() => {
+    const url = window.location.href;
+    if (url) {
+      if(url.includes('TourOrder')){
+        setRoute("2");
+      }else if(url.includes('Tour')){
+        setRoute("3");
+      }else if(url.includes('Voucher')){
+        setRoute("4");
+      }else if(url.includes('Hotel')){
+        setRoute("5");
+      }else if(url.includes('Restaurant')){
+        setRoute("6");
+      }else if(url.includes('TourGuide')){
+        setRoute("7");
+      }else if(url.includes('Blog')){
+        setRoute("8");
+      }else{
+        setRoute("1");
+      }
+    }
+  }, []);
 
   return (
     <Layout
@@ -51,35 +76,33 @@ const App: React.FC = () => {
             />
           )}
         </div>
-        <Menu
+        {
+          route &&   <Menu
           theme="dark"
           mode="inline"
-          defaultSelectedKeys={["1"]}
+          defaultSelectedKeys={[route]}
           className="menuLeft"
           onSelect={(selectedKeys) => {
-            console.log("selectedKeys", selectedKeys.key);
-            setRoute(Number(selectedKeys.key));
+            // setRoute(Number(selectedKeys.key));
             dispatch(getRoute(selectedKeys.key));
-            if(Number(selectedKeys.key) === Number(2)) {
-              navigate('/Home/TourOrder')
-            }
-            if (Number(selectedKeys.key) === Number(3)) {
+            if (Number(selectedKeys.key) === Number(2)) {
+              navigate("/Home/TourOrder");
+            } else if (Number(selectedKeys.key) === Number(3)) {
               navigate("/Home/Tour");
             }
             // if(Number(selectedKeys.key) === Number(4)){
             //   navigate('/Home/Voucher')
             // }
-            if (Number(selectedKeys.key) === Number(4)) {
+            else if (Number(selectedKeys.key) === Number(4)) {
               navigate("/Home/Voucher");
-            }
-            if(Number(selectedKeys.key) === Number(5)){
-              navigate("/Home/Hotel")
-            }
-            if (Number(selectedKeys.key) === Number(6)) {
+            } else if (Number(selectedKeys.key) === Number(5)) {
+              navigate("/Home/Hotel");
+            } else if (Number(selectedKeys.key) === Number(6)) {
               navigate("/Home/Restaurant");
-            }
-             if (Number(selectedKeys.key) === Number(7)) {
+            } else if (Number(selectedKeys.key) === Number(7)) {
               navigate("/Home/TourGuide");
+            } else if (Number(selectedKeys.key) === Number(8)) {
+              navigate("/Home/Blog");
             }
           }}
           items={[
@@ -115,13 +138,20 @@ const App: React.FC = () => {
               icon: <FaCity />,
               label: "Nhà hàng",
             },
-               {
+            {
               key: "7",
               icon: <FaCity />,
               label: "Hướng Dẫn Viên",
             },
+            {
+              key: "8",
+              icon: <FaCity />,
+              label: "Blog",
+            },
           ]}
         />
+        }
+      
       </Sider>
       <Layout className="site-layout slide-left">
         <Header
@@ -153,6 +183,7 @@ const App: React.FC = () => {
         <Content
           style={{
             height: "100%",
+            padding: "10px",
           }}
         >
           <Outlet />

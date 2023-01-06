@@ -1,6 +1,6 @@
 import "../tour.scss";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 // import Editor from "ckeditor5-custom-build/build/ckeditor";
 import { useState, useEffect, useRef } from "react";
@@ -34,24 +34,17 @@ import {
 } from "../type";
 import { PlusOutlined } from "@ant-design/icons";
 import TourDetail from "./component/tourDetail";
-import type { RcFile, UploadFile, UploadProps } from "antd/es/upload/interface";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { current } from "@reduxjs/toolkit";
 import { v4 as uuid } from "uuid";
 import { useParams } from "react-router-dom";
-import e from "express";
-import moment from "moment";
 import dayjs from "dayjs";
-// import advancedFormat from 'dayjs/plugin/advancedFormat'
-// import customParseFormat from 'dayjs/plugin/customParseFormat'
 import weekday from "dayjs/plugin/weekday";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import weekYear from "dayjs/plugin/weekYear";
 import localeData from "dayjs/plugin/localeData";
+import { Switch } from "antd";
 
-// dayjs.extend(customParseFormat)
-// dayjs.extend(advancedFormat)
 dayjs.extend(localeData);
 dayjs.extend(weekday);
 dayjs.extend(weekOfYear);
@@ -240,6 +233,23 @@ const CreateTour = () => {
     setListLocation(convertList);
   };
 
+  const handleDeleteLocation = (day: string, itemLocation: any) => {
+    const clone = [...listLocation];
+    const convertList = clone.map((item) => {
+      if (item.day === day) {
+        const currentListId = item.listId;
+        const index = currentListId.indexOf(itemLocation?.id);
+        currentListId.splice(index, 1);
+        return {
+          day: item.day,
+          listId: currentListId,
+        };
+      }
+      return { ...item };
+    });
+    setListLocation(convertList);
+  };
+
   const convertDataSource = (data: any) => {
     return data?.map((item: any) => {
       return {
@@ -261,7 +271,6 @@ const CreateTour = () => {
       (data: any) => Number(data.city_id) === Number(id)
     );
     hotel.forEach((element: any) => {
-  
       if (Number(element.city_id) === Number(id)) {
         convertData.push({
           label: element.name,
@@ -269,7 +278,6 @@ const CreateTour = () => {
         });
       }
     });
-
 
     setHotelList(convertData);
 
@@ -323,6 +331,7 @@ const CreateTour = () => {
         description: CKEditorDataDB,
         restaurant_id: values.restaurant ? values.restaurant.toString() : " ",
         hotel_id: values.hotel ? values.hotel.toString() : " ",
+        is_popular: values.is_popular
       };
       // Lấy chi tiết lịch trình
 
@@ -434,25 +443,6 @@ const CreateTour = () => {
     const time = endTime - startTime;
     return Math.floor(time / (60 * 1000 * 60 * 24));
   };
-
-  //   const handleDeleteLocation = (item: any) => {
-  //   setListLocation((current) => {
-  //     const clone = [...current];
-  //     let index  = -1;
-  //     for(let i = 0; i <current.length;i++){
-
-  //       for(let k = 0; i <current[i].listId.length;i++){
-
-  //       }
-  //     }
-  //     // const index = clone.indexOf((item));
-  //     if (index > -1) {
-  //       clone.splice(index, 1);
-  //     }
-  //     return clone;
-  //   });
-  // };
-
   // const handleAntdUpload = () => {
   //   const formData = new FormData();
   //   fileList.forEach((file) => {
@@ -489,17 +479,15 @@ const CreateTour = () => {
         <ToastContainer />
 
         <div className="tourContainer-create-first">
+          <Form.Item  valuePropName="checked" label="Nổi bật" name="is_popular">
+            <Switch />
+          </Form.Item>
+
           <Form.Item
             label="Tên Tour"
             name="tour_name"
             rules={[
               { required: true, message: "Please input your tour_name!" },
-              // {
-              //   validator: (_, value) =>
-              //     value
-              //       ? Promise.resolve()
-              //       : Promise.reject(new Error("Should accept agreement")),
-              // },
             ]}
           >
             <Input />
@@ -613,7 +601,6 @@ const CreateTour = () => {
             name="thumbnail"
             valuePropName="fileList1"
             rules={[
-              { required: true, message: "Please input 4 img thumnail" },
               {
                 validator: (_, value) =>
                   fileList.length === 4
@@ -696,6 +683,7 @@ const CreateTour = () => {
         {listLocation?.map((item) => (
           <TourDetail
             handleAddLocation={handleAddLocation}
+            handleDeleteLocation={handleDeleteLocation}
             form={form}
             key={item.day}
             location={item}

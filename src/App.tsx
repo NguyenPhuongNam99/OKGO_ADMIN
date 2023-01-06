@@ -23,6 +23,7 @@ import HotelUpdate from "./features/hotel-update/HotelUpdate";
 import TourOrder from "./features/tour-order/TourOrder";
 import TourGuide from "./features/tour-guide/TourGuide";
 import TourOrderUpdate from "./features/tour-order-update/TourOrderUpdate";
+import Blog from "./features/blog";
 
 const router = createBrowserRouter([
   {
@@ -103,6 +104,10 @@ const router = createBrowserRouter([
       {
         path: "/Home/HotelUpdate/:id",
         element: <HotelUpdate />,
+      },
+      {
+        path: "/Home/Blog",
+        element: <Blog />,
       },
     ],
   },

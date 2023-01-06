@@ -57,7 +57,7 @@ const TourDetail = (props: any) => {
             index={index}
             defaultThumbnail={item.thumbnail}
             id={item.id}
-            handleDeleteLocation={() => handleDeleteLocation(item)}
+            handleDeleteLocation={() => handleDeleteLocation(location.day,item)}
           />
         ))}
         <Button onClick={()=>handleAddLocation(location)}>Thêm địa chỉ</Button>

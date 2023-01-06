@@ -101,7 +101,12 @@ const TourList = () => {
                     <th scope="row">{index}</th>
                     <td>{item.name}</td>
                     <td>
-                      <span>{item.description}</span>
+                      <span>
+                        <div
+                          contentEditable="true"
+                          dangerouslySetInnerHTML={{ __html: item.description }}
+                        ></div>
+                      </span>
                     </td>
                     <td className="centerView">
                       <img src={item.thumbnail[0].url} className="imageTour" />
@@ -126,7 +131,9 @@ const TourList = () => {
                             color="primary"
                             tag="a"
                             className="button"
-                            onClick={() => navigate(`/Home/Tour/update/${item.idTour}`)}
+                            onClick={() =>
+                              navigate(`/Home/Tour/update/${item.idTour}`)
+                            }
                           >
                             <AiOutlineEdit />
                           </Button>
