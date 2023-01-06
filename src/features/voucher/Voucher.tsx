@@ -111,7 +111,7 @@ const Voucher = () => {
               console.log("item.image_url", item.image_url);
               return (
                 <tr className="sizeHeader">
-                  <th scope="row">{index}</th>
+                  <th scope="row">{index+1}</th>
                   <td>{item.name}</td>
                   <td>{item.decription}</td>
                   <td>

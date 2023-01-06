@@ -100,7 +100,7 @@ const Restaurant = () => {
             {dataRestaurant?.map((item: any, index: number) => {
               return (
                 <tr>
-                  <th scope="row">{index}</th>
+                  <th scope="row">{index +1}</th>
                   <td>{item.name}</td>
                   <td>{item.address_detail}</td>
                   <td className="centerView">

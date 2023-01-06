@@ -39,6 +39,7 @@ const router = createBrowserRouter([
         console.log("123xx1")
         return redirect("/Home");
       }
+      return 1;
     },
     element: <LoginScreen />,
     errorElement: <ErrorPage />,
@@ -64,6 +65,7 @@ const router = createBrowserRouter([
       if (!isLogin) {
         return redirect("/");
       }
+      return 1;
     },
     element: <Home />,
     children: [

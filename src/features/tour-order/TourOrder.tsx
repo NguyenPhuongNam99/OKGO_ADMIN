@@ -126,7 +126,7 @@ const TourOrder = () => {
                     const item = itemData;
                     return (
                       <tr>
-                        <th scope="row">{index}</th>
+                        <th scope="row">{index +1}</th>
                         <td>
                           {_.isUndefined(item.tour_id) ? "cccc" : item.tour_id}
                         </td>

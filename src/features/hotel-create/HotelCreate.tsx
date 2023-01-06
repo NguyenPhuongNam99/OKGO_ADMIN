@@ -134,6 +134,7 @@ const HotelCreate = () => {
               room_price: values.room_price,
               room_quantity: values.room_quantity,
               room_status: false,
+              room_description: values.room_description
             },
           ];
         }
@@ -302,6 +303,7 @@ const HotelCreate = () => {
             room_price: "",
             room_quantity: "",
             amount: "",
+            room_description: ""
           }}
           validationSchema={validateCreateHotel}
           onSubmit={async (values, { resetForm }) => {
@@ -569,6 +571,20 @@ const HotelCreate = () => {
                           />
                           {errors && errors.room_quantity && (
                             <div className="error">{errors.room_quantity}</div>
+                          )}
+                        </div>
+                        <div>
+                          <span className="title">Nhập miêu tả phòng</span>
+                          <input
+                            className="inputContent values"
+                            placeholder="Nhập miêu tả phòng"
+                            name="room_description"
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.room_description}
+                          />
+                          {errors && errors.room_description && (
+                            <div className="error">{errors.room_description}</div>
                           )}
                         </div>
                       </div>

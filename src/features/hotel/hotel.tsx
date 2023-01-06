@@ -106,7 +106,7 @@ const Hotel = () => {
               dataHotel?.map((item: any, index: number) => {
                 return (
                   <tr>
-                    <th scope="row">{index}</th>
+                    <th scope="row">{index + 1}</th>
                     <td>{item.name}</td>
                     <td>
                       <span>{item.description}</span>
