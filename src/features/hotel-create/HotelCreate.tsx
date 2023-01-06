@@ -1,5 +1,5 @@
 import { Button, Form, Modal, Select, Table, Upload } from "antd";
-import {lazy} from "react";
+import { lazy } from "react";
 
 import axios from "axios";
 import { Formik } from "formik";
@@ -21,8 +21,7 @@ import { editorConfiguration } from "../../utils/Utils";
 // import Editor from "ckeditor5-custom-build/build/ckeditor";
 import { current } from "@reduxjs/toolkit";
 import { v4 as uuid } from "uuid";
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 // const CKEditor =  lazy(()=> import('@ckeditor/ckeditor5-react'));
 
@@ -134,7 +133,7 @@ const HotelCreate = () => {
               room_name: values.room_name,
               room_price: values.room_price,
               room_quantity: values.room_quantity,
-              room_status: false
+              room_status: false,
             },
           ];
         }
@@ -221,6 +220,7 @@ const HotelCreate = () => {
         price: values.price,
         type: valueForm.type,
         room: rooms,
+        
       };
 
       await axios.post(
@@ -301,6 +301,7 @@ const HotelCreate = () => {
             room_name: "",
             room_price: "",
             room_quantity: "",
+            amount: "",
           }}
           validationSchema={validateCreateHotel}
           onSubmit={async (values, { resetForm }) => {
@@ -367,6 +368,8 @@ const HotelCreate = () => {
                     {errors.price && touched.price && errors.price}
                   </p>
                 )}
+
+           
 
                 <div className="formBlock">
                   <p className="vouchername">Thành phố</p>

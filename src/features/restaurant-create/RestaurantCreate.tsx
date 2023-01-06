@@ -6,14 +6,18 @@ import { toast, ToastContainer } from "react-toastify";
 import axiosClient from "../../api/api";
 import DatePickerComponent from "../../components/date/DatePickerComponent";
 import { validateCreateRestaurant } from "../../utils/Utils";
-import { cityApi, cityCallApi, provincesApi, provincesApiData } from "../tour/tourApi";
+import {
+  cityApi,
+  cityCallApi,
+  provincesApi,
+  provincesApiData,
+} from "../tour/tourApi";
 import { AutoCompleteType } from "../tour/type";
 import "../voucher-create/voucherCreateStyles.scss";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { editorConfiguration } from "../../utils/Utils";
 // import Editor from "ckeditor5-custom-build/build/ckeditor";
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 const RestaurantCreate = () => {
   const [valueFile, setValueFile] = useState<any>([]);
@@ -35,7 +39,7 @@ const RestaurantCreate = () => {
       setIsPageReady(true);
     }
   }, []);
-const convertDataCity = (data: any) => {
+  const convertDataCity = (data: any) => {
     return data?.map((item: any) => {
       return {
         label: item.name,
@@ -44,7 +48,7 @@ const convertDataCity = (data: any) => {
     });
   };
   useEffect(() => {
-      const listCity = cityCallApi();
+    const listCity = cityCallApi();
     console.log("list city", listCity);
     Promise.all([listCity]).then((values) => {
       const convertList = convertDataCity(values[0]);
@@ -123,9 +127,6 @@ const convertDataCity = (data: any) => {
     }
   }
 
-
-
-
   const submitForm = async (values: any, resetForm: any) => {
     try {
       const formatFile: any = [];
@@ -150,6 +151,7 @@ const convertDataCity = (data: any) => {
         price: values.price,
         open_time: timeStart,
         close_time: timeFinish,
+        amount_table: values.amount,
       };
 
       console.log("obj", obj);
@@ -193,6 +195,7 @@ const convertDataCity = (data: any) => {
             name: "",
             address_detail: "",
             price: "",
+            amount: "",
           }}
           validationSchema={validateCreateRestaurant}
           onSubmit={async (values, { resetForm }) => {
@@ -232,9 +235,8 @@ const convertDataCity = (data: any) => {
                 )}
                 <div className="formBlock">
                   <p className="vouchername">Miêu tả nhà hàng</p>
-                   {isPageReady && (
+                  {isPageReady && (
                     <CKEditor
-                    
                       editor={ClassicEditor}
                       data={CKEditorDataDB}
                       config={editorConfiguration}
@@ -244,7 +246,7 @@ const convertDataCity = (data: any) => {
                     />
                   )}
                 </div>
-              
+
                 <div className="formBlock">
                   <p className="vouchername">Giá giao động</p>
                   <input
@@ -259,6 +261,23 @@ const convertDataCity = (data: any) => {
                 {errors.price && touched.price && errors.price && (
                   <p className="errorInput">
                     {errors.price && touched.price && errors.price}
+                  </p>
+                )}
+
+                <div className="formBlock">
+                  <p className="vouchername">Số lượng bàn</p>
+                  <input
+                    className="inputContent"
+                    placeholder="Nhập số lượng"
+                    name="amount"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.amount}
+                  />
+                </div>
+                {errors.amount && touched.amount && errors.amount && (
+                  <p className="errorInput">
+                    {errors.amount && touched.amount && errors.amount}
                   </p>
                 )}
 
@@ -355,7 +374,7 @@ const convertDataCity = (data: any) => {
                     onChange={onFileChange}
                   />
                 </div>
-                
+
                 <div className="formBlock">
                   <p className="vouchername">Thời gian mở cửa</p>
                   <DatePickerComponent

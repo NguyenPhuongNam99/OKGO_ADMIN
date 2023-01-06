@@ -15,15 +15,14 @@ import useFetchApi from "../../hook/useFetchApi";
 import { useLocation, useParams } from "react-router-dom";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { editorConfiguration } from "../../utils/Utils";
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 // import Editor from "ckeditor5-custom-build/build/ckeditor";
 //thêm trường miêu tả khách sạn : décription
 const RestaurantUpdate = (props: any) => {
   const params = useParams();
   const [isPageReady, setIsPageReady] = useState<boolean>(false);
-    const [CKEditorDataDB, setCKEditorDataDB] = useState<string>("");
-
+  const [CKEditorDataDB, setCKEditorDataDB] = useState<string>("");
 
   useEffect(() => {
     if (!isPageReady) {
@@ -43,6 +42,7 @@ const RestaurantUpdate = (props: any) => {
         address_detail: "",
         price: "",
         discription: "",
+        amount: "",
       }}
       validationSchema={updateInputSchema}
       onSubmit={(values, { setSubmitting }) => {
@@ -103,6 +103,23 @@ const RestaurantUpdate = (props: any) => {
                     {errors.name && touched.name && errors.name}
                   </p>
                 </div>
+              )}
+
+              <div className="formBlock">
+                <p className="vouchername">Số lượng bàn</p>
+                <input
+                  className="inputContent"
+                  placeholder="Nhập số lượng"
+                  name="amount"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.amount}
+                />
+              </div>
+              {errors.amount && touched.amount && errors.amount && (
+                <p className="errorInput">
+                  {errors.amount && touched.amount && errors.amount}
+                </p>
               )}
 
               <div className="blockContentRes">
@@ -176,9 +193,8 @@ const RestaurantUpdate = (props: any) => {
                   <p className="titleContent">Miêu tả</p>
                 </div>
                 <div className="rightContent">
-                 {isPageReady && (
+                  {isPageReady && (
                     <CKEditor
-                    
                       editor={ClassicEditor}
                       data={CKEditorDataDB}
                       config={editorConfiguration}
@@ -189,7 +205,7 @@ const RestaurantUpdate = (props: any) => {
                   )}
                 </div>
               </div>
-             
+
               <div className="blockContentRes">
                 <div className="leftContent">
                   <p className="titleContent">Giá</p>
