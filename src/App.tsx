@@ -1,4 +1,8 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  redirect,
+  RouterProvider,
+} from "react-router-dom";
 import Home from "./features/home";
 import Login from "./features/login";
 import ErrorPage from "./components/error-page/ErrorPage";
@@ -28,16 +32,39 @@ import Blog from "./features/blog";
 const router = createBrowserRouter([
   {
     path: "/",
+    loader: () => {
+      const isLogin = localStorage.getItem("Name");
+      console.log("123")
+      if (!!isLogin) {
+        console.log("123xx1")
+        return redirect("/Home");
+      }
+    },
     element: <LoginScreen />,
     errorElement: <ErrorPage />,
   },
-  {
-    path: "/",
-    element: <Login />,
-    errorElement: <ErrorPage />,
-  },
+  // {
+  //   path: "/",
+  //   loader: () => {
+  //     const isLogin = localStorage.getItem("Name");
+  //     console.log("123")
+  //     if (!!isLogin) {
+  //       console.log("123xx1")
+  //       return redirect("/Home");
+  //     }
+  //   },
+  //   element: <Login />,
+
+  //   errorElement: <ErrorPage />,
+  // },
   {
     path: "/Home",
+    loader: () => {
+      const isLogin = localStorage.getItem("Name");
+      if (!isLogin) {
+        return redirect("/");
+      }
+    },
     element: <Home />,
     children: [
       {
