@@ -5,7 +5,7 @@ import { Button, Table } from "reactstrap";
 import HeaderForm from "../../components/header-form/HeaderForm";
 import "../tour/tour.scss";
 import axiosClient from "../../api/api";
-import { AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 import { Modal, Spin } from "antd";
 import { DataResponse } from "../../types/type";
 import { Checkbox } from "antd";
@@ -64,6 +64,32 @@ const TourOrder = () => {
     getListTour();
   }, []);
 
+  const submit = async () => {
+    try {
+      const token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEyIiwiYWRtaW4iOmZhbHNlLCJpYXQiOjE2NzI3NDA2NTgsImV4cCI6MTY3MjkxMzQ1OH0.P2ScWsWBI4ig9iQ14dEQQCKsdoBr0vEEeUpnSmJ6JUY";
+
+      let config = {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      };
+      const response: any = axios.get(
+        "http://206.189.37.26:8080/v1/orderTour/getOrderTourOfIdHDV/12"
+      );
+
+        Promise.all([response]).then((values) => {
+          console.log('responseeeeeee', values)
+    });
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
+  useEffect(() => {
+    submit();
+  }, []);
+
   console.log("datat tour", dataTour);
 
   return (
@@ -90,13 +116,14 @@ const TourOrder = () => {
                   <th className="textCenter">Tên người đặt</th>
                   <th className="textCenter">Email</th>
                   <th className="textCenter">Số điện thoại</th>
+                 <th className="textCenter">Mã hướng dẫn viên</th>
+
                 </tr>
               </thead>
               <tbody style={{ verticalAlign: "middle", textAlign: "center" }}>
                 {dataTour.length > 0 &&
                   dataTour?.map((itemData: any, index: number) => {
                     const item = itemData;
-                    console.log('item id', itemData)
                     return (
                       <tr>
                         <th scope="row">{index}</th>
@@ -113,6 +140,7 @@ const TourOrder = () => {
                           {item.emailUser}
                         </td>
                         <td className="centerText">{item.phoneUser}</td>
+                        <td className="centerText">{item.assyneBy === null ? 'Chưa có hướng dẫn viên' : item.assyneBy}</td>
 
                         <td>
                           <span className="buttonClickVoucher">
@@ -122,10 +150,10 @@ const TourOrder = () => {
                                 tag="a"
                                 style={{width: '100%', height: 30, backgroundColor: 'green'}}
                                 onClick={() =>
-                                  navigate(`/Home/TourOrderUpdate/${item._id}`)
+                                item.assyneBy === null ?  navigate(`/Home/TourOrderUpdate/${item._id}`) : null
                                 }
                               >
-                                Phê Duyệt
+                             {item.assyneBy === null ? 'Chờ Phê duyệt' : 'Đã phê duyệt'} 
                               </Button>
                             </div>
 
