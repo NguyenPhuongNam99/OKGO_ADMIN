@@ -24,6 +24,7 @@ import { v4 as uuid } from "uuid";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 // const CKEditor =  lazy(()=> import('@ckeditor/ckeditor5-react'));
+const uploadURl = "http://206.189.37.26:8080/uploadImageCloud";
 
 const HotelCreate = () => {
   const [timeStart, setTimeStart] = useState<string>();
@@ -44,6 +45,8 @@ const HotelCreate = () => {
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [rooms, setRooms] = useState<any>([]);
+  const [roomThumbnail, setRoomThumbnail] = useState<any>([]);
+
 
   const columns = useMemo(
     () => [
@@ -111,6 +114,10 @@ const HotelCreate = () => {
       errors.room_quantity = "Số lượng người đang để trống";
       flag = false;
     }
+    // if (!values.upload) {
+    //   errors.upload = "Thumbnail đang để trống";
+    //   flag = false;
+    // }
 
     setConfirmLoading(true);
 
@@ -134,7 +141,8 @@ const HotelCreate = () => {
               room_price: values.room_price,
               room_quantity: values.room_quantity,
               room_status: false,
-              room_description: values.room_description
+              room_description: values.room_description,
+              room_thumbnail: roomThumbnail.url
             },
           ];
         }
@@ -221,7 +229,6 @@ const HotelCreate = () => {
         price: values.price,
         type: valueForm.type,
         room: rooms,
-        
       };
 
       await axios.post(
@@ -286,6 +293,33 @@ const HotelCreate = () => {
     }
   };
 
+  const handleUploadChangeRoom = (uploadInfo: any) => {
+    if (uploadInfo.file.status !== "removed") {
+      const formData = new FormData();
+      formData.append("upload", uploadInfo.file);
+      // // You can use any AJAX library you like
+      fetch("http://206.189.37.26:8080/uploadImageCloud", {
+        method: "POST",
+        body: formData,
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((value) => {
+          console.log(value);
+          setRoomThumbnail([{
+            uid: '1',
+            // name: 'room_thumbnail',
+            // status: 'done',
+            url: value.url,
+          }])
+          // setFieldValue("room_thumbnail", value.url);
+        })
+        .catch(() => {})
+        .finally(() => {});
+    }
+  };
+
   return (
     <div className="containerRestaurant">
       <div className="blockContentRestaurant">
@@ -303,7 +337,8 @@ const HotelCreate = () => {
             room_price: "",
             room_quantity: "",
             amount: "",
-            room_description: ""
+            room_description: "",
+            room_thumbnail: "",
           }}
           validationSchema={validateCreateHotel}
           onSubmit={async (values, { resetForm }) => {
@@ -370,8 +405,6 @@ const HotelCreate = () => {
                     {errors.price && touched.price && errors.price}
                   </p>
                 )}
-
-           
 
                 <div className="formBlock">
                   <p className="vouchername">Thành phố</p>
@@ -492,6 +525,8 @@ const HotelCreate = () => {
                         setFieldValue("room_name", "");
                         setFieldValue("room_price", "");
                         setFieldValue("room_quantity", "");
+                        setFieldValue("room_description", "");
+                        setRoomThumbnail([])
                         showModal();
                       }}
                     >
@@ -517,6 +552,8 @@ const HotelCreate = () => {
                             setFieldValue("room_name", "");
                             setFieldValue("room_price", "");
                             setFieldValue("room_quantity", "");
+                            setFieldValue("room_description", "");
+                            setRoomThumbnail([])
                           } else {
                             setConfirmLoading(false);
                           }
@@ -584,7 +621,38 @@ const HotelCreate = () => {
                             value={values.room_description}
                           />
                           {errors && errors.room_description && (
-                            <div className="error">{errors.room_description}</div>
+                            <div className="error">
+                              {errors.room_description}
+                            </div>
+                          )}
+                        </div>
+
+                        <div>
+                          <span className="title">Thumbnail</span>
+                          <Upload
+                            multiple
+                            maxCount={1}
+                            accept="image/png, image/jpeg"
+                            fileList={roomThumbnail}
+                            // action={uploadURl}
+                            listType="picture-card"
+                            onChange={handleUploadChangeRoom}
+                            onRemove={(file: any) => {
+                              setRoomThumbnail([])
+                              // setFieldValue("room_thumbnail", "");
+                            }}
+                            beforeUpload={(file) => {
+                              return false;
+                            }}
+                          >
+                            <div>
+                              <PlusOutlined />
+                              <div style={{ marginTop: 8 }}>Upload</div>
+                            </div>
+                          </Upload>
+
+                          {errors && errors.room_thumbnail && (
+                            <div className="error">{errors.room_thumbnail}</div>
                           )}
                         </div>
                       </div>
