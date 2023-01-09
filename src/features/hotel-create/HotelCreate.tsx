@@ -119,6 +119,8 @@ const HotelCreate = () => {
     //   flag = false;
     // }
 
+    console.log('room', roomThumbnail)
+
     setConfirmLoading(true);
 
     if (flag) {
@@ -142,7 +144,7 @@ const HotelCreate = () => {
               room_quantity: values.room_quantity,
               room_status: false,
               room_description: values.room_description,
-              room_thumbnail: roomThumbnail.url
+              room_thumbnail: roomThumbnail[0]?.url
             },
           ];
         }
