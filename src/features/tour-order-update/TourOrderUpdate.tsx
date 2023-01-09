@@ -53,7 +53,7 @@ const TourOrderUpdate = () => {
         },
       };
       const response = await axios.put(
-        `http://localhost:8080/v1/orderTour/onlyUpdateOrderTour/${params.id}`,
+        `http://206.189.37.26:8080/v1/orderTour/onlyUpdateOrderTour/${params.id}`,
         {
           assyneBy: assynUser,
         }, config
