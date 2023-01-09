@@ -1,15 +1,11 @@
 import { Button, Form, Modal, Select, Table, Upload } from "antd";
-import { lazy } from "react";
-
 import axios from "axios";
 import { Formik } from "formik";
 import { useEffect, useMemo, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { validateCreateHotel } from "../../utils/Utils";
 import {
-  cityApi,
   cityCallApi,
-  provincesApi,
   provincesApiData,
 } from "../tour/tourApi";
 import { AutoCompleteType } from "../tour/type";
@@ -19,7 +15,6 @@ import { PlusOutlined } from "@ant-design/icons";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { editorConfiguration } from "../../utils/Utils";
 // import Editor from "ckeditor5-custom-build/build/ckeditor";
-import { current } from "@reduxjs/toolkit";
 import { v4 as uuid } from "uuid";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
@@ -40,7 +35,6 @@ const HotelCreate = () => {
     districtForm: "",
     type: "",
   });
-  const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [rooms, setRooms] = useState<any>([]);
@@ -134,7 +128,7 @@ const HotelCreate = () => {
               room_price: values.room_price,
               room_quantity: values.room_quantity,
               room_status: false,
-              room_description: values.room_description
+              room_description: values.room_description,
             },
           ];
         }
@@ -205,12 +199,14 @@ const HotelCreate = () => {
           image: item.url,
         });
       });
-      console.log("fomat file", formatFile);
+
       let config = {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("Name"),
         },
       };
+
+      console.log('roomss submit', rooms)
       const obj = {
         name: values.name,
         description: CKEditorDataDB,
@@ -221,7 +217,6 @@ const HotelCreate = () => {
         price: values.price,
         type: valueForm.type,
         room: rooms,
-        
       };
 
       await axios.post(
@@ -285,6 +280,7 @@ const HotelCreate = () => {
         .finally(() => {});
     }
   };
+ 
 
   return (
     <div className="containerRestaurant">
@@ -303,7 +299,7 @@ const HotelCreate = () => {
             room_price: "",
             room_quantity: "",
             amount: "",
-            room_description: ""
+            room_description: "",
           }}
           validationSchema={validateCreateHotel}
           onSubmit={async (values, { resetForm }) => {
@@ -370,8 +366,6 @@ const HotelCreate = () => {
                     {errors.price && touched.price && errors.price}
                   </p>
                 )}
-
-           
 
                 <div className="formBlock">
                   <p className="vouchername">Thành phố</p>
@@ -584,9 +578,13 @@ const HotelCreate = () => {
                             value={values.room_description}
                           />
                           {errors && errors.room_description && (
-                            <div className="error">{errors.room_description}</div>
+                            <div className="error">
+                              {errors.room_description}
+                            </div>
                           )}
                         </div>
+
+                       
                       </div>
                     </Modal>
                   </div>
