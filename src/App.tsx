@@ -32,15 +32,15 @@ import Blog from "./features/blog";
 const router = createBrowserRouter([
   {
     path: "/",
-    loader: () => {
-      const isLogin = localStorage.getItem("Name");
-      console.log("123")
-      if (!!isLogin) {
-        console.log("123xx1")
-        return redirect("/Home");
-      }
-      return 1;
-    },
+    // loader: () => {
+    //   const isLogin = localStorage.getItem("Name");
+    //   console.log("123")
+    //   if (!!isLogin) {
+    //     console.log("123xx1")
+    //     return redirect("/Home");
+    //   }
+    //   return 1;
+    // },
     element: <LoginScreen />,
     errorElement: <ErrorPage />,
   },
