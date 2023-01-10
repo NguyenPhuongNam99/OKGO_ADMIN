@@ -24,6 +24,7 @@ import weekday from "dayjs/plugin/weekday";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import weekYear from "dayjs/plugin/weekYear";
 import localeData from "dayjs/plugin/localeData";
+import axios from "axios";
 
 const uploadURl = "http://206.189.37.26:8080/uploadImageCloud";
 
@@ -81,15 +82,48 @@ const Blog: React.FC = () => {
     },
   };
 
-  const onFinish = (values: any) => {
+  const onFinish = async (values: any) => {
     if (values && CKEditorDataDB) {
       const finalData: any = {
         title: values.title,
         thumbnail: values.thumbnail.file?.response.url,
-        décription: CKEditorDataDB,
+        description: CKEditorDataDB,
+      };
+      let config = {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("Name"),
+        },
       };
 
-      console.log(finalData);
+      try {
+        const response = await axios.post(
+          "http://206.189.37.26:8080/blog/createBlog",
+          finalData,
+          config
+        );
+        console.log("response", response);
+        toast.success("🦄 Tạo tin tức thành công!", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      } catch (error) {
+        toast.success("🦄 Tạo tin tức chưa thành công!", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
       // Lấy chi tiết lịch trình
     }
   };

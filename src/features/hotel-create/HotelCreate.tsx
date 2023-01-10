@@ -119,7 +119,6 @@ const HotelCreate = () => {
     //   flag = false;
     // }
 
-    console.log('room', roomThumbnail)
 
     setConfirmLoading(true);
 
