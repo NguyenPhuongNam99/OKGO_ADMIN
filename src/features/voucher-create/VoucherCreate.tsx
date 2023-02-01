@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 interface TypeSetValue {
   name: string;
@@ -21,6 +22,7 @@ const VoucherCreate = () => {
   const [valueFile, setValueFile] = useState<any>();
   const [timeStart, setTimeStart] = useState<string>();
   const [timeFinish, setTimeFinish] = useState<string>();
+  const navigate = useNavigate()
 
   const handleDatePickerChange = (date: any, dateString: any, id: any) => {
     setTimeStart(dateString);
@@ -67,6 +69,9 @@ const VoucherCreate = () => {
         progress: undefined,
         theme: "colored",
       });
+      setTimeout(() => {
+        navigate(-1)
+      }, 6000);
     } catch (error) {
       console.log("error new", error);
        toast.success(error as any, {
@@ -79,6 +84,9 @@ const VoucherCreate = () => {
         progress: undefined,
         theme: "colored",
       });
+      setTimeout(() => {
+        navigate(-1)
+      }, 6000);
     }
   };
 

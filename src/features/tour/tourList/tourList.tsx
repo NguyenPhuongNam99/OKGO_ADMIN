@@ -81,15 +81,13 @@ const TourList = () => {
               <tr>
                 <th className="textCenter">#</th>
                 <th className="textCenter">Tên</th>
-                <th className="textCenter">Miêu tả</th>
+                {/* <th className="textCenter">Miêu tả</th> */}
                 <th className="textCenter">Ảnh</th>
                 <th className="textCenter">Giá</th>
-                <th className="textCenter">Địa chỉ</th>
-                <th className="textCenter">Khách sạn</th>
-                <th className="textCenter">Nhà hàng</th>
-                <th className="textCenter">Tổng số ngày</th>
-                <th className="textCenter">Người tạo</th>
-                <th className="textCenter">Trạng thái</th>
+                <th className="textCenter">Tên tour</th>
+                <th className="textCenter">Mã khách sạn</th>
+                <th className="textCenter">Mã Nhà hàng</th>
+                {/* <th className="textCenter">Tổng số ngày</th> */}
                 <th className="textCenter">Ẩn/Hiện Tour</th>
               </tr>
             </thead>
@@ -100,24 +98,24 @@ const TourList = () => {
                   <tr key={index}>
                     <th scope="row">{index}</th>
                     <td>{item.name}</td>
-                    <td>
+                    {/* <td>
                       <span>
                         <div
                           contentEditable="true"
                           dangerouslySetInnerHTML={{ __html: item.description }}
                         ></div>
                       </span>
-                    </td>
+                    </td> */}
                     <td className="centerView">
                       <img src={item.thumbnail[0].url} className="imageTour" />
                     </td>
                     <td className="centerText">{item.price}</td>
-                    <td>{item.address}</td>
+                    <td>{item.tour_name}</td>
                     <td style={{ textAlign: "center" }}>{item.hotel_id}</td>
                     <td className="centerText">{item.restaurant_id}</td>
-                    <td style={{ textAlign: "center" }}>{item.total_day}</td>
-                    <td style={{ textAlign: "center" }}>{item.created_by}</td>
-                    <td>{item.status}</td>
+                    {/* <td style={{ textAlign: "center" }}>{item.total_day}</td>
+                    <td style={{ textAlign: "center" }}>{item.created_by}</td> */}
+                    {/* <td>{item.status}</td> */}
 
                     <td>
                       <span>

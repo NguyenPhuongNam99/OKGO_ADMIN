@@ -16,6 +16,7 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { editorConfiguration } from "../../utils/Utils";
 // import Editor from "ckeditor5-custom-build/build/ckeditor";
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { useNavigate } from "react-router-dom";
 
 
 const HotelUpdate = () => {
@@ -37,6 +38,7 @@ const HotelUpdate = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [isPageReady, setIsPageReady] = useState<boolean>(false);
   const [CKEditorDataDB, setCKEditorDataDB] = useState<string>("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!isPageReady) {
@@ -148,6 +150,9 @@ const HotelUpdate = () => {
         progress: undefined,
         theme: "colored",
       });
+      setTimeout(() => {
+        navigate(-1)
+      },6000)
       form.setFieldsValue({
         provinces: "",
         city: "",

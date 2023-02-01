@@ -1,7 +1,7 @@
 import { Button, Select } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import axiosClient from "../../api/api";
 import "./TourOrderUpdate.scss";
@@ -11,6 +11,7 @@ const TourOrderUpdate = () => {
   const [data, setData] = useState<any>();
   const [assynUser, setAssynUser] = useState<string>();
   const [userHDV, setUserHDV] = useState<Array<any>>();
+  const navigate = useNavigate();
 
   const onChange = (value: string) => {
     setAssynUser(value);
@@ -44,7 +45,6 @@ const TourOrderUpdate = () => {
     }
   };
 
-  console.log('assynUser', assynUser)
   const assynHDV = async () => {
     try {
          let config = {
@@ -69,6 +69,9 @@ const TourOrderUpdate = () => {
         progress: undefined,
         theme: "colored",
       });
+      setTimeout(() => {
+        navigate(-1)
+      }, 6000);
     } catch (error) {
       console.log("error new", error);
     }
@@ -85,7 +88,9 @@ const TourOrderUpdate = () => {
         <div className="headerTitle">
           <h5>Phê duyệt tour</h5>
         </div>
-        <ToastContainer />
+        <div style={{zIndex: 99}}>
+          <ToastContainer />
+        </div>
 
         {data && (
           <div className="BlockContent">
@@ -138,12 +143,12 @@ const TourOrderUpdate = () => {
               />
             </div>
             <div className="formBlock">
-              <p className="vouchername">Loại</p>
+              <p className="vouchername">Chọn hướng dẫn viên</p>
 
               <Select
                 style={{ width: "100%" }}
                 showSearch
-                placeholder="Chọn loại"
+                placeholder="Chọn hướng dẫn viên"
                 optionFilterProp="children"
                 onChange={onChange}
                 filterOption={(input, option) =>

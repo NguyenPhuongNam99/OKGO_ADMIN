@@ -10,6 +10,7 @@ import { useParams } from "react-router-dom";
 import useFetchApi from "../../hook/useFetchApi";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import Upload, { UploadChangeParam, UploadFile } from "antd/es/upload";
+import { useNavigate } from "react-router-dom";
 
 interface TypeSetValue {
   name: string;
@@ -48,6 +49,7 @@ const VoucherUpdate = () => {
   );
   const [checkSubmit, setCheckSubmit] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const navigate = useNavigate()
 
   const handleDatePickerChange = (date: any, dateString: any, id: any) => {
     setTimeStart(dateString);
@@ -98,6 +100,9 @@ const VoucherUpdate = () => {
         theme: "colored",
       });
       fetchDataUpdate();
+      setTimeout(() => {
+        navigate(-1)
+      }, 6000);
     } catch (error) {
         toast.success(error as any, {
         position: "top-right",
@@ -110,6 +115,9 @@ const VoucherUpdate = () => {
         theme: "colored",
       });
       console.log("error new", error);
+      setTimeout(() => {
+        navigate(-1)
+      }, 6000);
     }
   };
 

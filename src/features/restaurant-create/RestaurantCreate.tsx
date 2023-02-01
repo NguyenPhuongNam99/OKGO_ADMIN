@@ -18,6 +18,7 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import { editorConfiguration } from "../../utils/Utils";
 // import Editor from "ckeditor5-custom-build/build/ckeditor";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { useNavigate } from "react-router-dom";
 
 const RestaurantCreate = () => {
   const [valueFile, setValueFile] = useState<any>([]);
@@ -33,6 +34,7 @@ const RestaurantCreate = () => {
   });
   const [CKEditorDataDB, setCKEditorDataDB] = useState<string>("");
   const [isPageReady, setIsPageReady] = useState<boolean>(false);
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (!isPageReady) {
@@ -171,6 +173,9 @@ const RestaurantCreate = () => {
         progress: undefined,
         theme: "colored",
       });
+      setTimeout(() => {
+        navigate(-1)
+      }, 6000);
       form.setFieldsValue({
         provinces: "",
         city: "",
@@ -215,7 +220,9 @@ const RestaurantCreate = () => {
           }) => (
             <form onSubmit={handleSubmit}>
               <div className="FormContent">
+                <div style={{zIndex: 99}}>
                 <ToastContainer />
+                </div>
 
                 <div className="formBlock">
                   <p className="vouchername">Tên nhà hàng</p>

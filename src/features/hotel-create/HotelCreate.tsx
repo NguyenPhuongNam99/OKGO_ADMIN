@@ -22,6 +22,7 @@ import { editorConfiguration } from "../../utils/Utils";
 import { current } from "@reduxjs/toolkit";
 import { v4 as uuid } from "uuid";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { useNavigate } from "react-router-dom";
 
 // const CKEditor =  lazy(()=> import('@ckeditor/ckeditor5-react'));
 const uploadURl = "http://206.189.37.26:8080/uploadImageCloud";
@@ -46,7 +47,7 @@ const HotelCreate = () => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [rooms, setRooms] = useState<any>([]);
   const [roomThumbnail, setRoomThumbnail] = useState<any>([]);
-
+  const navigate = useNavigate();
 
   const columns = useMemo(
     () => [
@@ -247,6 +248,9 @@ const HotelCreate = () => {
         progress: undefined,
         theme: "colored",
       });
+      setTimeout(() => {
+        navigate(-1)
+      }, 3000);
       form.setFieldsValue({
         provinces: "",
         city: "",
@@ -327,8 +331,10 @@ const HotelCreate = () => {
         <div className="headerTitleRestaurant">
           <h5 className="titleRestaurant">Thêm mới khách sạn</h5>
         </div>
+        <div style={{zIndex: 99}}>
         <ToastContainer />
 
+        </div>
         <Formik
           initialValues={{
             name: "",

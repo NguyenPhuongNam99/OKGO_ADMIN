@@ -78,17 +78,14 @@ const TourOrder = () => {
         "http://206.189.37.26:8080/v1/orderTour/getOrderTourOfIdHDV/12"
       );
 
-        Promise.all([response]).then((values) => {
-          console.log('responseeeeeee', values)
-    });
+      Promise.all([response]).then((values) => {
+        console.log('responseeeeeee', values)
+      });
     } catch (error) {
       console.log("error", error);
     }
   };
 
-  useEffect(() => {
-    submit();
-  }, []);
 
   console.log("datat tour", dataTour);
 
@@ -116,7 +113,7 @@ const TourOrder = () => {
                   <th className="textCenter">Tên người đặt</th>
                   <th className="textCenter">Email</th>
                   <th className="textCenter">Số điện thoại</th>
-                 <th className="textCenter">Mã hướng dẫn viên</th>
+                  <th className="textCenter">Mã hướng dẫn viên</th>
 
                 </tr>
               </thead>
@@ -126,7 +123,7 @@ const TourOrder = () => {
                     const item = itemData;
                     return (
                       <tr>
-                        <th scope="row">{index +1}</th>
+                        <th scope="row">{index + 1}</th>
                         <td>
                           {_.isUndefined(item.tour_id) ? "cccc" : item.tour_id}
                         </td>
@@ -148,12 +145,12 @@ const TourOrder = () => {
                               <Button
                                 color="primary"
                                 tag="a"
-                                style={{width: '100%', height: 30, backgroundColor: 'green'}}
+                                style={{ width: '100%', height: 30, backgroundColor: 'green' }}
                                 onClick={() =>
-                                item.assyneBy === null ?  navigate(`/Home/TourOrderUpdate/${item._id}`) : null
+                                  item.assyneBy === null ? navigate(`/Home/TourOrderUpdate/${item._id}`) : null
                                 }
                               >
-                             {item.assyneBy === null ? 'Chờ Phê duyệt' : 'Đã phê duyệt'} 
+                                {item.assyneBy === null ? 'Chờ Phê duyệt' : 'Đã phê duyệt'}
                               </Button>
                             </div>
 

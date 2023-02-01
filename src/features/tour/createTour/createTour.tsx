@@ -44,6 +44,7 @@ import weekOfYear from "dayjs/plugin/weekOfYear";
 import weekYear from "dayjs/plugin/weekYear";
 import localeData from "dayjs/plugin/localeData";
 import { Switch } from "antd";
+import { useNavigate } from "react-router-dom";
 
 dayjs.extend(localeData);
 dayjs.extend(weekday);
@@ -68,6 +69,7 @@ const CreateTour = () => {
   const [updateID, setUpdateID] = useState<string>("");
   const params = useParams();
   const { id } = params;
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (!isPageReady) {
@@ -371,6 +373,9 @@ const CreateTour = () => {
           progress: undefined,
           theme: "colored",
         });
+        setTimeout(() => {
+          navigate(-1)
+        }, 6000);
       } else {
         createTourApi(finalData);
         toast.success("🦄 Tạo Tour thành công!", {
@@ -383,6 +388,9 @@ const CreateTour = () => {
           progress: undefined,
           theme: "colored",
         });
+        setTimeout(() => {
+          navigate(-1)
+        }, 6000);
       }
     }
   };

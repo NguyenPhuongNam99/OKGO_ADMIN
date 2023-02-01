@@ -6,31 +6,22 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import {
   Form,
   Input,
-  InputNumber,
-  Select,
   Upload,
-  DatePicker,
   Button,
-  ConfigProvider,
 } from "antd";
 
 import { PlusOutlined } from "@ant-design/icons";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { v4 as uuid } from "uuid";
-import { useParams } from "react-router-dom";
-import dayjs from "dayjs";
-import weekday from "dayjs/plugin/weekday";
-import weekOfYear from "dayjs/plugin/weekOfYear";
-import weekYear from "dayjs/plugin/weekYear";
-import localeData from "dayjs/plugin/localeData";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const uploadURl = "http://206.189.37.26:8080/uploadImageCloud";
 
 const Blog: React.FC = () => {
   const [form] = Form.useForm();
   const [CKEditorDataDB, setCKEditorDataDB] = useState<string>("");
+  const navigate = useNavigate()
   const editorConfiguration = {
     toolbar: {
       items: [
@@ -101,7 +92,6 @@ const Blog: React.FC = () => {
           finalData,
           config
         );
-        console.log("response", response);
         toast.success("🦄 Tạo tin tức thành công!", {
           position: "top-right",
           autoClose: 2000,
@@ -112,6 +102,9 @@ const Blog: React.FC = () => {
           progress: undefined,
           theme: "colored",
         });
+        setTimeout(() => {
+          navigate(-1)
+        },3000)
       } catch (error) {
         toast.success("🦄 Tạo tin tức chưa thành công!", {
           position: "top-right",
@@ -123,6 +116,9 @@ const Blog: React.FC = () => {
           progress: undefined,
           theme: "colored",
         });
+        setTimeout(() => {
+          navigate(-1)
+        },3000)
       }
       // Lấy chi tiết lịch trình
     }
@@ -140,7 +136,9 @@ const Blog: React.FC = () => {
       autoComplete="off"
     >
       <div className="tourContainer-create">
-        <ToastContainer />
+        <div style={{ zIndex: 99 }}>
+          <ToastContainer />
+        </div>
 
         <div className="tourContainer-create-first">
           <Form.Item
@@ -193,8 +191,8 @@ const Blog: React.FC = () => {
             onChange={(event: any, editor: any) => {
               setCKEditorDataDB(editor.getData());
             }}
-            // onBlur={(event, editor) => {}}
-            // onFocus={(event, editor) => {}}
+          // onBlur={(event, editor) => {}}
+          // onFocus={(event, editor) => {}}
           />
         </div>
       </div>
