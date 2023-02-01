@@ -89,7 +89,7 @@ const Restaurant = () => {
           <thead>
             <tr>
               <th className="textCenter">#</th>
-              <th className="textCenter">Tên khách sạn</th>
+              <th className="textCenter">Tên nhà hàng</th>
               <th className="textCenter">Địa chỉ</th>
               <th className="textCenter">Ảnh</th>
               <th className="textCenter">Thời gian mở cửa</th>

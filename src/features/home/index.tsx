@@ -12,7 +12,8 @@ import Hotel from "../hotel/hotel";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/store";
 import { getRoute } from "../../globalStore";
-
+import User from "../user/User";
+import { AiFillAppstore, AiFillFileWord, AiFillGithub, AiFillPhone } from "react-icons/ai";
 const { Header, Sider, Content } = Layout;
 
 const App: React.FC = () => {
@@ -103,14 +104,18 @@ const App: React.FC = () => {
               navigate("/Home/TourGuide");
             } else if (Number(selectedKeys.key) === Number(8)) {
               navigate("/Home/Blog");
+            }else if (Number(selectedKeys.key) === Number(9)) {
+              navigate("/Home/User");
+            }else if (Number(selectedKeys.key) === Number(10)) {
+              navigate("/Home/DashBoard");
             }
           }}
           items={[
-            {
-              key: "1",
-              icon: <UserOutlined />,
-              label: "Thông tin cá nhân",
-            },
+            // {
+            //   key: "1",
+            //   icon: <UserOutlined />,
+            //   label: "Thông tin cá nhân",
+            // },
             {
               key: "2",
               icon: <BsCalendar2PlusFill />,
@@ -140,13 +145,23 @@ const App: React.FC = () => {
             },
             {
               key: "7",
-              icon: <FaCity />,
+              icon: <AiFillPhone />,
               label: "Hướng Dẫn Viên",
             },
             {
               key: "8",
-              icon: <FaCity />,
+              icon: <AiFillFileWord />,
               label: "Blog",
+            },
+            {
+              key: "9",
+              icon: <AiFillGithub />,
+              label: "User",
+            },
+            {
+              key: "10",
+              icon: <AiFillAppstore />,
+              label: "Dashboard",
             },
           ]}
         />

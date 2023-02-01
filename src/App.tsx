@@ -28,6 +28,8 @@ import TourOrder from "./features/tour-order/TourOrder";
 import TourGuide from "./features/tour-guide/TourGuide";
 import TourOrderUpdate from "./features/tour-order-update/TourOrderUpdate";
 import Blog from "./features/blog";
+import User from "./features/user/User";
+import DashBoard from './features/dashboard/DashBoard'
 
 const router = createBrowserRouter([
   {
@@ -98,6 +100,10 @@ const router = createBrowserRouter([
         element: <TourGuide />,
       },
       {
+        path: "/Home/User",
+        element: <User />,
+      },
+      {
         path: "/Home/Restaurant",
         element: <Restaurant />,
       },
@@ -137,6 +143,10 @@ const router = createBrowserRouter([
       {
         path: "/Home/Blog",
         element: <Blog />,
+      },
+      {
+        path: "/Home/DashBoard",
+        element: <DashBoard />,
       },
     ],
   },

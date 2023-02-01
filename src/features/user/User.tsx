@@ -12,7 +12,7 @@ import { Checkbox } from "antd";
 import { toast } from "react-toastify";
 import _ from "lodash";
 
-const TourGuide = () => {
+const User = () => {
   const navigate = useNavigate();
   const [dataTour, setDataTour] = useState<Array<DataResponse>>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -48,7 +48,7 @@ const TourGuide = () => {
   const getListTour = async () => {
     try {
       setLoading(true);
-      axiosClient.get("/v1/dashboard/getAllHDV")
+      axiosClient.get("/v1/user/getAllUsers")
         .then((data: AxiosResponse<DataResponse[]> | any) => {
           console.log('data jdv', data)
           setDataTour(data);
@@ -84,8 +84,8 @@ const TourGuide = () => {
               <thead>
                 <tr>
                   <th className="textCenter">#</th>
-                  <th className="textCenter">Mã hướng dẫn viên</th>
-                  <th className="textCenter">Tên hướng dẫn viên</th>
+                  <th className="textCenter">Mã người dùng</th>
+                  <th className="textCenter">Tên người dùng</th>
                   <th className="textCenter">Email</th>
                   <th className="textCenter">Số điện thoại</th>
                    <th className="textCenter">Trạng thái</th>
@@ -153,4 +153,4 @@ const TourGuide = () => {
   );
 };
 
-export default TourGuide;
+export default User;

@@ -93,7 +93,7 @@ const Hotel = () => {
             <tr>
               <th className="textCenter">#</th>
               <th className="textCenter">Tên</th>
-              <th className="textCenter">Miêu tả</th>
+              {/* <th className="textCenter">Miêu tả</th> */}
               <th className="textCenter">Ảnh</th>
               <th className="textCenter">Giá</th>
               <th className="textCenter">Địa chỉ</th>
@@ -108,9 +108,9 @@ const Hotel = () => {
                   <tr>
                     <th scope="row">{index + 1}</th>
                     <td>{item.name}</td>
-                    <td>
+                    {/* <td>
                       <span>{item.description}</span>
-                    </td>
+                    </td> */}
                     <td className="centerView">
                       <img src={item.image[0]?.image} className="imageHotel" />
                     </td>
