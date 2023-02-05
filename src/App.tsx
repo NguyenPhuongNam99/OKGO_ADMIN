@@ -30,6 +30,7 @@ import TourOrderUpdate from "./features/tour-order-update/TourOrderUpdate";
 import Blog from "./features/blog";
 import User from "./features/user/User";
 import DashBoard from './features/dashboard/DashBoard'
+import HotelRoomOrder from "./features/hotel-room-order/HotelRoomOrder";
 
 const router = createBrowserRouter([
   {
@@ -98,6 +99,10 @@ const router = createBrowserRouter([
       {
         path: "/Home/TourGuide",
         element: <TourGuide />,
+      },
+      {
+        path: "/Home/HotelRoomOrder",
+        element: <HotelRoomOrder />,
       },
       {
         path: "/Home/User",

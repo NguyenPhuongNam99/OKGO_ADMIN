@@ -7,6 +7,7 @@ import "./hotel.scss";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Modal } from "antd";
+import { BsFillFileEarmarkMinusFill } from "react-icons/bs";
 
 interface TypeImage {
   image: String;
@@ -78,7 +79,16 @@ const Hotel = () => {
 
   return (
     <div>
-      <HeaderForm onclick={() => navigate("/Home/HotelCreate")} />
+     <div style={{display:'flex', flexDirection: 'row', width: '100%'}}>
+     <HeaderForm onclick={() => navigate("/Home/HotelCreate")} />
+    <div style={{height: 70, display: 'flex',justifyContent: 'center', alignItems: 'center' }} onClick={() => navigate('/Home/HotelRoomOrder')}>
+    <div style={{backgroundColor: '#1971c2', width: 200, height: 45, justifyContent: 'space-evenly', alignItems: 'center', display: 'flex', borderRadius: 9, color: 'white'}} >
+        <BsFillFileEarmarkMinusFill color="white" />
+           Danh sáchh Phòng đã đặt
+      </div>
+    </div>
+     </div>
+
       <Modal
         title="Basic Modal"
         open={isModalOpen}
