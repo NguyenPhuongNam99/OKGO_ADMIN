@@ -15,7 +15,7 @@ const HotelRoomOrder = () => {
     const getAllRomOrder = async () => {
         try {
             setLoading(true);
-            const response = await axiosClient.get("/v1/hotel/fill");
+            const response = await axiosClient.get("/v1/hotel/getAllRoom");
             console.log("response new", response);
             setData(response);
             setLoading(false);
@@ -43,19 +43,21 @@ const HotelRoomOrder = () => {
                 `http://206.189.37.26:8080/v1/hotel/confirm`,
                 {
                     statusRoom: 'xac nhan',
+                    id: dataClick.idHotel,
+                    idRoom: dataClick.itemRoomOrder._id
                 }, config
             );
             console.log('response', response)
             setVisiable(false)
+            getAllRomOrder()
         }
         catch (error) {
             console.log('error', error)
         }
     }
-
-    console.log('data click', dataClick)
     const [visiable, setVisiable] = useState(false);
 
+    console.log('idclick', dataClick)
     return (
         <div className="hotelContainer">
             <Modal
